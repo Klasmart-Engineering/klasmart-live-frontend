@@ -29,6 +29,7 @@ const DEFAULT_SESSION_CONTEXT = {
     classType: ClassType.LIVE,
     user_id: ``,
     isReview: false,
+    type: ``,
 };
 
 export interface ISessionContext {
@@ -47,6 +48,7 @@ export interface ISessionContext {
     teachers?: Teacher[];
     dueDate?: number;
     startTime?: number;
+    type?: string;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
     setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -81,7 +83,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ teachers, setTeachers ] = useState<Teacher[]>();
     const [ dueDate, setDueDate ] = useState<number>();
 
-    useEffect(()=>{
+    useEffect(() => {
         const authToken = AuthTokenProvider.retrieveToken();
         if(!authToken) return;
 
@@ -119,6 +121,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
                 classType: params.classtype as ClassType,
                 user_id: params.user_id,
                 isReview: params.is_review,
+                type: params.type,
             }
             : DEFAULT_SESSION_CONTEXT;
 
@@ -136,6 +139,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
         dueDate,
         teachers,
         startTime,
+        sessionId,
     ]);
 
     return (

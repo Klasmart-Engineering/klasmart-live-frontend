@@ -40,9 +40,11 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { CaretDownFill as CaretDownFill } from "@styled-icons/bootstrap/CaretDownFill";
 import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
+import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Heart as StickersActionsIcon } from "@styled-icons/entypo/Heart";
@@ -128,7 +130,7 @@ export const viewModesBadge = (interactiveMode: InteractiveMode) => {
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
-    const { isTeacher } = useSessionContext();
+    const { isTeacher, type } = useSessionContext();
     const { addOnBack } = useCordovaSystemContext();
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
@@ -265,7 +267,14 @@ function Toolbar () {
                     item
                     className={classes.iconGroup}
                 >
-                    <ToolbarItemMicrophone />
+                    {type === `preview` ?
+                        <ToolbarItem
+                            display
+                            disabled
+                            icon={<MicDisabledIcon />}
+                        /> : <ToolbarItemMicrophone />
+                    }
+
                     <ToolbarItemCall
                         id="toolbar-item-call"
                         locked={!isTeacher}
@@ -276,7 +285,14 @@ function Toolbar () {
                         src={LeaveClassIcon}
                         onClick={() => endCall()}
                     />
-                    <ToolbarItemCamera />
+
+                    {type === `preview` ?
+                        <ToolbarItem
+                            display
+                            disabled
+                            icon={<CameraDisabledIcon />}
+                        /> : <ToolbarItemCamera />
+                    }
                 </Grid>
                 <Grid
                     item

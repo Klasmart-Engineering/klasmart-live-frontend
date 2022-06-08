@@ -10,13 +10,13 @@ import { useAuthenticationContext } from '@/app/context-provider/authentication-
 import { useServices } from '@/app/context-provider/services-provider';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
+import { WebRtcConditionalProvider } from '@/providers/webrtc-context';
 import { ClassType } from '@/store/actions';
 import {
     hasJoinedClassroomState,
     showSelectAttendeesState,
 } from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
-import { WebRtcProvider } from "@kl-engineering/live-state/ui";
 import React,
 { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -31,6 +31,7 @@ export function WebApp () {
         sessionId,
         classType,
         token,
+        type,
     } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
@@ -74,20 +75,22 @@ export function WebApp () {
     };
 
     return (
-        <WebRtcProvider
+        <WebRtcConditionalProvider
+            enabled={type !== `preview`}
             sessionId={sessionId}
             endpoint={endpoint}
-            onAuthorizationExpired={schedule}
-            onAuthorizationInvalid={schedule}
-            onAuthenticationInvalid={actions?.refreshAuthenticationToken}
-            onAuthenticationExpired={actions?.refreshAuthenticationToken}
-            onTokenMismatch={schedule}
+            schedule={schedule}
+            actions={actions}
         >
             {hasJoinedClassroom && name ? (
                 <RoomWithContext>{renderChildren()}</RoomWithContext>
             )
-                : process.env.IS_CORDOVA_BUILD ? <JoinApp /> : <Join />
+                : process.env.IS_CORDOVA_BUILD ? (<JoinApp />) : (
+                    <Join
+                        enableCamera={classType === ClassType.LIVE && type !== `preview`}
+                    />
+                )
             }
-        </WebRtcProvider>
+        </WebRtcConditionalProvider>
     );
 }

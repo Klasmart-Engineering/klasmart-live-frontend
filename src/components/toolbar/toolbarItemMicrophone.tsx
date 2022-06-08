@@ -1,3 +1,4 @@
+import { useMicrophone } from "@kl-engineering/live-state/ui";
 import {
     Badge,
     Button,
@@ -12,7 +13,6 @@ import LockIcon from "@material-ui/icons/Lock";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import clsx from "clsx";
-import { useMicrophone } from "@kl-engineering/live-state/ui";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -107,7 +107,8 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
     return (
         <>
             <div
-                className={classes.itemRoot}>
+                className={classes.itemRoot}
+            >
                 {locked && (
                     <Badge
                         classes={{
@@ -115,7 +116,7 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
                             root: classes.badgeRoot,
                         }}
                         badgeContent={<LockIcon className={classes.badgeContent} />}
-                    ></Badge>
+                    />
                 )}
                 <Tooltip title={tooltip}>
                     <Button
@@ -125,11 +126,13 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
                         onClick={onClick}
                     >
                         {active ? <MicFillIcon className={classes.icon} /> : <MicDisabledIcon className={classes.icon} />}
-                        {microphone.setSending.loading && <CircularProgress
-                            className={classes.loadingSpinner}
-                            size={25}
-                            color="inherit"
-                        />}
+                        {microphone.setSending.loading && (
+                            <CircularProgress
+                                className={classes.loadingSpinner}
+                                size={25}
+                                color="inherit"
+                            />
+                        )}
                     </Button>
                 </Tooltip>
             </div>

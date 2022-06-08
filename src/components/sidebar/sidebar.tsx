@@ -6,6 +6,7 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { activeTabState } from "@/store/layoutAtoms";
+import { NoItemList } from "@/utils/utils";
 import {
     Box,
     Drawer,
@@ -17,6 +18,7 @@ import {
 } from "@material-ui/core";
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
+import { UserTimes as PreviewIcon } from "@styled-icons/fa-solid/UserTimes";
 import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -85,12 +87,29 @@ function Sidebar () {
 
     const activeTab = useRecoilValue(activeTabState);
     const deviceOrientation = useDeviceOrientationValue();
-    const { isTeacher } = useSessionContext();
+    const { isTeacher, type } = useSessionContext();
 
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
-    const sidebarTabs = [
+    const sidebarTabs = type === `preview` ? [
+        {
+            id: 1,
+            name: `participants`,
+            label: intl.formatMessage({
+                id: `title_participants`,
+            }),
+            icon: <ParticipantsIcon />,
+            content: (
+                <NoItemList
+                    icon={<PreviewIcon />}
+                    text={intl.formatMessage({
+                        id: `preview_guide_text_3`,
+                    })}
+                />
+            ),
+        },
+    ] : [
         {
             id: 1,
             name: `participants`,
@@ -170,14 +189,13 @@ function Sidebar () {
                                     })}
                                 </Box>
                             </Grid>
-                            {activeTab === `mosaic` &&
-                        (
-                            <Grid item>
-                                <Box py={3}>
-                                    <MosaicSlider />
-                                </Box>
-                            </Grid>
-                        )}
+                            {activeTab === `mosaic` && (
+                                <Grid item>
+                                    <Box py={3}>
+                                        <MosaicSlider />
+                                    </Box>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
                 )}

@@ -115,7 +115,8 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                     className={clsx(classes.itemRoot, {
                         [classes.itemRootMd]: isMdDown,
                     })}
-                    onClick={onClick}>
+                    onClick={onClick}
+                >
                     {locked && (
                         <Badge
                             classes={{
@@ -123,9 +124,8 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                                 root: classes.badgeRoot,
                             }}
                             badgeContent={<LockIcon className={classes.badgeContent} />}
-                        ></Badge>
+                        />
                     )}
-
                     <div
                         className={clsx(classes.root, disabled && classes.disabled, active && classes.active, locked && classes.locked)}
                     >

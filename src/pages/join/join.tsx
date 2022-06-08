@@ -4,6 +4,7 @@ import { MicrophonePreview } from "./microphonePreview";
 import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
 import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
 import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
+import KidsLoopPreviewTeachers from "@/assets/img/classtype/kidsloop_preview_teachers.svg";
 import KidsLoopReviewStudents from "@/assets/img/classtype/kidsloop_review_students.svg";
 import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
@@ -156,7 +157,16 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }));
 
-export default function Join (): JSX.Element {
+    interface Props {
+        enableCamera?: boolean;
+        enableMicrophone?: boolean;
+    }
+
+export default function Join (props: Props): JSX.Element {
+    const {
+        enableCamera = false,
+        enableMicrophone = true,
+    } = props;
     const classes = useStyles();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
@@ -169,6 +179,7 @@ export default function Join (): JSX.Element {
         organizationId,
         user_id,
         roomId,
+        type,
     } = useSessionContext();
 
     const brandingEndpoint = useHttpEndpoint(`user`);
@@ -234,7 +245,7 @@ export default function Join (): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-                <Container maxWidth={classType === ClassType.LIVE ? (isSmDown ? `sm` : `md`) : `xs`}>
+                <Container maxWidth={enableCamera ? (isSmDown ? `sm` : `md`) : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Grid
@@ -242,9 +253,9 @@ export default function Join (): JSX.Element {
                                 direction={isXsDown ? `column-reverse` : `row`}
                                 justifyContent="center"
                                 alignItems="center"
-                                spacing={classType === ClassType.LIVE ? 4 : 0}
+                                spacing={enableCamera ? 4 : 0}
                             >
-                                {classType !== ClassType.LIVE ? null :
+                                {enableCamera && (
                                     <Grid
                                         item
                                         xs={6}
@@ -264,29 +275,22 @@ export default function Join (): JSX.Element {
                                             </Box>
                                         </Box>
                                     </Grid>
-                                }
-                                {!isSmDown && classType !== ClassType.LIVE && (
-                                    <Grid
-                                        container
-                                        justifyContent="center"
-                                        alignItems="center"
-                                    >
-                                        <Grid item>
-                                            <ClassTypeLogo />
-                                        </Grid>
-                                    </Grid>
                                 )}
                                 <Grid
                                     item
-                                    xs={classType === ClassType.LIVE ? 6 : 10}
-                                    md={classType === ClassType.LIVE ? 5 : undefined}
+                                    xs={enableCamera ? 6 : 10}
+                                    md={enableCamera ?? 5}
                                 >
-                                    <JoinRoomForm
-                                        cameraPaused={cameraPaused}
-                                        setCameraPaused={setCameraPaused}
-                                        microphonePaused={microphonePaused}
-                                        setMicrophonePaused={setMicrophonePaused}
-                                    />
+                                    {type === `preview` ? <JoinRoomFormPreview /> :
+                                        <JoinRoomForm
+                                            enableCamera={enableCamera}
+                                            enableMicrophone={enableMicrophone}
+                                            cameraPaused={cameraPaused}
+                                            setCameraPaused={setCameraPaused}
+                                            microphonePaused={microphonePaused}
+                                            setMicrophonePaused={setMicrophonePaused}
+                                        />
+                                    }
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -309,17 +313,20 @@ function ClassTypeLogo (): JSX.Element {
         classType,
         isTeacher,
         isReview,
+        type,
     } = useSessionContext();
     const IMG_HEIGHT = `64px`;
 
     const getImgSrc = () => {
+        if (isReview) return KidsLoopReviewStudents;
+        if (type === `preview`) return KidsLoopPreviewTeachers;
+
         switch (classType) {
         case ClassType.LIVE:
             return isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents;
         case ClassType.CLASSES:
             return KidsLoopClassTeachers;
         default:
-            if (isReview) return KidsLoopReviewStudents;
             return KidsLoopStudyStudents;
         }
     };
@@ -354,17 +361,22 @@ const JoinRoomForm: VoidFunctionComponent<{
     setCameraPaused: Dispatch<SetStateAction<boolean>>;
     microphonePaused: boolean;
     setMicrophonePaused: Dispatch<SetStateAction<boolean>>;
+    enableCamera: boolean;
+    enableMicrophone: boolean;
 }> = ({
     cameraPaused,
     setCameraPaused,
     microphonePaused,
     setMicrophonePaused,
+    enableCamera,
+    enableMicrophone,
 }) => {
     const {
         isTeacher,
         classType,
         name,
         setName,
+        type,
     } = useSessionContext();
     const classes = useStylesJoinRoomForm();
     const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
@@ -416,26 +428,26 @@ const JoinRoomForm: VoidFunctionComponent<{
                 direction="column"
                 spacing={2}
             >
-                {!isSmDown && classType === ClassType.LIVE && (
+                {!isSmDown && (
                     <Grid item>
                         <ClassTypeLogo />
                     </Grid>
                 )}
-                {!name &&
-                <Grid
-                    item
-                    xs
-                >
-                    <StyledTextField
-                        fullWidth
-                        label={<FormattedMessage id="what_is_your_name" />}
-                        value={user}
-                        error={hasNameError}
-                        helperText={nameHelperText}
-                        onChange={(e) => setUser(e.target.value)}
-                    />
-                </Grid>
-                }
+                {!name && (
+                    <Grid
+                        item
+                        xs
+                    >
+                        <StyledTextField
+                            fullWidth
+                            label={<FormattedMessage id="what_is_your_name" />}
+                            value={user}
+                            error={hasNameError}
+                            helperText={nameHelperText}
+                            onChange={(e) => setUser(e.target.value)}
+                        />
+                    </Grid>
+                )}
                 <Grid
                     item
                     xs
@@ -456,7 +468,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                                 {!microphonePaused ? <MicFillIcon size="1.25em" /> : <MicDisabledIcon size="1.25em" />}
                             </IconButton>
                         </Grid>
-                        {classType === ClassType.LIVE && (
+                        {enableCamera && (
                             <Grid item>
                                 <IconButton
                                     classes={{
@@ -477,14 +489,16 @@ const JoinRoomForm: VoidFunctionComponent<{
                     item
                     xs
                 >
-                    <Box
-                        my={1}
-                        display="flex"
-                        justifyContent="center"
-                    >
-                        <MediaDeviceSelect kind="audioinput" />
-                    </Box>
-                    {classType === ClassType.LIVE && (
+                    {enableMicrophone && (
+                        <Box
+                            my={1}
+                            display="flex"
+                            justifyContent="center"
+                        >
+                            <MediaDeviceSelect kind="audioinput" />
+                        </Box>
+                    )}
+                    {enableCamera && (
                         <Box
                             my={1}
                             display="flex"
@@ -501,9 +515,45 @@ const JoinRoomForm: VoidFunctionComponent<{
                         type="submit"
                         size="large"
                     >
-                        <Typography>
-                            <FormattedMessage id="join_room" />
-                        </Typography>
+                        <FormattedMessage id={type === `preview` ? `classtype.preview.live` : `join_room`} />
+                    </StyledButton>
+                </Grid>
+            </Grid>
+        </form>
+    );
+};
+
+const JoinRoomFormPreview = () => {
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
+
+    const theme = useTheme();
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+
+    function join (e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setHasJoinedClassroom(true);
+    }
+
+    return (
+        <form onSubmit={join}>
+            <Grid
+                container
+                direction="column"
+                spacing={2}
+            >
+                {!isSmDown && (
+                    <Grid item>
+                        <ClassTypeLogo />
+                    </Grid>
+                )}
+
+                <Grid item>
+                    <StyledButton
+                        fullWidth
+                        type="submit"
+                        size="large"
+                    >
+                        <FormattedMessage id="classtype.preview.live" />
                     </StyledButton>
                 </Grid>
             </Grid>
