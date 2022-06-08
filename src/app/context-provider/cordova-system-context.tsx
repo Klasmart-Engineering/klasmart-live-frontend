@@ -173,8 +173,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         deviceInfo,
     } = useCordovaInitialize(false, () => {
         const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
-        const isRoomPage = window.location.hash === `#/room`;
-
+        const isRoomPage = window.location.hash.startsWith(`#/room`);
+        
         if (dialogs.isParentalLockOpen){
             setDialogs({
                 ...dialogs,
