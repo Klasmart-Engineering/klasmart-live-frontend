@@ -220,6 +220,7 @@ export { TabPanel };
 const useStylesNoItemList = makeStyles((theme: Theme) => ({
     root:{
         display: `flex`,
+        background: `#e8e8e8`,
         justifyContent: `center`,
         alignItems: `center`,
         height: `100%`,
@@ -245,7 +246,7 @@ const useStylesNoItemList = makeStyles((theme: Theme) => ({
 
 interface NoItemListProps {
 	icon?: any;
-	text?: string;
+	text?: ReactElement | string;
 }
 
 function NoItemList (props: NoItemListProps) {
