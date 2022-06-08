@@ -8,7 +8,7 @@ import PdfPagesIndicator from './components/pdf/pdfPagesIndicator/PdfPagesIndica
 import Loading from './components/loading';
 import { THEME_COLOR_BACKGROUND_PAPER } from './config';
 import { FilePdf as FilePdfIcon } from "@styled-icons/bootstrap/FilePdf";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 
 export interface PDF {
     path: string;

@@ -3,7 +3,7 @@ import { ContentType } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { materialActiveIndexState } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import {
     makeStyles,
     Step,

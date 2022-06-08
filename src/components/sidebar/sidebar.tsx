@@ -6,7 +6,7 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { activeTabState } from "@/store/layoutAtoms";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import {
     Box,
     Drawer,

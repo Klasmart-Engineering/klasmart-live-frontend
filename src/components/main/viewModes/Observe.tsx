@@ -14,9 +14,9 @@ import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
 import {
-    NoItemList,
-    toggleFullScreenById,
+    toggleFullScreenById
 } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     makeStyles,

@@ -1,6 +1,6 @@
 import Attachment from "./attachment";
 import { useSessionContext } from "@/providers/session-context";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import {
     Button,
     Grid,

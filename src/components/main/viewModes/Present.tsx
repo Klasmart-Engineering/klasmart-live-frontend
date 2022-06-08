@@ -10,7 +10,7 @@ import {
     mainActivitySizeState,
 } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import ContainedWhiteboard from "@/whiteboard/components/ContainedWhiteboard";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import React from "react";
