@@ -1,17 +1,16 @@
-import OnStageUserCamera from "./UserCamera";
+import OnStageUserCamera from "./onStageUserCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import {
     Box,
     makeStyles,
-    Theme,
     Typography,
 } from "@material-ui/core";
 import React,
 { useMemo } from "react";
 import { FormattedMessage } from "react-intl";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     bold: {
         fontWeight: theme.typography.fontWeightBold as number,
     },

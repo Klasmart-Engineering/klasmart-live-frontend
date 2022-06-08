@@ -3,15 +3,15 @@ import {
     Divider,
     Grid,
     makeStyles,
-    Theme,
     Typography,
 } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     fullHeight: {
         height: `100%`,
+        padding: theme.spacing(0.5),
     },
     title: {
         fontSize: `1rem`,

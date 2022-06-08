@@ -7,6 +7,8 @@ import { StyledPopper } from "@/utils/utils";
 import {
     Grid,
     makeStyles,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
 import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
@@ -16,7 +18,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import {
     atom,
-    useRecoilValue,
+    useRecoilState,
 } from "recoil";
 
 const useStyles = makeStyles(() => ({
@@ -43,12 +45,12 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
     const intl = useIntl();
+    const theme = useTheme();
 
-    const isGlobalActionsOpen = useRecoilValue(isGlobalActionsOpenState);
-
+    const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const { roomId, sessionId } = useSessionContext();
-
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const rewardTrophy = (user: string, kind: string) => {
         rewardTrophyMutation({
@@ -100,6 +102,8 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         <StyledPopper
             open={isGlobalActionsOpen}
             anchorEl={anchor}
+            dialog={isXsDown}
+            dialogClose={() => setIsGlobalActionsOpen(open => !open)}
         >
             <Grid
                 container

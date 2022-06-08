@@ -17,7 +17,6 @@ import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/component
 import {
     Grid,
     makeStyles,
-    Theme,
     Tooltip,
     useTheme,
 } from "@material-ui/core";
@@ -28,7 +27,6 @@ import { Trash as TrashIcon } from "@styled-icons/boxicons-solid/Trash";
 import { Text as TextIcon } from "@styled-icons/evaicons-solid/Text";
 import { Cursor as CursorIcon } from "@styled-icons/fluentui-system-regular/Cursor";
 import clsx from "clsx";
-
 import React,
 {
     useCallback,
@@ -41,7 +39,7 @@ import {
     useRecoilValue,
 } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     root: {
         padding: theme.spacing(0.5),
     },
@@ -218,7 +216,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
         if (!showCanvasMenu) {
             setIsCanvasColorsOpen(false);
         }
-    }, [showCanvasMenu]);
+    }, [ showCanvasMenu ]);
 
     return (
         <>
@@ -241,7 +239,8 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     alignItems="stretch"
                     className={clsx(classes.root, {
                         [classes.hideCanvasMenu] : !showCanvasMenu,
-                    })}>
+                    })}
+                >
                     <CanvasMenuItem
                         ref={pencilRef}
                         hasSubmenu

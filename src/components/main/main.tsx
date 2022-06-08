@@ -16,6 +16,8 @@ import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
@@ -26,10 +28,16 @@ import { useSetRecoilState } from "recoil";
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {
         height: `100%`,
+        [theme.breakpoints.down(`xs`)]: {
+            flex: `1 1 40%`,
+        },
     },
     contentContainer: {
         margin: theme.spacing(1, 1, 0, 1),
-        overflowY: `auto`,
+        overflowY: `hidden`,
+        [theme.breakpoints.down(`xs`)]: {
+            margin: 0,
+        },
     },
     activityContainer: {
         display: `flex`,
@@ -71,6 +79,9 @@ function Main () {
         height: containerHeight = 0,
         width: containerWidth = 0,
     } = useResizeDetector();
+
+    const theme = useTheme();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     useEffect(() => {
         setMainActivitySize({
@@ -120,7 +131,7 @@ function Main () {
                     {renderContent()}
                 </div>
             </Grid>
-            {classType === ClassType.LIVE && (
+            {classType === ClassType.LIVE && !isXsDown && (
                 <Grid item>
                     <Toolbar />
                 </Grid>

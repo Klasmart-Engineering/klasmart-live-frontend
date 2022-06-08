@@ -2,30 +2,12 @@ import LessonPlan from "@/components/main/lessonPlan/lessonPlan";
 import { isLessonPlanOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import {
-    Grid,
-    makeStyles,
-    Theme,
+    makeStyles, useMediaQuery, useTheme,
 } from "@material-ui/core";
 import React from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        padding: 4,
-    },
-    item:{
-        padding: `8px 16px`,
-        margin: `0 4px`,
-        cursor: `pointer`,
-        borderRadius: 10,
-        transition: `100ms all ease-in-out`,
-        "&:hover": {
-            backgroundColor: theme.palette.grey[200],
-        },
-    },
-    itemClear:{},
-    itemToggleCanvas:{},
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 interface LessonPlanMenuProps {
 	anchor: HTMLElement;
@@ -33,24 +15,18 @@ interface LessonPlanMenuProps {
 
 function LessonPlanMenu (props: LessonPlanMenuProps) {
     const { anchor } = props;
-    const classes = useStyles();
-
-    const isLessonPlanOpen = useRecoilValue(isLessonPlanOpenState);
+    const theme = useTheme();
+    const [isLessonPlanOpen, setIsLessonPlanOpen] = useRecoilState(isLessonPlanOpenState);
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     return (
         <StyledPopper
             open={isLessonPlanOpen}
-            anchorEl={anchor}>
-            <Grid
-                container
-                alignItems="stretch"
-                className={classes.root}>
-                <Grid
-                    item
-                    xs>
-                    <LessonPlan />
-                </Grid>
-            </Grid>
+            anchorEl={anchor}
+            dialog={isXsDown}
+            dialogClose={() => setIsLessonPlanOpen(open => !open)}
+        >
+            <LessonPlan />
         </StyledPopper>
     );
 }

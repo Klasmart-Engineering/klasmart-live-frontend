@@ -67,6 +67,7 @@ import {
 } from "recoil";
 
 const CARRET_BUTTON_SIZE = 25;
+const MAX_MOBILE_TOOLBAR_WIDTH = 754;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -75,6 +76,12 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.text.primary,
         position: `relative`,
         zIndex: 9,
+        [theme.breakpoints.down(`xs`)]: {
+            flex: `0 1 auto`,
+        },
+        [theme.breakpoints.down(MAX_MOBILE_TOOLBAR_WIDTH)]: {
+            justifyContent: `center`,
+        },
     },
     rootMosaic:{
         backgroundColor: `rgba(49,49,60,0.85)`,
@@ -109,6 +116,18 @@ const useStyles = makeStyles((theme: Theme) => ({
         boxShadow: `0px 0px 6px 0px rgb(0 0 0 / 25%)`,
         top: -theme.spacing(2),
         zIndex: 9,
+    },
+    canvasIconGroup: {
+        order: 2,
+    },
+    endClassIconGroup: {
+        order: 1,
+        width: `100%`,
+        margin: 0,
+        justifyContent: `center`,
+    },
+    globalActionsIconGroup: {
+        order: 3,
     },
 }));
 
@@ -145,6 +164,7 @@ function Toolbar () {
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isMobileWebToolbar = useMediaQuery(theme.breakpoints.down(MAX_MOBILE_TOOLBAR_WIDTH));
 
     const classDetailsRef = React.useRef<any>();
     const canvasRef = React.useRef<any>();
@@ -206,10 +226,13 @@ function Toolbar () {
                     [classes.rootMosaic] : activeTab === `mosaic`,
                     [classes.rootMd] : isMdDown,
                 })}
+                wrap={hasControls && isMobileWebToolbar ? `wrap` : `nowrap`}
             >
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.canvasIconGroup] : hasControls && isMobileWebToolbar,
+                    })}
                 >
                     <div ref={classDetailsRef}>
                         <ToolbarItem
@@ -265,7 +288,9 @@ function Toolbar () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.endClassIconGroup] : hasControls && isMobileWebToolbar,
+                    })}
                 >
                     {type === `preview` ?
                         <ToolbarItem
@@ -296,7 +321,9 @@ function Toolbar () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.globalActionsIconGroup] : hasControls && isMobileWebToolbar,
+                    })}
                 >
                     <div ref={globalActionsRef}>
                         <ToolbarItem

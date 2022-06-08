@@ -62,10 +62,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     fullheight: {
         height: `100%`,
+        flexWrap: `nowrap`,
     },
     tabInner: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
+        overflowY: `hidden`,
+        [theme.breakpoints.down(`xs`)]: {
+            flexBasis: `300px`,
+        },
     },
     tabInnerSafeArea:{
         paddingRight: `env(safe-area-inset-right)`, // iPhone Notch
@@ -133,7 +138,11 @@ function Sidebar () {
 
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
-    if (isXsDown) return sidebarTabs[0].content;
+    if (isXsDown) return (
+        <div className={classes.tabInner}>
+            {sidebarTabs[0].content}
+        </div>
+    );
 
     return (
         <Drawer

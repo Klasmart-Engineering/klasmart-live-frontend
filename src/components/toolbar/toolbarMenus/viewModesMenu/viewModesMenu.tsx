@@ -11,7 +11,7 @@ import {
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
-import { Box } from "@material-ui/core";
+import { Box, useMediaQuery, useTheme } from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
@@ -31,11 +31,13 @@ function ViewModesMenu (props: ViewModesMenuProps) {
     const { anchor } = props;
     const intl = useIntl();
     const { type } = useSessionContext();
+    const theme = useTheme();
     const [ interactiveMode, setInteractiveMode ] = useRecoilState(interactiveModeState);
     const [ observeWarning, setObserveWarning ] = useRecoilState(observeWarningState);
-    const isViewModesOpen = useRecoilValue(isViewModesOpenState);
+    const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
     const observeDisable = useRecoilValue(observeDisableState);
     const { enqueueSnackbar } = useSnackbar();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     const onClickOnStage = () => setInteractiveMode(InteractiveMode.ONSTAGE);
     const onClickPresent = () => setInteractiveMode(InteractiveMode.PRESENT);
@@ -55,6 +57,8 @@ function ViewModesMenu (props: ViewModesMenuProps) {
             <StyledPopper
                 open={isViewModesOpen}
                 anchorEl={anchor}
+                dialog={isXsDown}
+                dialogClose={() => setIsViewModesOpen(open => !open)}
             >
                 <Box display="flex" >
                     <ViewMode

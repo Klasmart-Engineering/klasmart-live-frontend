@@ -23,6 +23,8 @@ import {
     IconButton,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import { PencilFill as SelectAttendeesIcon } from "@styled-icons/bootstrap/PencilFill";
 import clsx from "clsx";
@@ -58,6 +60,9 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: THEME_COLOR_PRIMARY_DEFAULT,
         },
     },
+    mobileWeb: {
+        flexDirection: `column-reverse`,
+    },
 }));
 
 function MainClass () {
@@ -69,6 +74,10 @@ function MainClass () {
     const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
 
     const { classType } = useSessionContext();
+
+    const theme = useTheme();
+    const isApp = process.env.IS_CORDOVA_BUILD;
+    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
 
     const ButtonSelectAttendees = () => {
         return (
@@ -94,7 +103,8 @@ function MainClass () {
             <Grid
                 container
                 className={clsx(classes.fullHeight, {
-                    [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
+                    [classes.safeArea]: !isApp,
+                    [classes.mobileWeb]: isMobileWeb,
                 })}
             >
                 {!showEndStudy && classType === ClassType.CLASSES && (
@@ -108,7 +118,7 @@ function MainClass () {
                 >
                     <Box
                         pt={activeUser ? 0 : 4}
-                        pb={4}
+                        pb={!isMobileWeb && 4}
                         display="flex"
                         flexDirection="column"
                         height="100%"

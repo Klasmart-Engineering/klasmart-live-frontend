@@ -80,6 +80,9 @@ const useStyles = makeStyles((theme: Theme) =>
                 background: `linear-gradient(87deg, rgba(103,161,214,1) 0%, rgba(82,141,195,1) 100%)`,
             },
         },
+        cameraPreview: {
+            width: `100%`,
+        },
         card: {
             borderRadius: 20,
             boxShadow: `0px 4px 8px 0px rgb(0 0 0 / 10%)`,
@@ -97,12 +100,15 @@ const useStyles = makeStyles((theme: Theme) =>
             width: `auto`,
             maxHeight: `26px`,
             objectFit: `contain`,
+            [theme.breakpoints.down(`sm`)]: {
+                marginBottom: 0
+            },
         },
         header:{
             color: `#fff`,
             padding: `5rem 0 3rem 0`,
             [theme.breakpoints.down(`sm`)]: {
-                padding: `2.5rem 0 2rem 0`,
+                padding: theme.spacing(2, 0),
             },
         },
         headerText:{
@@ -250,20 +256,30 @@ export default function Join (props: Props): JSX.Element {
                         <CardContent className={classes.cardContent}>
                             <Grid
                                 container
-                                direction={isXsDown ? `column-reverse` : `row`}
+                                direction={isXsDown ? `column` : `row`}
                                 justifyContent="center"
                                 alignItems="center"
                                 spacing={enableCamera ? 4 : 0}
                             >
+                                {isSmDown && enableCamera && (
+                                    <Grid 
+                                        item
+                                        style={{
+                                            padding: theme.spacing(2.5, 2.5, 0),
+                                        }}
+                                    >
+                                        <ClassTypeLogo />
+                                    </Grid>
+                                )}
                                 {enableCamera && (
                                     <Grid
                                         item
-                                        xs={6}
+                                        xs={12}
                                         md={7}
+                                        className={classes.cameraPreview}
                                     >
                                         <Box position="relative">
                                             <CameraPreview paused={cameraPaused} />
-
                                             <Box
                                                 position="absolute"
                                                 bottom="20px"
@@ -275,6 +291,13 @@ export default function Join (props: Props): JSX.Element {
                                             </Box>
                                         </Box>
                                     </Grid>
+                                )}
+                                {classType !== ClassType.LIVE && (
+                                    <Box
+                                        my={1}
+                                    >
+                                        <ClassTypeLogo />
+                                    </Box>
                                 )}
                                 <Grid
                                     item
@@ -457,15 +480,18 @@ const JoinRoomForm: VoidFunctionComponent<{
                         spacing={2}
                         alignItems="center"
                         justifyContent="center"
+                        wrap={`nowrap`}
                     >
-                        <Grid item>
+                        <Grid
+                            item
+                        >
                             <IconButton
                                 className={clsx(classes.iconButton, {
                                     [classes.iconButtonPaused]: microphonePaused,
                                 })}
                                 onClick={() => setMicrophonePaused(x => !x)}
                             >
-                                {!microphonePaused ? <MicFillIcon size="1.25em" /> : <MicDisabledIcon size="1.25em" />}
+                                {!microphonePaused ? <MicFillIcon size={theme.spacing(3)} /> : <MicDisabledIcon size={theme.spacing(3)} />}
                             </IconButton>
                         </Grid>
                         {enableCamera && (
@@ -478,7 +504,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                                     }}
                                     onClick={() => setCameraPaused(x => !x)}
                                 >
-                                    {!cameraPaused ? <CameraVideoFillIcon size="1.25em" /> : <CameraDisabledIcon size="1.25em" />}
+                                    {!cameraPaused ? <CameraVideoFillIcon size={theme.spacing(3)} /> : <CameraDisabledIcon size={theme.spacing(3)} />}
                                 </IconButton>
                             </Grid>
                         )}

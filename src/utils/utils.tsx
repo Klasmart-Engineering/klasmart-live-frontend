@@ -11,6 +11,7 @@ import {
     MaterialTypename,
 } from "@/types/lessonMaterial";
 import {
+    Dialog,
     Drawer,
     Fade,
     makeStyles,
@@ -132,7 +133,7 @@ function StyledDrawer (props: StyledDrawerProps) {
 export { StyledDrawer };
 
 interface StyledPopperProps {
-	children: any;
+	children: React.ReactNode;
 	open?: boolean;
     anchorEl?: HTMLElement | null;
     placement?: PopperPlacementType;
@@ -140,6 +141,8 @@ interface StyledPopperProps {
     showScrollbar?: boolean;
     modifiers?: Record<string, unknown>;
     isKeyboardVisible?: boolean;
+    dialog?: boolean;
+    dialogClose?: () => void;
 }
 
 function StyledPopper (props: StyledPopperProps) {
@@ -157,7 +160,20 @@ function StyledPopper (props: StyledPopperProps) {
             },
         },
         isKeyboardVisible = false,
+        dialog = false,
+        dialogClose,
     } = props;
+
+    if(dialog){
+        return(
+            <Dialog
+                open={open}
+                onClose={dialogClose}
+            >
+                {children}
+            </Dialog>
+        );
+    }
 
     return (
         <Popper

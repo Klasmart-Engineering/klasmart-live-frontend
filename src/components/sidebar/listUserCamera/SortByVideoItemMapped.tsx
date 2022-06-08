@@ -20,10 +20,11 @@ const useStyles = makeStyles(() => ({
 
 interface SortByVideoItemMappedProps {
     user: Session;
+    minHeight?: number;
 }
 
 //TODO: This component will be comebined with src/components/sidebar/listUserCamera/listUserCamera.tsx
-const SortByVideoItemMapped = ({ user }: SortByVideoItemMappedProps) => {
+const SortByVideoItemMapped = ({ user, minHeight }: SortByVideoItemMappedProps) => {
     const classes = useStyles();
     const { video } = useStream(user.id);
     const mySession = useSessionContext();
@@ -36,6 +37,7 @@ const SortByVideoItemMapped = ({ user }: SortByVideoItemMappedProps) => {
                 [classes.cameraWithVideo]: !isSelf && video.isConsumable,
                 [classes.cameraNoVideo]: !isSelf && !video.isConsumable,
             })}
+            minHeight={minHeight}
         />
     );
 };

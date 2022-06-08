@@ -10,25 +10,25 @@ import clsx from "clsx";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-    root:{
+    root: {
         fontSize: `1.5rem`,
         borderRadius: theme.spacing(1.5, 0, 1.5, 1.5),
         transform: `translateZ(0)`, // Apply border-radius for Safari
         width: `100%`,
         height: `100%`,
         minHeight: 250,
-        margin: `0 auto`,
         alignItems: `center`,
         textAlign: `center`,
         position: `relative`,
         overflow: `hidden`,
-        outline: `0px solid rgba(20,100,200,0.5)`,
-        transition: `outline-width 100ms linear`,
+        [theme.breakpoints.down(`sm`)]: {
+            borderRadius: 0,
+        },
     },
-    backgroundRoot:{
+    backgroundRoot: {
         position: `absolute`,
     },
-    userCameraRoot:{
+    userCameraRoot: {
         objectFit: `contain`,
     },
 }));
