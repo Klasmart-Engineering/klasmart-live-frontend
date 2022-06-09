@@ -209,12 +209,18 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
+
     function onLoad () {
         const iframeElement = iframeRef.current;
         const contentWindow = iframeElement?.contentWindow;
         const contentDoc = iframeElement?.contentDocument;
 
         if (!contentWindow || !contentDoc) { return; }
+
+        if(!contentDoc.head){
+            const head = document.createElement(`head`);
+            contentDoc.documentElement.prepend(head);
+        }
 
         // Remove styles if exists
         document.getElementById(`kidsloop-live-frontend-styles`)?.remove();
@@ -230,6 +236,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             .h5p-single-choice-set { max-height: 300px !important; }
             .h5p-alternative-inner{ height: auto !important; }
             .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
+            ::-webkit-media-controls { display: flex; justify-content: center; align-items: center; }
+            ::-webkit-media-controls-enclosure {max-width: 400px }
         `;
         contentDoc.head.appendChild(style);
 
