@@ -104,5 +104,3 @@ export const LEARNING_COLOR_TEXT = `#696A70`;
 export const SECONDS_IN_ONE_DAY = 24 * 60 * 60;
 export const TEXT_COLOR_REPORT_NO_DATA = `#9AA9BC`;
 export const GLOBAL_MUTE_OVERLAY_INDEX = 1000;
-export const DEFAULT_CAMERA_WIDTH = 427;
-export const DEFAULT_CAMERA_HEIGHT = 320;
