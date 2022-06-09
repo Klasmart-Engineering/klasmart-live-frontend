@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.16.4](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.3...v6.16.4) (2022-06-09)
+
+
+### 🐛 Bug Fixes
+
+* remove link on mobile last page [NAT-956](https://calmisland.atlassian.net/browse/NAT-956) ([2285d5c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2285d5c5091aa1da04e0ab3644bbe50c57391386))
+
 ### [6.16.3](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.2...v6.16.3) (2022-06-08)
 
 
