@@ -225,3 +225,8 @@ export const classActiveUserIdState = atom<string | undefined>({
     key: `classActiveUserIdState`,
     default: undefined,
 });
+
+export const defaultDevicesState = atom<MediaDeviceInfo[]>({
+    key: `defaultDevices`,
+    default: [],
+});

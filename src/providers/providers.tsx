@@ -1,4 +1,5 @@
 import { CompositionRoot } from "./composition-root";
+import { KidsloopPxProvider } from "./kidsloop-px-provider";
 import RouterProvider from "@/router/Provider";
 import { themeProvider } from "@/themeProvider";
 import {
@@ -45,9 +46,11 @@ function Providers ({ children }: Props) {
             <RawIntlProvider value={locale}>
                 <CompositionRoot sessionId={sessionId}>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <RouterProvider>
-                            {children}
-                        </RouterProvider>
+                        <KidsloopPxProvider>
+                            <RouterProvider>
+                                {children}
+                            </RouterProvider>
+                        </KidsloopPxProvider>
                     </ThemeProvider>
                 </CompositionRoot>
             </RawIntlProvider>

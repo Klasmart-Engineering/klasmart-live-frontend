@@ -13,15 +13,18 @@ type Props = {
 }
 
 export function CompositionRoot ({ children, sessionId }: Props) {
+
     return (
+
         <RegionSelectProvider>
             <FeatureProvider>
                 <ServicesProvider>
                     <SessionContextProvider sessionId={sessionId}>
-                        { children }
+                        {children}
                     </SessionContextProvider>
                 </ServicesProvider>
             </FeatureProvider>
         </RegionSelectProvider>
+
     );
 }

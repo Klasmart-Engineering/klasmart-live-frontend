@@ -8,6 +8,7 @@ import {
 import { ClassSelectAttendees } from './selectAttendees';
 import { useAuthenticationContext } from '@/app/context-provider/authentication-context';
 import { useServices } from '@/app/context-provider/services-provider';
+import useDetectNewDevice from '@/hooks/useDetectNewDevice';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
 import { WebRtcConditionalProvider } from '@/providers/webrtc-context';
@@ -37,6 +38,8 @@ export function WebApp () {
     const { authenticationService } = useServices();
     useInterval(() => authenticationService?.refresh(), TOKEN_REFRESH_INTERVAL_MS);
     const showSelectParticipants = useRecoilValue(showSelectAttendeesState);
+
+    useDetectNewDevice();
 
     const schedule = () => {
         if (process.env.IS_CORDOVA_BUILD) {
