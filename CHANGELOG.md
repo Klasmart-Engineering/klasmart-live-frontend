@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.19.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.18.0...v6.19.0) (2022-06-09)
+
+
+### ♻️ Chores
+
+* **KLL-3623:** add firebase analytics (#167) ([83b1b9e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/83b1b9e5e8b3597a2eca0b3358f9bcee870fec07)), closes [KLL-3623](https://calmisland.atlassian.net/browse/KLL-3623) [KLL-3623](https://calmisland.atlassian.net/browse/KLL-3623)
+
+
+### 🐛 Bug Fixes
+
+* **app:** speech recognition doesn't work (#172) ([b34548d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b34548d0dec5ce30273420e9ec5d7bccc4dcf492)), closes [NAT-936](https://calmisland.atlassian.net/browse/NAT-936)
+* center screenshare texts (#171) ([642ae18](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/642ae18d421de4b8f457146e8141934d60aa716e))
+* fix(android): when leaving a class via back button it does not disconnect (#177) ([9cb3184](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9cb31840e48b2b3a61e8ae3c6567dbcb884ef548)), closes [SFU-201](https://calmisland.atlassian.net/browse/SFU-201)
+* **KLL-3465:** fix audio infinite loading in observe mode for Safari Browser(#184) ([3ac20d7](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3ac20d70c152b7dc8a5a331e43c676189d75f4bd)), closes [KLL-3465](https://calmisland.atlassian.net/browse/KLL-3465)
+* nolistitem ui fix (#179) ([fde4d93](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fde4d932584cecda1564b0fb555ca6043280ea23)), closes [KLL-3533](https://calmisland.atlassian.net/browse/KLL-3533)
+* shaky canvas (#170) ([7ae0c1c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7ae0c1c5a4bc5fde0cfd68635ba7a8f81b326b2b))
+* use video height and width from metadata in camera component (#183) ([f41c68f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f41c68f62525635e2c2127722436af3db9e34890)), closes [KLL-3645](https://calmisland.atlassian.net/browse/KLL-3645)
+
+
+### ✨ Features
+
+* add error if metadata api fails kll-3533 (#145) ([529ad4c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/529ad4c524ef7f1e37de0bd3c70d14f90367d907)), closes [kll-3533](https://calmisland.atlassian.net/browse/kll-3533) [kll-3533](https://calmisland.atlassian.net/browse/kll-3533)
+* **KLL-3490:** portrait mode for LIVE (#117) ([de3a1c5](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/de3a1c5e635144562c0997a36ee9f73619f0d9f8)), closes [KLL-3490](https://calmisland.atlassian.net/browse/KLL-3490) [KLL-3490](https://calmisland.atlassian.net/browse/KLL-3490)
+* **KLL-3564:** portrait mode for CLASS and STUDY (#130) ([7568a48](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7568a489f115b00068c54b015e93b9f8e24d1cba)), closes [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564) [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564)
+* notify user when third party device is connected (#141) ([1503f12](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1503f1265e029d53139b8918eb6e385d3c46ca14)), closes [KLL-3626](https://calmisland.atlassian.net/browse/KLL-3626)
+* remove sfu/webrtc in preview mode (#113) ([226149b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/226149b0a9640bec019bfd548548615b5aa2ff29)), closes [KLL-3570](https://calmisland.atlassian.net/browse/KLL-3570)
+
 ## [6.18.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.17.0...v6.18.0) (2022-06-03)
 
 
