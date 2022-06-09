@@ -121,7 +121,7 @@ function MainClass () {
                 >
                     <Box
                         pt={activeUser ? 0 : 4}
-                        pb={!isMobileWeb && 4}
+                        pb={!isMobileWeb ? 4 : 0}
                         display="flex"
                         flexDirection="column"
                         height="100%"

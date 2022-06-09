@@ -93,7 +93,7 @@ function MainStudy () {
                 xs
             >
                 <Box
-                    py={!isMobileWeb && 4}
+                    py={!isMobileWeb ? 4 : 0}
                     display="flex"
                     flexDirection="column"
                     height="100%"

@@ -9,12 +9,10 @@ import { ClassType } from "@/store/actions";
 import { mainActivitySizeState } from "@/store/layoutAtoms";
 import {
     Grid,
-    makeStyles,
     Theme,
     useMediaQuery,
     useTheme,
-} from "@material-ui/core";
-import { Grid, Theme } from "@mui/material";
+} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
