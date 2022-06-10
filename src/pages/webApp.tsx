@@ -19,9 +19,11 @@ import {
 } from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
 import React,
-{ useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+{ useEffect,
+useMemo } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useRecoilValue } from "recoil";
+import { updatePageEvent } from '@/firebase/config';
 
 const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
 
@@ -76,6 +78,11 @@ export function WebApp () {
             return <StudyRoom />;
         }
     };
+
+    const location = useLocation();
+    useEffect(() => {
+        updatePageEvent();
+    }, [ location ]);
 
     return (
         <WebRtcConditionalProvider

@@ -1,6 +1,7 @@
 import {
     Analytics,
     getAnalytics,
+    logEvent,
 } from "firebase/analytics";
 import {
     getApps,
@@ -31,4 +32,13 @@ export const initializeFirebase = () => {
     const app = initializeApp(firebaseConfig);
     analytics = getAnalytics(app);
     performance = getPerformance(app);
+};
+
+export const updatePageEvent = () => {
+    if (!analytics) return;
+    const pathName = `${location.host}${location.pathname}${location.hash}`;
+    logEvent(analytics, `screen_view`, {
+        firebase_screen: pathName,
+        firebase_screen_class: `router`,
+    });
 };
