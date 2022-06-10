@@ -27,7 +27,7 @@
     "@kl-engineering/cordova-plugin-screen-orientation": "3.0.2",
     "@kl-engineering/cordova-plugin-speechrecognition": "1.3.1",
     "@kl-engineering/cordova-plugin-splashscreen": "6.0.0",
-    "@kl-engineering/eslint-config": "2.0.3",
+    "@kl-engineering/eslint-config": "2.1.1",
     "@rushstack/eslint-patch": "1.1.1",
     "@testing-library/jest-dom": "5.14.1",
     "@testing-library/react": "12.0.0",
