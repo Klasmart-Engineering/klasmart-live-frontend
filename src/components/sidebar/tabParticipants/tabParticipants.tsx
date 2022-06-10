@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
         paddingBottom: 10,
     },
     gridContainerAll: {
-        overflowY: `scroll`,
+        overflowY: `auto`,
         height: `100%`,
     },
     fullheight: {
