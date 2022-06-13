@@ -1,17 +1,12 @@
-import GlobalMuteOverlay from '../globalMuteOverlay';
 import MainStudy from "./mainStudy";
+import GlobalMuteProvider from '@/components/globalMuteProvider';
 import MainClass from "@/components/main/mainClass";
 import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
 import { THEME_COLOR_GREY_200 } from "@/config";
-import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { mainActivitySizeState } from "@/store/layoutAtoms";
-import {
-    useCamera,
-    useMicrophone,
-} from '@kl-engineering/live-state/ui';
 import {
     Grid,
     makeStyles,
@@ -50,29 +45,15 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: theme.spacing(1.5),
         position: `relative`,
     },
-    globalMuteOverlayContainer: {
-        alignItems: `center`,
-        display: `flex`,
-        justifyContent: `space-evenly`,
-        position: `absolute`,
-        height: `100%`,
-        width: `100%`,
-        pointerEvents: `none`,
-    },
 }));
 
 function Main () {
     const classes = useStyles();
-    const { sessionId, classType } = useSessionContext();
+    const {
+        classType,
+        type,
+    } = useSessionContext();
     const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
-    const sessions = useSessions();
-    const localSession = sessions.get(sessionId);
-
-    const camera = useCamera();
-    const microphone = useMicrophone();
-
-    const isCameraPausedGlobally = camera.isPausedGlobally;
-    const isMicrophonePausedGlobally = microphone.isPausedGlobally;
 
     const {
         ref: containerRef,
@@ -95,13 +76,8 @@ function Main () {
         case(ClassType.LIVE): return (
             <>
                 <MainView />
-                {!localSession?.isHost && (
-                    <div className={classes.globalMuteOverlayContainer}>
-                        <GlobalMuteOverlay
-                            isCameraPausedGlobally={isCameraPausedGlobally}
-                            isMicrophonePausedGlobally={isMicrophonePausedGlobally}
-                        />
-                    </div>
+                {type !== `preview` && (
+                    <GlobalMuteProvider />
                 )}
             </>
         );
