@@ -10,7 +10,10 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint, useRegionSelect } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { classActiveUserIdState, streamIdState } from "@/store/layoutAtoms";
+import {
+    classActiveUserIdState,
+    streamIdState,
+} from "@/store/layoutAtoms";
 import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
 import WhiteboardBorder from "@/whiteboard/components/Border";
 import {
@@ -34,7 +37,10 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useResizeDetector } from "react-resize-detector";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     activityContainer: {
@@ -171,7 +177,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     useCustomFlashCard({
         iframeID: `recordediframe`,
-        loadStatus:  loadStatus,
+        loadStatus: loadStatus,
         openLoadingDialog: openDialog,
         setOpenLoadingDialog: setOpenDialog,
     });
@@ -186,16 +192,16 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     }, [ sessions ]);
 
     const sendIframeClassActiveUser = (userId?: string) => {
-        if(classType !== ClassType.CLASSES && !userId) return;
+        if (classType !== ClassType.CLASSES && !userId) return;
 
         iframeRef?.current?.contentWindow?.postMessage({
             type: `CLASS_ACTIVE_USER`,
             user: userId,
         }, `*`);
-    }
+    };
 
     useEffect(() => {
-        sendIframeClassActiveUser(classActiveUserId)
+        sendIframeClassActiveUser(classActiveUserId);
     }, [ classActiveUserId ]);
 
     useEffect(() => {
@@ -205,10 +211,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         interval.current = setInterval(() => {
             setSeconds(seconds => seconds - 1);
         }, 1000);
-      
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
-
 
     function onLoad () {
         const iframeElement = iframeRef.current;
@@ -241,7 +245,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         `;
         contentDoc.head.appendChild(style);
 
-        if(isImageContent){
+        if (isImageContent) {
             const imageStyle = document.createElement(`style`);
             imageStyle.setAttribute(`id`, `kidsloop-live-frontend-image-styles`);
             imageStyle.innerHTML = `img { pointer-events: none }`;
@@ -254,7 +258,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const scrollbarStyle = document.createElement(`style`);
         scrollbarStyle.setAttribute(`id`, `kidsloop-live-frontend-scrollbar`);
 
-        if(classType === ClassType.LIVE){
+        if (classType === ClassType.LIVE) {
             scrollbarStyle.innerHTML = `
                 body { scrollbar-width: none; -ms-overflow-style: none; }
                 body::-webkit-scrollbar { width: 0; height: 0 }
@@ -275,7 +279,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                     `
                 }
             `;
-        }else{
+        } else {
             scrollbarStyle.innerHTML = `
                 body::-webkit-scrollbar { -webkit-appearance: none; width: 14px; }
                 body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px; border: 3px solid #ffffff; }
@@ -287,8 +291,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
 
-        if(!isPdfContent){
-            if (process.env.IS_CORDOVA_BUILD){
+        if (!isPdfContent) {
+            if (process.env.IS_CORDOVA_BUILD) {
                 injectIframeScript(iframeElement, `h5presize`);
             } else {
                 const iframeScript = document.createElement(`script`);
@@ -370,6 +374,34 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
     }
 
+    function onLoadIframe() {
+        sendIframeClassActiveUser(classActiveUserId);
+        onLoad();
+        if (classType !== ClassType.STUDY) {
+            startRecording();
+        }
+        setLoadStatus(LoadStatus.Finished);
+        clearInterval(interval.current as ReturnType<typeof setInterval>);
+        setOpenDialog(false);
+    }
+
+    useEffect(() => {
+        const iframeElement = iframeRef.current;
+        const contentDocument = iframeElement?.contentDocument;
+        const contentWindowDocument = iframeElement?.contentWindow?.document;
+
+        const documentRef = contentDocument || contentWindowDocument;
+        if(!documentRef) return;
+
+        const timer = setInterval(function () {
+            if (documentRef.readyState === `complete`) {
+                clearInterval(timer);
+                console.log(`iframe ready`);
+                onLoadIframe();
+            }
+        }, 1000);
+
+    }, [ contentHrefWithToken, iframeRef.current ]);
     return (
         <>
             <div
@@ -392,16 +424,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
-                        onLoad={() => {
-                            sendIframeClassActiveUser(classActiveUserId);
-                            onLoad();
-                            if (classType !== ClassType.STUDY) {
-                                startRecording();
-                            }
-                            setLoadStatus(LoadStatus.Finished);
-                            clearInterval(interval.current as ReturnType<typeof setInterval>);
-                            setOpenDialog(false);
-                        }}
+                        onLoad={() => { onLoadIframe(); }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
@@ -448,7 +471,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         <Typography
                             gutterBottom
                             variant="h6"
-                            align="center">
+                            align="center"
+                        >
                             {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial" />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_error" />}
                         </Typography>
@@ -463,7 +487,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                                 id="loading_activity_lessonMaterial_description"
                                 values={{
                                     seconds: seconds,
-                                }} />}
+                                }}
+                                                                  />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
@@ -471,7 +496,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         item
                         style={{
                             paddingTop: theme.spacing(2),
-                        }}>
+                        }}
+                    >
                         <Button
                             disabled={loadStatus === LoadStatus.Loading}
                             onClick={() => setLoadStatus(LoadStatus.Loading)}
