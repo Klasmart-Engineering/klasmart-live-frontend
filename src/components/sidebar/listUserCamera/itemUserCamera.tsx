@@ -178,7 +178,7 @@ function ItemUserCamera ({
                 className={clsx(classes.userCameraRoot)}
             />
             {
-                (!isSelf && !video.isConsumable) &&
+                ((isSelf && video.isPausedLocally) || (!isSelf && !video.isConsumable)) &&
                 <NoCamera
                     name={user.name}
                 />
