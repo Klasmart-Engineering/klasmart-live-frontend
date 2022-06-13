@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.19.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.0...v6.19.1) (2022-06-13)
+
+
+### 🧪 Tests
+
+* **KLL-3641:** Add unit tests covering AuthenticationToken (#180) ([e318592](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e318592735cb09970914bc57ee47d7ff15ad93ac)), closes [KLL-3641](https://calmisland.atlassian.net/browse/KLL-3641) [KLL-3641](https://calmisland.atlassian.net/browse/KLL-3641)
+* **KLL-3644:** Add unit tests covering EventRecorderService (#176) ([9b305bc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9b305bcf5f88b9a5e5441e15a78c1771ebb29e9c)), closes [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644)
+
+
+### ♻️ Chores
+
+* remove unused loader packages + minor packages update (#188) ([026d881](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/026d8810d919e2acb7a05211c5c016ff3b58e941))
+* upgrade @kl-engineering/eslint-config 2.0.3 ->  2.1.1 (#191) ([6a15742](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6a15742e8599a6b57ce57c8ca59862b1c43f4f34))
+
+
+### 🐛 Bug Fixes
+
+* **analytics:** add page route events ([9828e57](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9828e57788da1ae94d4b23fabc3e1c1a96371664))
+* hide scrollbar when not needed (#192) ([b94b1bc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b94b1bc3636f57f2408fdccf35037f912361d836))
+* remove link on mobile last page (#186) ([b8e4605](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b8e460581d67f41b405ff6115b3009ef12c58b8e)), closes [NAT-956](https://calmisland.atlassian.net/browse/NAT-956)
+* wait until iframe finishes loading source (#102) ([3404061](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3404061faa01197b1ab49d71b02cb8f4e3b2f996))
+* when user pausesLocally, show noCameraIcon instead of black box (#193) ([8043e95](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8043e951c48df45421e483aa84c5b527a726229e)), closes [SFU-207](https://calmisland.atlassian.net/browse/SFU-207)
+
 ## [6.19.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.18.0...v6.19.0) (2022-06-09)
 
 
