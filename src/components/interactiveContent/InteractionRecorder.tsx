@@ -7,7 +7,10 @@ import {
 } from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
-import { useHttpEndpoint, useRegionSelect } from "@/providers/region-select-context";
+import {
+    useHttpEndpoint,
+    useRegionSelect,
+} from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -109,7 +112,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         height: 0,
     });
 
-    const interval = useRef<ReturnType<typeof setInterval>>()
+    const interval = useRef<ReturnType<typeof setInterval>>();
 
     const { authenticationService } = useServices();
     const { region } = useRegionSelect();
@@ -149,7 +152,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     ]);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
-        const pdfEndpoint = !process.env.IS_CORDOVA_BUILD ? `${process.env.ENDPOINT_API}/pdf` : region?.services.pdf ?? ``;
+        const pdfEndpoint = !process.env.IS_CORDOVA_BUILD ? `${process.env.ENDPOINT_PDF}/pdf` : region?.services.pdf ?? ``;
         const pdfPath = contentHref.replace(`${recorderEndpoint}`, ``);
         const jpegTransformer = `pdfviewer.html?pdf=${pdfPath}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
         const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
@@ -167,7 +170,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
         }
         return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
-        
+
     }, [
         contentHref,
         token,
@@ -211,6 +214,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         interval.current = setInterval(() => {
             setSeconds(seconds => seconds - 1);
         }, 1000);
+
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
@@ -227,9 +231,12 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
 
         // Remove styles if exists
-        document.getElementById(`kidsloop-live-frontend-styles`)?.remove();
-        document.getElementById(`kidsloop-live-frontend-image-styles`)?.remove();
-        document.getElementById(`kidsloop-live-frontend-scrollbar`)?.remove();
+        document.getElementById(`kidsloop-live-frontend-styles`)
+            ?.remove();
+        document.getElementById(`kidsloop-live-frontend-image-styles`)
+            ?.remove();
+        document.getElementById(`kidsloop-live-frontend-scrollbar`)
+            ?.remove();
 
         // Custom styles when needed (general)
         const style = document.createElement(`style`);
@@ -277,7 +284,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         background: transparent;
                     }
                     `
-                }
+}
             `;
         } else {
             scrollbarStyle.innerHTML = `
