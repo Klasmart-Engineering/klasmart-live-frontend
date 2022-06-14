@@ -28,7 +28,10 @@ import {
     hasJoinedClassroomState,
     showSelectAttendeesState,
 } from "@/store/layoutAtoms";
-import { getOrganizationBranding, removeKLLH5PStateStorage } from "@/utils/utils";
+import {
+    getOrganizationBranding,
+    removeKLLH5PStateStorage,
+} from "@/utils/utils";
 import {
     useCamera,
     useMicrophone,
@@ -71,11 +74,11 @@ import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root:{
+        root: {
             position: `relative`,
             zIndex: 1,
         },
-        rootTeacher:{
+        rootTeacher: {
             "& $headerBg": {
                 background: `linear-gradient(87deg, rgba(103,161,214,1) 0%, rgba(82,141,195,1) 100%)`,
             },
@@ -87,7 +90,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: 20,
             boxShadow: `0px 4px 8px 0px rgb(0 0 0 / 10%)`,
         },
-        cardContent:{
+        cardContent: {
             padding: `22px !important`,
             [theme.breakpoints.down(`sm`)]: {
                 padding: `12px 14px !important`,
@@ -100,24 +103,21 @@ const useStyles = makeStyles((theme: Theme) =>
             width: `auto`,
             maxHeight: `26px`,
             objectFit: `contain`,
-            [theme.breakpoints.down(`sm`)]: {
-                marginBottom: 0
-            },
         },
-        header:{
+        header: {
             color: `#fff`,
             padding: `5rem 0 3rem 0`,
             [theme.breakpoints.down(`sm`)]: {
                 padding: theme.spacing(2, 0),
             },
         },
-        headerText:{
+        headerText: {
             fontWeight: theme.typography.fontWeightBold as number,
             [theme.breakpoints.down(`sm`)]: {
                 fontSize: `1.6rem`,
             },
         },
-        headerBg:{
+        headerBg: {
             position: `fixed`,
             height: `620px`,
             width: `100%`,
@@ -125,7 +125,7 @@ const useStyles = makeStyles((theme: Theme) =>
             top: 0,
             left: 0,
             background: `linear-gradient(87deg, rgba(145,102,253,1) 0%, rgba(134,90,243,1) 100%)`,
-            "&:after":{
+            "&:after": {
                 content: `''`,
                 width: `200%`,
                 height: 0,
@@ -141,7 +141,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 height: `490px`,
             },
         },
-        footer:{
+        footer: {
             textAlign: `center`,
             "& img": {
                 objectFit: `contain`,
@@ -154,7 +154,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 },
             },
         },
-        version:{
+        version: {
             position: `absolute`,
             bottom: 10,
             right: 20,
@@ -261,13 +261,8 @@ export default function Join (props: Props): JSX.Element {
                                 alignItems="center"
                                 spacing={enableCamera ? 4 : 0}
                             >
-                                {isSmDown && enableCamera && (
-                                    <Grid 
-                                        item
-                                        style={{
-                                            padding: theme.spacing(2.5, 2.5, 0),
-                                        }}
-                                    >
+                                {(isSmDown || !enableCamera) && (
+                                    <Grid item >
                                         <ClassTypeLogo />
                                     </Grid>
                                 )}
@@ -292,18 +287,17 @@ export default function Join (props: Props): JSX.Element {
                                         </Box>
                                     </Grid>
                                 )}
-                                {classType !== ClassType.LIVE && (
-                                    <Box
-                                        my={1}
-                                    >
-                                        <ClassTypeLogo />
-                                    </Box>
-                                )}
+
                                 <Grid
                                     item
                                     xs={enableCamera ? 6 : 10}
                                     md={enableCamera ?? 5}
                                 >
+                                    {!isSmDown && enableCamera && (
+                                        <Box my={1}>
+                                            <ClassTypeLogo />
+                                        </Box>
+                                    )}
                                     {type === `preview` ? <JoinRoomFormPreview /> :
                                         <JoinRoomForm
                                             enableCamera={enableCamera}
@@ -451,11 +445,6 @@ const JoinRoomForm: VoidFunctionComponent<{
                 direction="column"
                 spacing={2}
             >
-                {!isSmDown && (
-                    <Grid item>
-                        <ClassTypeLogo />
-                    </Grid>
-                )}
                 {!name && (
                     <Grid
                         item
@@ -552,9 +541,6 @@ const JoinRoomForm: VoidFunctionComponent<{
 const JoinRoomFormPreview = () => {
     const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
 
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
-
     function join (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setHasJoinedClassroom(true);
@@ -567,12 +553,6 @@ const JoinRoomFormPreview = () => {
                 direction="column"
                 spacing={2}
             >
-                {!isSmDown && (
-                    <Grid item>
-                        <ClassTypeLogo />
-                    </Grid>
-                )}
-
                 <Grid item>
                     <StyledButton
                         fullWidth
