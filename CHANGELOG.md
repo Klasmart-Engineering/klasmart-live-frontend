@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.20.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.1...v6.20.0) (2022-06-14)
+
+
+### ✨ Features
+
+* implement UI selection types of parent and student (#178) ([b46c68b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b46c68b7d140f09eac2ef664e04edddf8f656cca)), closes [NAT-898](https://calmisland.atlassian.net/browse/NAT-898)
+
+
+### ♻️ Chores
+
+* **KLL-3651:** update pdf endpoint (#194) ([dd4de66](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/dd4de66f59020d62724b967d63acc607da712e65)), closes [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651) [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651) [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651)
+
+
+### 🗑 Reverts
+
+* revert pdf endpoint change (#196) ([658c730](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/658c730e94e63409d4ec1de5d0d751b8813a2bab))
+
+
+### 🐛 Bug Fixes
+
+* fix portrait mode padding (#202) ([da51db0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/da51db05f593a8418b5520e59bc4345ffb037f95))
+* **KLL-3668:** move GlobalMuteOverlay within GlobalMuteProvider to fix preview mode (#195) ([2d19624](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2d1962499a6aa745fe3120de4bfe7168bc87753c)), closes [KLL-3668](https://calmisland.atlassian.net/browse/KLL-3668)
+* **KLL-3671:** remove duplicated logo ClassType on join page (#197) ([94ad3d8](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/94ad3d8ee791627bd509999fb07def560fb65ddb)), closes [KLL-3671](https://calmisland.atlassian.net/browse/KLL-3671) [KLL-3671](https://calmisland.atlassian.net/browse/KLL-3671)
+* update preview image + separate component for classTypeLogo (#199) ([50e4710](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/50e47105f806b1509bfb756e8e513e2b6014cf7b)), closes [KLL-3668](https://calmisland.atlassian.net/browse/KLL-3668)
+* wrong empty string, datetime parent dashboard (#201) ([c141c07](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c141c07054da9ffe656880792863f274327b1873)), closes [NAT-965](https://calmisland.atlassian.net/browse/NAT-965)
+
 ### [6.19.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.0...v6.19.1) (2022-06-13)
 
 
