@@ -1,6 +1,7 @@
 import OnStageUserCamera from "./onStageUserCamera";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     Box,
     makeStyles,
@@ -25,12 +26,13 @@ export default function OnStage (props: Props) {
     const { name, type } = useSessionContext();
 
     const host = useMemo(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher).sort((a, b) => a.joinedAt - b.joinedAt);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher)
+            .sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost);
         return host;
     }, [ sessions ]);
 
-    if(type === `preview`){
+    if(type === ClassType.PREVIEW){
         return(
             <Box textAlign="center">
                 <Typography className={classes.bold}>

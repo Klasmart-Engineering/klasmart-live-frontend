@@ -5,6 +5,7 @@ import TabParticipants from "./tabParticipants/tabParticipants";
 import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import { activeTabState } from "@/store/layoutAtoms";
 import { NoItemList } from "@/utils/noItemList";
 import {
@@ -72,15 +73,15 @@ const useStyles = makeStyles((theme: Theme) => ({
             flexBasis: `300px`,
         },
     },
-    tabInnerSafeArea:{
+    tabInnerSafeArea: {
         paddingRight: `env(safe-area-inset-right)`, // iPhone Notch
     },
-    sliderIconButton:{
+    sliderIconButton: {
         color: theme.palette.text.primary,
         boxShadow: `0 2px 6px 0px rgba(0,0,0,0.3)`,
         transform: `scale(0.8)`,
     },
-    slider:{
+    slider: {
         minHeight: 150,
         margin: `10px 3px`,
     },
@@ -97,7 +98,7 @@ function Sidebar () {
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
-    const sidebarTabs = type === `preview` ? [
+    const sidebarTabs = type === ClassType.PREVIEW ? [
         {
             id: 1,
             name: `participants`,
@@ -212,7 +213,7 @@ function Sidebar () {
                     item
                     xs
                     className={clsx(classes.tabInner, {
-                        [classes.tabInnerSafeArea] : deviceOrientation === `landscape-secondary`,
+                        [classes.tabInnerSafeArea]: deviceOrientation === `landscape-secondary`,
                     })}
                 >
                     {activeTabContent}

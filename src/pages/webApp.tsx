@@ -8,6 +8,7 @@ import {
 import { ClassSelectAttendees } from './selectAttendees';
 import { useAuthenticationContext } from '@/app/context-provider/authentication-context';
 import { useServices } from '@/app/context-provider/services-provider';
+import { updatePageEvent } from '@/firebase/config';
 import useDetectNewDevice from '@/hooks/useDetectNewDevice';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
@@ -19,11 +20,15 @@ import {
 } from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
 import React,
-{ useEffect,
-useMemo } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+{
+    useEffect,
+    useMemo,
+} from 'react';
+import {
+    useHistory,
+    useLocation,
+} from 'react-router-dom';
 import { useRecoilValue } from "recoil";
-import { updatePageEvent } from '@/firebase/config';
 
 const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
 
@@ -86,7 +91,7 @@ export function WebApp () {
 
     return (
         <WebRtcConditionalProvider
-            enabled={type !== `preview`}
+            enabled={type !== ClassType.PREVIEW}
             sessionId={sessionId}
             endpoint={endpoint}
             schedule={schedule}
@@ -97,7 +102,7 @@ export function WebApp () {
             )
                 : process.env.IS_CORDOVA_BUILD ? (<JoinApp />) : (
                     <Join
-                        enableCamera={classType === ClassType.LIVE && type !== `preview`}
+                        enableCamera={classType === ClassType.LIVE && type !== ClassType.PREVIEW}
                     />
                 )
             }

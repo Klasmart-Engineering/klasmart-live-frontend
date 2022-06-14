@@ -19,6 +19,7 @@ import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     activeTabState,
     hasControlsState,
@@ -83,13 +84,13 @@ const useStyles = makeStyles((theme: Theme) => ({
             justifyContent: `center`,
         },
     },
-    rootMosaic:{
+    rootMosaic: {
         backgroundColor: `rgba(49,49,60,0.85)`,
         color: `#fff`,
-        paddingLeft:  theme.spacing(5),
-        paddingRight:  theme.spacing(5),
+        paddingLeft: theme.spacing(5),
+        paddingRight: theme.spacing(5),
     },
-    rootMd:{
+    rootMd: {
         fontSize: `0.9rem`,
     },
     iconGroup: {
@@ -223,15 +224,15 @@ function Toolbar () {
             <Grid
                 container
                 className={clsx(classes.root, {
-                    [classes.rootMosaic] : activeTab === `mosaic`,
-                    [classes.rootMd] : isMdDown,
+                    [classes.rootMosaic]: activeTab === `mosaic`,
+                    [classes.rootMd]: isMdDown,
                 })}
                 wrap={hasControls && isMobileWebToolbar ? `wrap` : `nowrap`}
             >
                 <Grid
                     item
                     className={clsx(classes.iconGroup, {
-                        [classes.canvasIconGroup] : hasControls && isMobileWebToolbar,
+                        [classes.canvasIconGroup]: hasControls && isMobileWebToolbar,
                     })}
                 >
                     <div ref={classDetailsRef}>
@@ -289,10 +290,10 @@ function Toolbar () {
                 <Grid
                     item
                     className={clsx(classes.iconGroup, {
-                        [classes.endClassIconGroup] : hasControls && isMobileWebToolbar,
+                        [classes.endClassIconGroup]: hasControls && isMobileWebToolbar,
                     })}
                 >
-                    {type === `preview` ?
+                    {type === ClassType.PREVIEW ?
                         <ToolbarItem
                             display
                             disabled
@@ -311,7 +312,7 @@ function Toolbar () {
                         onClick={() => endCall()}
                     />
 
-                    {type === `preview` ?
+                    {type === ClassType.PREVIEW ?
                         <ToolbarItem
                             display
                             disabled
@@ -322,7 +323,7 @@ function Toolbar () {
                 <Grid
                     item
                     className={clsx(classes.iconGroup, {
-                        [classes.globalActionsIconGroup] : hasControls && isMobileWebToolbar,
+                        [classes.globalActionsIconGroup]: hasControls && isMobileWebToolbar,
                     })}
                 >
                     <div ref={globalActionsRef}>

@@ -3,6 +3,7 @@ import ViewModeScreenshare from "./viewModeScreenshare";
 import AlertPopper from "@/components/common/AlertPopper";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     interactiveModeState,
     isViewModesOpenState,
@@ -11,7 +12,11 @@ import {
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
-import { Box, useMediaQuery, useTheme } from "@material-ui/core";
+import {
+    Box,
+    useMediaQuery,
+    useTheme,
+} from "@material-ui/core";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
@@ -70,7 +75,7 @@ function ViewModesMenu (props: ViewModesMenuProps) {
                         onClick={onClickOnStage}
                     />
                     <ViewMode
-                        disabled={type === `preview` || observeDisable}
+                        disabled={type === ClassType.PREVIEW || observeDisable}
                         title={intl.formatMessage({
                             id: `viewMode.observe`,
                         })}
@@ -86,7 +91,7 @@ function ViewModesMenu (props: ViewModesMenuProps) {
                         active={interactiveMode === InteractiveMode.PRESENT}
                         onClick={onClickPresent}
                     />
-                    {type === `preview` ? (
+                    {type === ClassType.PREVIEW ? (
                         <ViewMode
                             disabled
                             title={intl.formatMessage({

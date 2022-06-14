@@ -76,7 +76,7 @@ function Main () {
         case(ClassType.LIVE): return (
             <>
                 <MainView />
-                {type !== `preview` && (
+                {type !== ClassType.PREVIEW && (
                     <GlobalMuteProvider />
                 )}
             </>

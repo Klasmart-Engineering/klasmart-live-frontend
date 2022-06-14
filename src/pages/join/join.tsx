@@ -1,12 +1,7 @@
 /* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
+import ClassTypeLogo from "./classTypeLogo";
 import { MicrophonePreview } from "./microphonePreview";
-import KidsLoopClassTeachers from "@/assets/img/classtype/kidsloop_class_teachers.svg";
-import KidsLoopLiveStudents from "@/assets/img/classtype/kidsloop_live_students.svg";
-import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.svg";
-import KidsLoopPreviewTeachers from "@/assets/img/classtype/kidsloop_preview_teachers.svg";
-import KidsLoopReviewStudents from "@/assets/img/classtype/kidsloop_review_students.svg";
-import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
 import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
 import Loading from "@/components/loading";
 import {
@@ -96,14 +91,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 padding: `12px 14px !important`,
             },
         },
-        logo: {
-            display: `block`,
-            margin: `0 auto`,
-            marginBottom: `1rem`,
-            width: `auto`,
-            maxHeight: `26px`,
-            objectFit: `contain`,
-        },
         header: {
             color: `#fff`,
             padding: `5rem 0 3rem 0`,
@@ -186,6 +173,7 @@ export default function Join (props: Props): JSX.Element {
         user_id,
         roomId,
         type,
+        isReview,
     } = useSessionContext();
 
     const brandingEndpoint = useHttpEndpoint(`user`);
@@ -263,7 +251,11 @@ export default function Join (props: Props): JSX.Element {
                             >
                                 {(isSmDown || !enableCamera) && (
                                     <Grid item >
-                                        <ClassTypeLogo />
+                                        <ClassTypeLogo
+                                            isTeacher={isTeacher}
+                                            classType={type === ClassType.PREVIEW ? type : classType}
+                                            isReview={isReview}
+                                        />
                                     </Grid>
                                 )}
                                 {enableCamera && (
@@ -295,10 +287,16 @@ export default function Join (props: Props): JSX.Element {
                                 >
                                     {!isSmDown && enableCamera && (
                                         <Box my={1}>
-                                            <ClassTypeLogo />
+                                            <ClassTypeLogo
+                                                isTeacher={isTeacher}
+                                                classType={type === ClassType.PREVIEW ? type : classType}
+                                                isReview={isReview}
+                                            />
                                         </Box>
                                     )}
-                                    {type === `preview` ? <JoinRoomFormPreview /> :
+                                    {type === ClassType.PREVIEW ? (
+                                        <JoinRoomFormPreview />
+                                    ) : (
                                         <JoinRoomForm
                                             enableCamera={enableCamera}
                                             enableMicrophone={enableMicrophone}
@@ -307,6 +305,7 @@ export default function Join (props: Props): JSX.Element {
                                             microphonePaused={microphonePaused}
                                             setMicrophonePaused={setMicrophonePaused}
                                         />
+                                    )
                                     }
                                 </Grid>
                             </Grid>
@@ -321,40 +320,6 @@ export default function Join (props: Props): JSX.Element {
                 </Container>
             </Grid>
         </div>
-    );
-}
-
-function ClassTypeLogo (): JSX.Element {
-    const { logo } = useStyles();
-    const {
-        classType,
-        isTeacher,
-        isReview,
-        type,
-    } = useSessionContext();
-    const IMG_HEIGHT = `64px`;
-
-    const getImgSrc = () => {
-        if (isReview) return KidsLoopReviewStudents;
-        if (type === `preview`) return KidsLoopPreviewTeachers;
-
-        switch (classType) {
-        case ClassType.LIVE:
-            return isTeacher ? KidsLoopLiveTeachers : KidsLoopLiveStudents;
-        case ClassType.CLASSES:
-            return KidsLoopClassTeachers;
-        default:
-            return KidsLoopStudyStudents;
-        }
-    };
-
-    return (
-        <img
-            alt="KidsLoop Live"
-            src={getImgSrc()}
-            height={IMG_HEIGHT}
-            className={logo}
-        />
     );
 }
 
@@ -390,10 +355,8 @@ const JoinRoomForm: VoidFunctionComponent<{
 }) => {
     const {
         isTeacher,
-        classType,
         name,
         setName,
-        type,
     } = useSessionContext();
     const classes = useStylesJoinRoomForm();
     const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
@@ -403,9 +366,7 @@ const JoinRoomForm: VoidFunctionComponent<{
 
     const camera = useCamera();
     const microphone = useMicrophone();
-
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     function join (e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -530,7 +491,7 @@ const JoinRoomForm: VoidFunctionComponent<{
                         type="submit"
                         size="large"
                     >
-                        <FormattedMessage id={type === `preview` ? `classtype.preview.live` : `join_room`} />
+                        <FormattedMessage id={`join_room`} />
                     </StyledButton>
                 </Grid>
             </Grid>
