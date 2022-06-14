@@ -266,7 +266,7 @@ const DefaultRegions: Region[] = [
             sfu: `https://live.alpha.kidsloop.dev/sfu`,
             user: `https://api.alpha.kidsloop.dev/user/`,
             privacy: `https://kidsloop.net/policies/privacy-notice`,
-            pdf: `https://live.alpha.kidsloop.net/pdf`,
+            pdf: `https://live.alpha.kidsloop.dev/pdf`,
             cookies: `https://kidsloop.net/cookies-policy/`,
             contact: `https://kidsloop.net/contact-us/`,
             terms: `https://kidsloop.net/en/policies/terms/`,
