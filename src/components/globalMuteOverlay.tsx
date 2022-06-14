@@ -4,8 +4,8 @@ import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     Avatar,
     Box,
-    makeStyles,
-} from '@material-ui/core';
+} from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import {
     CameraVideoFill as CameraVideoFillIcon,
     CameraVideoOffFill as CameraDisabledIcon,

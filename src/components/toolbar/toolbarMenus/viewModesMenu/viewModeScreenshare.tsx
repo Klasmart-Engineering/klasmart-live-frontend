@@ -3,10 +3,8 @@ import { InteractiveMode } from "@/pages/utils";
 import { interactiveModeState } from "@/store/layoutAtoms";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import { useScreenshare } from "@kl-engineering/live-state/ui";
-import {
-    makeStyles,
-    Theme,
-} from "@material-ui/core";
+import { Theme } from "@mui/material";
+import { makeStyles } from '@mui/styles';
 import { ScreenShare as ScreenShareIcon } from "@styled-icons/material/ScreenShare";
 import React,
 {
@@ -47,22 +45,24 @@ function ViewModeScreenshare (props: Props) {
 
     const onClickScreenshare = (buttonRef: RefObject<HTMLButtonElement>) => {
         if(!isDisabledShareScreen) {
-            screenshare.setSending.execute(true).then(() => {
-                setInteractiveMode(InteractiveMode.SCREENSHARE);
-            }).catch((e: unknown) => {
-                stopScreenshare();
-                let id = `screenShare.error.default`;
-                if( e instanceof Error) {
-                    switch(e.name) {
-                    case `NotAllowedError`:
-                    case `NotReadableError`:
-                        id = `screenShare.error.${e.name}`;
+            screenshare.setSending.execute(true)
+                .then(() => {
+                    setInteractiveMode(InteractiveMode.SCREENSHARE);
+                })
+                .catch((e: unknown) => {
+                    stopScreenshare();
+                    let id = `screenShare.error.default`;
+                    if( e instanceof Error) {
+                        switch(e.name) {
+                        case `NotAllowedError`:
+                        case `NotReadableError`:
+                            id = `screenShare.error.${e.name}`;
+                        }
                     }
-                }
-                enqueueSnackbar(intl.formatMessage({
-                    id,
-                }));
-            });
+                    enqueueSnackbar(intl.formatMessage({
+                        id,
+                    }));
+                });
         } else {
             setAlert({
                 open: true,
