@@ -250,7 +250,12 @@ export default function Join (props: Props): JSX.Element {
                                 spacing={enableCamera ? 4 : 0}
                             >
                                 {(isSmDown || !enableCamera) && (
-                                    <Grid item >
+                                    <Grid
+                                        item
+                                        style={{
+                                            padding: theme.spacing(2.5, 2.5, 0),
+                                        }}
+                                    >
                                         <ClassTypeLogo
                                             isTeacher={isTeacher}
                                             classType={type === ClassType.PREVIEW ? type : classType}

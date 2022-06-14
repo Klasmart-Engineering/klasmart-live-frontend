@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => createStyles({
         maxHeight: theme.spacing(3.25),
         height: theme.spacing(8),
         objectFit: `contain`,
+        [theme.breakpoints.down(`sm`)]: {
+            marginBottom: 0,
+        },
     },
 }));
 
