@@ -5,7 +5,7 @@ import korean from "./ko.json";
 import thai from "./th.json";
 import vietnamese from "./vi.json";
 import chinese from "./zh_CN.json";
-import { Language } from "@kl-engineering/kidsloop-px/dist/types/components/LanguageSelect";
+import { Language } from "@kl-engineering/kidsloop-px/dist/src/components/LanguageSelect";
 import {
     createIntl,
     createIntlCache,

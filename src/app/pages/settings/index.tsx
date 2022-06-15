@@ -1,16 +1,21 @@
 import AppBar from "@/app/components/layout/AppBar";
 import BackButton from "@/app/components/layout/BackButton";
 import DialogParentalLock from "@/app/components/ParentalLock";
-import { dialogsState, localeState } from "@/app/model/appModel";
-import StyledIcon from "@/components/styled/icon";
+import {
+    dialogsState,
+    localeState,
+} from "@/app/model/appModel";
 import { useOpenLink } from "@/app/utils/openLinkUtils";
-import { 
-    THEME_COLOR_BACKGROUND_LIST, TEXT_COLOR_SIGN_OUT, 
-    TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE, COLOR_ORG_ICON_DEFAULT,
+import StyledIcon from "@/components/styled/icon";
+import {
+    COLOR_ORG_ICON_DEFAULT,
+    TEXT_COLOR_SIGN_OUT,
+    TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE,
+    THEME_COLOR_BACKGROUND_LIST,
     THEME_COLOR_ORG_MENU_DRAWER,
 } from "@/config";
 import { LANGUAGES_LABEL } from "@/localization/localeCodes";
-import { Language } from "@kl-engineering/kidsloop-px/dist/types/components/LanguageSelect";
+import { Language } from "@kl-engineering/kidsloop-px/dist/src/components/LanguageSelect";
 import {
     Avatar,
     List,
@@ -19,18 +24,22 @@ import {
     ListItemText,
     ListSubheader,
 } from "@mui/material";
-import clsx from "clsx";
 import Grid from '@mui/material/Grid';
-import { Theme, useTheme } from '@mui/material/styles';
+import {
+    Theme,
+    useTheme,
+} from '@mui/material/styles';
 import {
     createStyles,
     makeStyles,
 } from '@mui/styles';
-import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
+import { QuestionCircle as ContactIcon } from "@styled-icons/bootstrap/QuestionCircle";
 import { Translate as LanguageIcon } from "@styled-icons/material/Translate";
 import { PrivacyTip as PrivacyIcon } from "@styled-icons/material-outlined/PrivacyTip";
-import { QuestionCircle as ContactIcon } from "@styled-icons/bootstrap/QuestionCircle";
-import React, { useEffect } from "react";
+import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
+import clsx from "clsx";
+import React,
+{ useEffect } from "react";
 import {
     FormattedMessage,
     useIntl,
@@ -83,7 +92,7 @@ export default function SettingsPage () {
     const history = useHistory();
 
     const [ locale ] = useRecoilState(localeState);
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState)
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const langText = LANGUAGES_LABEL.find((language: Language) => language.code === locale.languageCode);
     const { openContact } = useOpenLink();
 
@@ -93,19 +102,19 @@ export default function SettingsPage () {
             subHeader: `hamburger.settings.general`,
             primary: `settings.general.language`,
             secondary: langText?.text,
-            icon:  <LanguageIcon />
+            icon: <LanguageIcon />,
         },
         {
             id: SettingItem.SUPPORT,
             subHeader: `hamburger.settings.support`,
             primary: `hamburger.settings.support.contact`,
-            icon:  <ContactIcon />
+            icon: <ContactIcon />,
         },
         {
             id: SettingItem.ABOUT,
             subHeader: `hamburger.settings.about`,
             primary: `hamburger.settings.about.privacy`,
-            icon:  <PrivacyIcon />
+            icon: <PrivacyIcon />,
         },
     ];
 
@@ -115,19 +124,19 @@ export default function SettingsPage () {
 
     const handleSettingItemsClick = (id: SettingItem) => {
         switch (id){
-            case SettingItem.LANGUAGE: 
-                history.push(`/settings/select-language`);
-                break;
-            case SettingItem.SUPPORT:
-                setParentalLock(true);
-                break;
-            case SettingItem.ABOUT:
-                history.push(`/settings/privacy`);
-                break;
-            default:
-                break;
+        case SettingItem.LANGUAGE:
+            history.push(`/settings/select-language`);
+            break;
+        case SettingItem.SUPPORT:
+            setParentalLock(true);
+            break;
+        case SettingItem.ABOUT:
+            history.push(`/settings/privacy`);
+            break;
+        default:
+            break;
         }
-    }
+    };
 
     const setParentalLock = (open: boolean) => {
         setDialogs({
@@ -171,48 +180,48 @@ export default function SettingsPage () {
                 >
                     {settingArray.map((item) => (
                         <List
-                        key={item.id}
-                        subheader={
-                            <ListSubheader
-                                disableGutters
-                                component="div"
-                                className={classes.listSubHeader}
-                            >
-                                <FormattedMessage id={item.subHeader} />
-                            </ListSubheader>
-                        }
-                    >
-                        <ListItem
-                            button
-                            className={clsx(classes.listItem, { 
-                                [classes.customPadding]: !item.secondary,
-                            })}
-                            onClick={() => handleSettingItemsClick(item.id)}
+                            key={item.id}
+                            subheader={
+                                <ListSubheader
+                                    disableGutters
+                                    component="div"
+                                    className={classes.listSubHeader}
+                                >
+                                    <FormattedMessage id={item.subHeader} />
+                                </ListSubheader>
+                            }
                         >
-                            <ListItemAvatar>
-                                <Avatar className={classes.avatar}>
-                                    <StyledIcon
-                                        icon={item.icon}
-                                        size="medium"
-                                        color={theme.palette.common.white}
-                                    />
-                                </Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                classes={{
-                                    primary: classes.listItemTextPrimary,
-                                }}
-                                primary={intl.formatMessage({
-                                    id: item.primary,
+                            <ListItem
+                                button
+                                className={clsx(classes.listItem, {
+                                    [classes.customPadding]: !item.secondary,
                                 })}
-                                secondary={item.secondary}
-                            />
-                            <ArrowRight
-                                color={COLOR_ORG_ICON_DEFAULT}
-                                size={24}
-                            />
-                        </ListItem>
-                    </List>
+                                onClick={() => handleSettingItemsClick(item.id)}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar className={classes.avatar}>
+                                        <StyledIcon
+                                            icon={item.icon}
+                                            size="medium"
+                                            color={theme.palette.common.white}
+                                        />
+                                    </Avatar>
+                                </ListItemAvatar>
+                                <ListItemText
+                                    classes={{
+                                        primary: classes.listItemTextPrimary,
+                                    }}
+                                    primary={intl.formatMessage({
+                                        id: item.primary,
+                                    })}
+                                    secondary={item.secondary}
+                                />
+                                <ArrowRight
+                                    color={COLOR_ORG_ICON_DEFAULT}
+                                    size={24}
+                                />
+                            </ListItem>
+                        </List>
                     ))}
                 </Grid>
             </Grid>
