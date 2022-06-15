@@ -366,5 +366,11 @@
     "userSelection.title": "Choose your role",
     "userSelection.student": "Student",
     "userSelection.parent": "Parent",
-    "profileSelection.switch": "Switch Profile"
+    "profileSelection.switch": "Switch Profile",
+    "schedule.liveClass.detail": "Online Study",
+    "schedule.study.detail": "Study Anywhere",
+    "schedule.hfs.detail": "Homework",
+    "schedule.seeDetails": "See details",
+    "schedule.status.start": "Start",
+    "schedule.tab.anytime": "Anytime"
 }

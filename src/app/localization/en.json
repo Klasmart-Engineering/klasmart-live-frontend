@@ -169,11 +169,11 @@
     "schedule_liveSubheaderToday": "Today",
     "schedule_liveSubheaderTomorrow": "Tomorrow",
     "schedule_liveSubheaderUpcoming": "Upcoming",
-    "schedule_liveNoSchedule": "No scheduled Live Classes!",
+    "schedule_liveNoSchedule": "No Live classes scheduled",
     "schedule_studyAnytimeStudy": "Anytime Study",
     "schedule_studyHomeFunStudy": "Home Fun Study",
     "schedule_studySubmittedFeedback": "Submitted",
-    "schedule_studyNoSchedule": "No homework for you yet!",
+    "schedule_studyNoSchedule": "No Study content scheduled",
     "schedule_selectOrgLoaded": "Please select an organization",
     "schedule_studyAssessmentComplete1": "Assessment",
     "schedule_studyAssessmentComplete2": "Complete",
@@ -366,5 +366,11 @@
     "userSelection.title": "Choose your role",
     "userSelection.student": "Student",
     "userSelection.parent": "Parent",
-    "profileSelection.switch": "Switch Profile"
+    "profileSelection.switch": "Switch Profile",
+    "schedule.liveClass.detail": "Online Study",
+    "schedule.study.detail": "Study Anywhere",
+    "schedule.hfs.detail": "Homework",
+    "schedule.seeDetails": "See details",
+    "schedule.status.start": "Start",
+    "schedule.tab.anytime": "Anytime"
 }

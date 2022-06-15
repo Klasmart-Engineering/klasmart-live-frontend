@@ -366,5 +366,11 @@
     "userSelection.title": "Pilih peran Anda",
     "userSelection.student": "Siswa",
     "userSelection.parent": "Orang Tua",
-    "profileSelection.switch": "Ganti Profil"
+    "profileSelection.switch": "Ganti Profil",
+    "schedule.liveClass.detail": "Belajar Online",
+    "schedule.study.detail": "Belajar di Mana Saja",
+    "schedule.hfs.detail": "Pekerjaan Rumah",
+    "schedule.seeDetails": "Lihat detail",
+    "schedule.status.start": "Mulai",
+    "schedule.tab.anytime": "Kapanpun"
 }
