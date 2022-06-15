@@ -1,3 +1,4 @@
+import { SCHEDULE_CARD_BACKGROUND_CONTAINER } from "@/config";
 import {
     Box,
     CircularProgress,
@@ -19,8 +20,13 @@ export default function ScheduleLoading (props: Props) {
             display="flex"
             justifyContent="center"
             p={4}
+            style={{
+                backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
+                width: `100%`,
+                height: `100%`,
+            }}
         >
-            <CircularProgress size={32}/>
+            <CircularProgress size={32} />
         </Box>
     );
 }

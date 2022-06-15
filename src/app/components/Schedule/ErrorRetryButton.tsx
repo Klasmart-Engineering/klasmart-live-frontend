@@ -1,5 +1,13 @@
-import LoadingError from "@/assets/img/error/5.svg";
-import { BG_COLOR_SIGN_IN_BUTTON } from "@/config";
+import LoadingFailedMobile from "@/assets/img/schedule-icon/loading-failed-mobile.svg";
+import LoadingFailedTablet from "@/assets/img/schedule-icon/loading-failed-tablet.svg";
+import RetryIconMobile from "@/assets/img/schedule-icon/try-again-mobile.svg";
+import RetryIconTablet from "@/assets/img/schedule-icon/try-again-tablet.svg";
+import {
+    SCHEDULE_CARD_BACKGROUND_CONTAINER,
+    SCHEDULE_CARD_SEE_DETAILS,
+    SCHEDULE_NO_LIVE_CLASSES,
+    TEXT_COLOR_CONSTRAST_DEFAULT,
+} from "@/config";
 import {
     Box,
     Button,
@@ -14,27 +22,35 @@ import React from "react";
 import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    img: {
-        width: `35%`,
-        height: `auto`,
-        maxWidth: 220,
+    root: {
+        display: `flex`,
+        justifyContent: `center`,
+        alignItems: `center`,
+        flexDirection: `column`,
+        height: `100%`,
+        backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
     },
+    img: {},
     body: {
-        margin: theme.spacing(2, 0, 3),
         fontWeight: theme.typography.fontWeightBold as number,
+        color: SCHEDULE_NO_LIVE_CLASSES,
+        padding: theme.spacing(0.5, 0, 2.2),
+        fontSize: `1.15rem`,
+        [theme.breakpoints.up(`sm`)]: {
+            fontSize: `1.7rem`,
+            padding: theme.spacing(1, 0, 3.5),
+        },
     },
     retryButton: {
-        fontSize: `1rem`,
-        lineHeight: 1.55,
-        color: theme.palette.common.white,
-        backgroundColor: BG_COLOR_SIGN_IN_BUTTON,
+        fontSize: `0.9rem`,
+        color: TEXT_COLOR_CONSTRAST_DEFAULT,
+        backgroundColor: SCHEDULE_CARD_SEE_DETAILS,
         fontWeight: theme.typography.fontWeightBold as number,
-        padding: theme.spacing(1, 5.5),
-        borderRadius: theme.spacing(1.5),
-
+        padding: theme.spacing(0.7, 4),
+        borderRadius: theme.spacing(1),
         [theme.breakpoints.up(`sm`)]: {
-            fontSize: `1.4rem`,
-            padding: theme.spacing(1, 7),
+            fontSize: `1.3rem`,
+            padding: theme.spacing(1, 6),
         },
     },
 }));
@@ -47,27 +63,22 @@ export default function ScheduleErrorRetryButton (props: Props) {
     const { onClick } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
+    const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
     return (
         <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            p={4}
+            className={classes.root}
         >
             <img
                 alt=""
-                src={LoadingError}
+                src={isMdUp ? LoadingFailedTablet : LoadingFailedMobile}
                 className={classes.img}
             />
             <Typography
-                variant={isSmUp ? `h4`: `h5`}
-                align="center"
                 className={classes.body}
             >
                 <FormattedMessage
                     values={{
-                        br: <br />,
+                        br: ` `,
                     }}
                     id="schedule_errorFetchTimeViews"
                     defaultMessage="Oops!{br}Page loading failed."
@@ -75,14 +86,18 @@ export default function ScheduleErrorRetryButton (props: Props) {
             </Typography>
             <Button
                 disableElevation
-                size="large"
-                variant="contained"
                 className={classes.retryButton}
+                endIcon={
+                    <img
+                        alt="retry"
+                        src={isMdUp ? RetryIconTablet : RetryIconMobile}
+                    />
+                }
                 onClick={onClick}
             >
                 <FormattedMessage
-                    id="loading.error.retry"
-                    defaultMessage="Retry"
+                    id="loading_try_again"
+                    defaultMessage="Try again"
                 />
             </Button>
         </Box>

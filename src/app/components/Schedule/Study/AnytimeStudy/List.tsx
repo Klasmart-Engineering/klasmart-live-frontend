@@ -1,9 +1,13 @@
+import ScheduleItemTile from "../../ScheduleItemTile";
+import { getStudyTypes } from "../List";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
-import NoSchedule,
-{ NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
-import { getIdStudyType, ScheduleListSection } from "@/app/components/Schedule/shared";
+import NoSchedule from "@/app/components/Schedule/NoSchedule";
+import {
+    getIdStudyType,
+    ScheduleListSection,
+} from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
@@ -49,8 +53,6 @@ import { useBottomScrollListener } from "react-bottom-scroll-listener";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import ScheduleItemTile from "../../ScheduleItemTile";
-import { getStudyTypes } from "../List";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -70,10 +72,10 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 interface Props {
-    classType: ClassType
+    classType: ClassType;
 }
 
-export default function AnytimeStudyScheduleList(props: Props) {
+export default function AnytimeStudyScheduleList (props: Props) {
 
     const { classType } = props;
     const classes = useStyles();
@@ -83,7 +85,12 @@ export default function AnytimeStudyScheduleList(props: Props) {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
-    const { setToken, setTeachers, setDueDate, setTitle } = useSessionContext();
+    const {
+        setToken,
+        setTeachers,
+        setDueDate,
+        setTitle,
+    } = useSessionContext();
     const { actions } = useCmsApiClient();
     const { push } = useHistory();
     const organization = useSelectedOrganizationValue();
@@ -109,7 +116,7 @@ export default function AnytimeStudyScheduleList(props: Props) {
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
-        class_types: [`Homework`],
+        class_types: [ `Homework` ],
         study_types: getStudyTypes(classType),
         anytime: true,
     }, {
@@ -150,7 +157,11 @@ export default function AnytimeStudyScheduleList(props: Props) {
                 schedule_id: studySchedule.id,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
-            const { title, teachers, due_at } = await actions.getScheduleById({
+            const {
+                title,
+                teachers,
+                due_at,
+            } = await actions.getScheduleById({
                 org_id: organizationId,
                 schedule_id: studySchedule.id,
             });
@@ -184,7 +195,8 @@ export default function AnytimeStudyScheduleList(props: Props) {
         if (scheduleError) setItems([]);
         if (!schedulesData) return;
         const newItems = schedulesData?.data ?? [];
-        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.created_at - b.created_at));
+        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id)
+            .sort((a, b) => a.created_at - b.created_at));
     }, [ scheduleError, schedulesData ]);
 
     const onFocusChange = useCallback(() => {
@@ -211,7 +223,7 @@ export default function AnytimeStudyScheduleList(props: Props) {
 
     if (!items.length) {
         if (isSchedulesFetching) return <ScheduleLoading />;
-        return <NoSchedule variant={NoScheduleVariant.STUDY} />;
+        return <NoSchedule variant={ClassType.STUDY} />;
     }
 
     return (

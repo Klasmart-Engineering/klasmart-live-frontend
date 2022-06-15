@@ -1,4 +1,8 @@
 import GroupUserAvatar from "./GroupUserAvatar";
+import { SECONDS_BEFORE_CLASS_CAN_START } from "./Live/Dialog/Details";
+import ScheduleJoinButton from "./ScheduleJoinButton";
+import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import { formatStartEndTimeMillis } from "@/app/utils/dateTimeUtils";
 import JoinRoomTabletImg from "@/assets/img/join_room_study_tablet.png";
 import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg";
 import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
@@ -21,6 +25,9 @@ import {
     THEME_COLOR_STUDY_SCHEDULE_CARD,
     THEME_COLOR_STUDY_SCHEDULE_ICON_BACKGROUND,
 } from "@/config";
+import { ClassType } from "@/store/actions";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
+import { useGetScheduleById } from "@kl-engineering/cms-api-client";
 import {
     Box,
     Chip,
@@ -31,18 +38,15 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { MoreHoriz } from "styled-icons/material";
-import { SECONDS_BEFORE_CLASS_CAN_START } from "./Live/Dialog/Details";
-import { fromSecondsToMilliseconds } from "@/utils/utils";
-import { useIntl } from "react-intl";
-import { formatStartEndTimeMillis } from "@/app/utils/dateTimeUtils";
-import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { useGetScheduleById } from "@kl-engineering/cms-api-client";
-import ScheduleJoinButton from "./ScheduleJoinButton";
-import { ClassType } from "@/store/actions";
 import { ChevronRight } from "@styled-icons/entypo/ChevronRight";
 import clsx from "clsx";
+import React,
+{
+    useEffect,
+    useState,
+} from "react";
+import { useIntl } from "react-intl";
+import { MoreHoriz } from "styled-icons/material";
 
 const useStyles = makeStyles((theme) => createStyles({
     container: {
@@ -143,7 +147,7 @@ const useStyles = makeStyles((theme) => createStyles({
         paddingTop: theme.spacing(2),
         [theme.breakpoints.up(`sm`)]: {
             paddingTop: theme.spacing(6),
-        }
+        },
     },
 }));
 
@@ -160,7 +164,7 @@ export interface Props {
     onClick?: () => void;
 }
 
-export default function ScheduleItemTile(props: Props) {
+export default function ScheduleItemTile (props: Props) {
     const {
         scheduleId,
         classType,
@@ -194,7 +198,8 @@ export default function ScheduleItemTile(props: Props) {
 
     useEffect(() => {
         if (!start_at) return;
-        const nowInSeconds = new Date().getTime() / 1000;
+        const nowInSeconds = new Date()
+            .getTime() / 1000;
         const timeBeforeClassSeconds = start_at - nowInSeconds;
         const timeRemainingBeforeCanEnterClass = timeBeforeClassSeconds - SECONDS_BEFORE_CLASS_CAN_START;
 
@@ -211,11 +216,11 @@ export default function ScheduleItemTile(props: Props) {
     }, []);
 
     useEffect(() => {
-      if (!scheduleData) return;
-      const teacherNames: string[] = [];
-      scheduleData.teachers.forEach((item) => teacherNames.push(item.name));
-      setNames(teacherNames);
-    }, [scheduleData]);
+        if (!scheduleData) return;
+        const teacherNames: string[] = [];
+        scheduleData.teachers.forEach((item) => teacherNames.push(item.name));
+        setNames(teacherNames);
+    }, [ scheduleData ]);
 
     const getClassTypeProperty = () => {
         switch (classType) {
@@ -281,10 +286,10 @@ export default function ScheduleItemTile(props: Props) {
 
     useEffect(() => {
         setActive(timeBeforeClassSeconds > SECONDS_BEFORE_CLASS_CAN_START && classType === ClassType.LIVE && !isReport);
-    }, [timeBeforeClassSeconds]);
+    }, [ timeBeforeClassSeconds ]);
 
     return (
-        <Box 
+        <Box
             className={classes.container}
             style={{
                 backgroundColor: isDisable || isReport ? THEME_COLOR_BACKGROUND_PAPER : getClassTypeProperty().backgroundCard,
@@ -301,14 +306,17 @@ export default function ScheduleItemTile(props: Props) {
                         />
                     </Grid>
                 )}
-                <Grid item xs>
-                    <Grid 
-                        className={classes.fullHeight}
+                <Grid
+                    item
+                    xs
+                >
+                    <Grid
                         container
+                        className={classes.fullHeight}
                         justifyContent="space-between"
                     >
-                        <Grid 
-                            container 
+                        <Grid
+                            container
                         >
                             {!isSmUp && (
                                 <Grid item>
@@ -319,8 +327,8 @@ export default function ScheduleItemTile(props: Props) {
                                     />
                                 </Grid>
                             )}
-                            <Grid 
-                                item 
+                            <Grid
+                                item
                                 xs
                                 className={classes.contentContainer}
                             >
@@ -330,8 +338,8 @@ export default function ScheduleItemTile(props: Props) {
                                     alignItems="flex-start"
                                     wrap="nowrap"
                                 >
-                                    <Grid 
-                                        container 
+                                    <Grid
+                                        container
                                         alignItems="center"
                                     >
                                         <Grid
@@ -347,7 +355,8 @@ export default function ScheduleItemTile(props: Props) {
                                                 icon={<img
                                                     alt={getClassTypeProperty().icon}
                                                     src={getClassTypeProperty().icon}
-                                                    className={classes.imageChip} />
+                                                    className={classes.imageChip}
+                                                />
                                                 }
                                             />
                                         </Grid>
@@ -383,11 +392,14 @@ export default function ScheduleItemTile(props: Props) {
                                             style={{
                                                 color: isDisable ? THEME_COLOR_LIVE_SCHEDULE_CARD : THEME_COLOR_BACKGROUND_PAPER,
                                             }}
-                                        />}
+                                                                           />}
                                     </Grid>
                                 </Grid>
                                 <Grid container>
-                                    <Grid item xs>
+                                    <Grid
+                                        item
+                                        xs
+                                    >
                                         <Typography
                                             variant={`h4`}
                                             className={clsx(classes.title, {
@@ -397,24 +409,28 @@ export default function ScheduleItemTile(props: Props) {
                                             })}
                                         >
                                             {title}
-                                        </Typography> 
+                                        </Typography>
                                     </Grid>
-                                    {isReport && <Grid 
-                                            item className={classes.chevronRight}
-                                        >
-                                        <ChevronRight color={COLOR_ORG_ICON_DEFAULT} height={isSmUp ? 30 : 20} />
+                                    {isReport && <Grid
+                                        item
+                                        className={classes.chevronRight}
+                                    >
+                                        <ChevronRight
+                                            color={COLOR_ORG_ICON_DEFAULT}
+                                            height={isSmUp ? 30 : 20}
+                                        />
                                     </Grid>}
                                 </Grid>
                             </Grid>
                         </Grid>
-                        {!isReport && <Grid 
+                        {!isReport && <Grid
                             container
                             alignItems="center"
                             className={classes.thumbnailContainer}
                         >
-                            <Grid 
-                                item 
-                                xs 
+                            <Grid
+                                item
+                                xs
                             >
                                 {
                                     scheduleData?.teachers && <GroupUserAvatar
