@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         flexDirection: `column`,
     },
     innerMobile: {
-        height: `calc(100vh - ${CLASS_SIDEBAR_WIDTH + theme.spacing(4)}px)`,
+        height: `70vh`,
     },
     drawerContent: {
         overflowY: `auto`,
