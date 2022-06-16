@@ -345,6 +345,24 @@ const DefaultRegions: Region[] = [
         },
         features: [ FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT ],
     },
+    {
+        id: `auth.prelaunch.kidsloop.live`,
+        name: `Prelaunch`,
+        development: true,
+        services: {
+            auth: `https://auth.prelaunch.kidsloop.live`,
+            live: `https://live.prelaunch.kidsloop.live`,
+            cms: `https://cms.prelaunch.kidsloop.live`,
+            sfu: `https://live.prelaunch.kidsloop.live/sfu`,
+            user: `https://api.prelaunch.kidsloop.live/user/`,
+            privacy: `https://kidsloop.net/policies/privacy-notice`,
+            pdf: `https://live.prelaunch.kidsloop.live/pdf`,
+            cookies: `https://kidsloop.net/cookies-policy/`,
+            contact: `https://kidsloop.net/contact-us/`,
+            terms: `https://kidsloop.net/en/policies/terms/`,
+        },
+        features: [FeatureFlag.ONLY_OBSERVE_IN_VIEWPORT],
+    },
 ];
 
 function createRegionFromEnvironment (): Region {
