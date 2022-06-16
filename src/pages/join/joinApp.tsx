@@ -211,12 +211,12 @@ export default function Join(): JSX.Element {
         startTime,
         roomId,
         user_id,
+        renewSessionId,
     } = useSessionContext();
     const isLiveClass = classType === ClassType.LIVE;
     const {
         requestPermissions: requestNativePermissions,
         isIOS,
-        restart,
     } = useCordovaSystemContext();
 
 
@@ -230,6 +230,10 @@ export default function Join(): JSX.Element {
             updateTardyDuration();
         }, TIME_UPDATE_TARDY_DURATION);
     }, []);
+
+    useEffect(() => {
+        renewSessionId();
+    }), [];
 
     useEffect(() => {
         if (!isIOS) {
@@ -255,11 +259,7 @@ export default function Join(): JSX.Element {
     };
 
     const onCloseButtonClick = () => {
-        if (restart) {
-            restart();
-        } else {
-            history.push(`/schedule`);
-        }
+        history.goBack();
     };
 
 
