@@ -77,12 +77,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.text.primary,
         position: `relative`,
         zIndex: 9,
+        wrap: `nowrap`,
         [theme.breakpoints.down(`xs`)]: {
             flex: `0 1 auto`,
         },
-        [theme.breakpoints.down(MAX_MOBILE_TOOLBAR_WIDTH)]: {
-            justifyContent: `center`,
-        },
+    },
+    rootTeacherMobile: {
+        wrap: `wrap`,
+        justifyContent: `center`,
     },
     rootMosaic: {
         backgroundColor: `rgba(49,49,60,0.85)`,
@@ -226,8 +228,8 @@ function Toolbar () {
                 className={clsx(classes.root, {
                     [classes.rootMosaic]: activeTab === `mosaic`,
                     [classes.rootMd]: isMdDown,
+                    [classes.rootTeacherMobile]: hasControls && isMobileWebToolbar,
                 })}
-                wrap={hasControls && isMobileWebToolbar ? `wrap` : `nowrap`}
             >
                 <Grid
                     item
