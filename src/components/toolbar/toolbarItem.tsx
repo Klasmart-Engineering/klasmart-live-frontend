@@ -1,9 +1,11 @@
-import { activeTabState } from "@/store/layoutAtoms";
+import {
+    activeTabState,
+    ActiveTabStateType,
+} from "@/store/layoutAtoms";
 import {
     Badge,
     ButtonBase,
     makeStyles,
-    Theme,
     Tooltip,
     Typography,
     useMediaQuery,
@@ -14,7 +16,7 @@ import clsx from "clsx";
 import React from "react";
 import { useRecoilValue } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     itemRoot: {
         position: `relative`,
     },
@@ -80,7 +82,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: 0,
         zIndex: 1200,
         fontSize: `0.8em`,
-        "& svg":{
+        "& svg": {
             height: 15,
             width: 15,
         },
@@ -90,19 +92,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
-interface ToolbarItemProps {
+interface Props {
 	display?: boolean;
 	ref?: React.MutableRefObject<HTMLDivElement>;
 	icon?: any;
 	label?: string;
-	onClick?: (event:React.MouseEvent<HTMLElement>) => void;
+	onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 	disabled?: boolean;
 	active?: boolean;
-	badge?: any;
+	badge?: string | number | JSX.Element | boolean;
 	tooltip?: string;
 }
 
-function ToolbarItem (props: ToolbarItemProps) {
+function ToolbarItem (props: Props) {
     const {
         display = false,
         icon,
@@ -126,7 +128,7 @@ function ToolbarItem (props: ToolbarItemProps) {
     return (
         <>
             <div className={classes.itemRoot}>
-                {badge && (
+                {Boolean(badge) && (
                     <Badge
                         classes={{
                             badge: classes.badge,
@@ -139,16 +141,18 @@ function ToolbarItem (props: ToolbarItemProps) {
                     <ButtonBase
                         disableRipple
                         className={clsx(classes.root, {
-                            [classes.rootMosaic] : activeTab === `mosaic`,
-                            [classes.active] : active,
-                            [classes.disabled] : disabled,
+                            [classes.rootMosaic]: activeTab === ActiveTabStateType.MOSAIC,
+                            [classes.active]: active,
+                            [classes.disabled]: disabled,
                         })}
-                        onClick={onClick}>
+                        onClick={onClick}
+                    >
                         {icon}
                         {label && (
                             <Typography className={clsx(classes.label, {
-                                [classes.labelMd] : isMdDown,
-                            })}>
+                                [classes.labelMd]: isMdDown,
+                            })}
+                            >
                                 {label}
                             </Typography>
                         )}

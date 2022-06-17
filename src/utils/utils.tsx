@@ -4,7 +4,10 @@ import {
     ContentType,
     InteractiveMode,
 } from "@/pages/utils";
-import { activeTabState } from "@/store/layoutAtoms";
+import {
+    activeTabState,
+    ActiveTabStateType,
+} from "@/store/layoutAtoms";
 import { UserNode } from "@/types/attendee";
 import {
     LessonMaterial,
@@ -61,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: theme.spacing(2),
         height: `100%`,
     },
-    popperRoot:{
+    popperRoot: {
         zIndex: CLASS_POPPER_ZINDEX,
     },
     popperPapper: {
@@ -122,7 +125,7 @@ function StyledDrawer (props: StyledDrawerProps) {
             <div
                 className={classes.styledDrawerInner}
                 style={{
-                    marginBottom: activeTab === `mosaic` ? 20 : ``,
+                    marginBottom: activeTab === ActiveTabStateType.MOSAIC ? 20 : ``,
                 }}
             >{children}
             </div>
@@ -352,7 +355,8 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
             credentials: `include`,
         });
 
-        if (response.status === 200) return response.clone().json();
+        if (response.status === 200) return response.clone()
+            .json();
     }
 
     try { data = await Promise.all([ classAPI() ]); }
@@ -483,7 +487,8 @@ export async function getAttendeeFullName (userId: string, endpoint: string) {
 
 export function removeKLLH5PStateStorage (){
     const search = `kll-h5p-state`;
-    const keys = Object.keys(localStorage).filter((key) => key.startsWith(search) );
+    const keys = Object.keys(localStorage)
+        .filter((key) => key.startsWith(search) );
     keys.forEach((key) => {
         localStorage.removeItem(key);
     });

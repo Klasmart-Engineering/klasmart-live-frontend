@@ -6,7 +6,10 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { activeTabState } from "@/store/layoutAtoms";
+import {
+    activeTabState,
+    ActiveTabStateType,
+} from "@/store/layoutAtoms";
 import { NoItemList } from "@/utils/noItemList";
 import {
     Box,
@@ -101,7 +104,7 @@ function Sidebar () {
     const sidebarTabs = type === ClassType.PREVIEW ? [
         {
             id: 1,
-            name: `participants`,
+            name: ActiveTabStateType.PARTICIPANTS,
             label: intl.formatMessage({
                 id: `title_participants`,
             }),
@@ -118,7 +121,7 @@ function Sidebar () {
     ] : [
         {
             id: 1,
-            name: `participants`,
+            name: ActiveTabStateType.PARTICIPANTS,
             label: intl.formatMessage({
                 id: `title_participants`,
             }),
@@ -127,7 +130,7 @@ function Sidebar () {
         },
         {
             id: 2,
-            name: `mosaic`,
+            name: ActiveTabStateType.MOSAIC,
             label: intl.formatMessage({
                 id: `title_mosaic`,
             }),
@@ -148,7 +151,7 @@ function Sidebar () {
     return (
         <Drawer
             open
-            variant={activeTab === `participants` ? `persistent` : `temporary`}
+            variant={activeTab === ActiveTabStateType.PARTICIPANTS ? `persistent` : `temporary`}
             anchor="right"
             style={{
                 zIndex: CLASS_DRAWER_ZINDEX,
@@ -158,7 +161,7 @@ function Sidebar () {
                     [classes.drawerStudent]: !isTeacher,
                 }),
                 paper: clsx(classes.drawerPaper, {
-                    [classes.drawerPaperFull]: activeTab !== `participants`,
+                    [classes.drawerPaperFull]: activeTab !== ActiveTabStateType.PARTICIPANTS,
                     [classes.drawerPaperStudent]: !isTeacher,
                 }),
             }}
@@ -199,7 +202,7 @@ function Sidebar () {
                                     })}
                                 </Box>
                             </Grid>
-                            {activeTab === `mosaic` && (
+                            {activeTab === ActiveTabStateType.MOSAIC && (
                                 <Grid item>
                                     <Box py={3}>
                                         <MosaicSlider />

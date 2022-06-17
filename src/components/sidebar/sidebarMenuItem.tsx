@@ -1,5 +1,6 @@
 import {
     activeTabState,
+    ActiveTabStateType,
     isClassDetailsOpenState,
 } from "@/store/layoutAtoms";
 import {
@@ -10,7 +11,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import React from "react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.grey[500],
         position: `relative`,
         minWidth: 50,
-        "& svg":{
+        "& svg": {
             height: 22,
             width: 22,
         },
@@ -68,20 +69,20 @@ const useStyles = makeStyles((theme: Theme) => ({
             borderRadius: `0 0 20px 0`,
             boxShadow: `30px 0 0 0 ${theme.palette.background.default}`,
         },
-        "&:first-child":{
+        "&:first-child": {
             borderRadius: `0 0 0 12px`,
         },
     },
 }));
 
-interface SidebarItemMenuProps {
+interface Props {
 	icon: any;
-	name: string;
+	name: ActiveTabStateType;
     label: string;
 	active?: boolean;
 }
 
-function SidebarMenuItem (props: SidebarItemMenuProps) {
+function SidebarMenuItem (props: Props) {
     const classes = useStyles();
     const {
         name,
@@ -89,21 +90,22 @@ function SidebarMenuItem (props: SidebarItemMenuProps) {
         icon,
         active,
     } = props;
-    const [ activeTab, setActiveTab ] = useRecoilState(activeTabState);
-    const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
+    const setActiveTab = useSetRecoilState(activeTabState);
+    const setIsClassDetailsOpen = useSetRecoilState(isClassDetailsOpenState);
 
-    const handleChangeTab = (e: string) => {
-        setActiveTab(e);
+    const handleChangeTab = (name: ActiveTabStateType) => {
+        setActiveTab(name);
         setIsClassDetailsOpen(false);
     };
 
     return (
         <Tooltip
             title={label}
-            placement="left">
+            placement="left"
+        >
             <Button
                 className={clsx(classes.root, active && classes.active)}
-                onClick={(e) => handleChangeTab(name)}
+                onClick={() => handleChangeTab(name)}
             >
                 {icon}
             </Button>
