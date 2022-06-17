@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.21.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.20.0...v6.21.0) (2022-06-17)
+
+
+### ✨ Features
+
+* **localization:** add new translations (#205) ([ec63b44](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ec63b445e96af801dc10621425cb7eefa9272ceb))
+
+
+### ♻️ Chores
+
+* **KLL-3663:** add new domain for testing app (#200) ([93c537a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/93c537acb7adb43217dd0d7a5561969ffadb0a9b)), closes [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663) [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663) [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663)
+
+
+### 🐛 Bug Fixes
+
+* disable toolbar actions in preview mode + some refactor (#207) ([5ce7972](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5ce79723df6873812a276e4681852b1dc188ae98)), closes [KLL-3570](https://calmisland.atlassian.net/browse/KLL-3570)
+* improve portrait toolbar spacing for student (#203) ([a7d5bc2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/a7d5bc2c916622d7ec454f02d7a0cbb456a49126))
+* reduce height of popper to fit in mobile (#206) ([40a224f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/40a224fd70e84054992d1aa701c0bde96e9a5069)), closes [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564)
+
 ## [6.20.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.1...v6.20.0) (2022-06-14)
 
 
