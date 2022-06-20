@@ -203,7 +203,7 @@
     "settings.general.language": "언어",
     "settings.language.title": "언어를 선택하세요.",
     "scheduleDetails.description": "설명",
-    "scheduleDetails.startTime": "시작 시간",
+    "scheduleDetails.moreTeacher": "시작 시간",
     "scheduleDetails.endTime": "종료 시간",
     "scheduleDetails.notApplicable": "해당 없음",
     "scheduleDetails.dueDate": "마감일",
@@ -372,5 +372,8 @@
     "schedule.hfs.detail": "Homework",
     "schedule.seeDetails": "See details",
     "schedule.status.start": "Start",
-    "schedule.tab.anytime": "Anytime"
+    "schedule.tab.anytime": "Anytime",
+    "scheduleDetails.teacherCount": "Teachers ({value})",
+    "scheduleDetails.empty.description": "No description available",
+    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
 }

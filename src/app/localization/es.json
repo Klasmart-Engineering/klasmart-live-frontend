@@ -203,7 +203,7 @@
     "settings.general.language": "Language",
     "settings.language.title": "Select a Language",
     "scheduleDetails.description": "Description",
-    "scheduleDetails.startTime": "Start Time",
+    "scheduleDetails.moreTeacher": "+ {value} {value, plural, one {Teacher} other {Teachers}}",
     "scheduleDetails.endTime": "End Time",
     "scheduleDetails.notApplicable": "N/A",
     "scheduleDetails.dueDate": "Due Date",
@@ -269,7 +269,7 @@
     "schedule_review_class_name": "Auto Review: {value} Materials",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+{value} more {value, plural, one {person} other {people}}",
+    "live.enter.teacherCount": "+ {value} more {value, plural, one {person} other {people}}",
     "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
     "homeFunStudy.discardChange.title": "Discard Changes?",
     "homeFunStudy.discardChange": "Closing the window will discard any changes you have made.",
@@ -372,5 +372,8 @@
     "schedule.hfs.detail": "Homework",
     "schedule.seeDetails": "See details",
     "schedule.status.start": "Start",
-    "schedule.tab.anytime": "Anytime"
+    "schedule.tab.anytime": "Anytime",
+    "scheduleDetails.teacherCount": "Teachers ({value})",
+    "scheduleDetails.empty.description": "No description available",
+    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
 }
