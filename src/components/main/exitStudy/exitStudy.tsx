@@ -8,6 +8,7 @@ import { ClassType } from "@/store/actions";
 import {
     classEndedState,
     classLeftState,
+    hasJoinedClassroomState,
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
@@ -21,13 +22,13 @@ import { useSetRecoilState } from "recoil";
 export default function ExitStudy (){
 
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
-    const setClassEnded = useSetRecoilState(classLeftState);
-    const setClassLeft = useSetRecoilState(classEndedState);
-    const { restart } = useCordovaSystemContext();
-    const history = useHistory();
-    const { addOnBack } = useCordovaSystemContext();
+    const setClassEnded = useSetRecoilState(classEndedState);
+    const setClassLeft = useSetRecoilState(classLeftState);
     const setMaterialActiveIndex = useSetRecoilState(materialActiveIndexState);
     const setShowEndStudy = useSetRecoilState(showEndStudyState);
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
+    const history = useHistory();
+    const { addOnBack } = useCordovaSystemContext();
     const { isReview, classType } = useSessionContext();
     const closeConference = useWebrtcCloseCallback();
     const [ endClass ] = useEndClassMutation();
@@ -38,14 +39,11 @@ export default function ExitStudy (){
         }
 
         if (process.env.IS_CORDOVA_BUILD) {
+            history.goBack();
             setClassEnded(false);
             setClassLeft(false);
-
-            if (restart) {
-                restart();
-            } else {
-                history.push(`/schedule`);
-            }
+            setHasJoinedClassroom(false);
+            onTryAgainClick();
         } else {
             window.location.href = `${HUB_ENDPOINT}`;
         }

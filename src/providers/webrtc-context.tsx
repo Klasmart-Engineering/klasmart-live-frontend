@@ -22,6 +22,7 @@ export function WebRtcConditionalProvider ({
 
     return (
         <WebRtcProvider
+            key={sessionId}
             sessionId={sessionId}
             endpoint={endpoint}
             onAuthorizationExpired={schedule}

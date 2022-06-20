@@ -5,7 +5,11 @@ import {
     TEXT_COLOR_CONSTRAST_DEFAULT,
     TEXT_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
-import { classLeftState } from "@/store/layoutAtoms";
+import {
+    classLeftState,
+    classEndedState,
+    hasJoinedClassroomState
+} from "@/store/layoutAtoms";
 import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import {
     Fade,
@@ -19,7 +23,10 @@ import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -72,19 +79,15 @@ function EndClass () {
     useWebrtcClose();
 
     const { addOnBack } = useCordovaSystemContext();
-    const classLeft = useRecoilValue(classLeftState);
-
-    const { restart } = useCordovaSystemContext();
+    const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
+    const setClassEnded = useSetRecoilState(classEndedState);
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
 
     const onCloseButtonClick = () => {
-        // TODO: The WebRTC context can't properly initiate another session unless the context
-        // is completely restarted. This is something we'd have to solve at some point, but
-        // the current workaround is to reload the entire app instead.
-        if (restart) {
-            restart();
-        } else {
-            history.push(`/schedule`);
-        }
+        history.goBack();
+        setClassEnded(false);
+        setClassLeft(false);
+        setHasJoinedClassroom(false);
     };
 
     useEffect(() => {
