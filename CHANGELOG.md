@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.21.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.0...v6.21.1) (2022-06-20)
+
+
+### ♻️ Chores
+
+* **translation:** update translations (#209) ([0555fa2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0555fa2104439f8916ec692f159b34b5a19be698))
+
+
+### 🗑 Reverts
+
+* Revert "feat: implement UI selection types of parent and student (#178)" (#212) ([6f126b2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6f126b2447c5310d0173e919a838a04429bb9b31)), closes [NAT-898](https://calmisland.atlassian.net/browse/NAT-898)
+
+
+### 🐛 Bug Fixes
+
+* the camera and mic can appear after rejoin without restart the app (#211) ([d255592](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d25559293996743db30e71ba8943b56a8342a4c1)), closes [NAT-967](https://calmisland.atlassian.net/browse/NAT-967) [nat-955](https://calmisland.atlassian.net/browse/nat-955)
+
 ## [6.21.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.20.0...v6.21.0) (2022-06-17)
 
 
