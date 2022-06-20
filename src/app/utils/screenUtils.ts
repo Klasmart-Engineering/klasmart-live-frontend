@@ -1,4 +1,4 @@
-import { THEME_COLOR_BACKGROUND_ON_BOARDING, THEME_COLOR_BACKGROUND_PAPER, THEME_COLOR_ORG_MENU_DRAWER } from "@/config";
+import { THEME_COLOR_BACKGROUND_ON_BOARDING, THEME_COLOR_BACKGROUND_PAPER } from "@/config";
 import { OrientationType } from "../model/appModel";
 
 export function lockOrientation (orientationType: OrientationType) {
@@ -44,7 +44,7 @@ export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
             });
         }
         StatusBar.overlaysWebView(false);
-        StatusBar.backgroundColorByHexString(isAuthenticated ? THEME_COLOR_ORG_MENU_DRAWER : THEME_COLOR_BACKGROUND_ON_BOARDING);
+        StatusBar.backgroundColorByHexString(isAuthenticated ? THEME_COLOR_BACKGROUND_PAPER : THEME_COLOR_BACKGROUND_ON_BOARDING);
         StatusBar.show();
 
         setTimeout(() => {

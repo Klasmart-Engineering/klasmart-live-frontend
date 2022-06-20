@@ -36,11 +36,7 @@ const useStyles = makeStyles(() => createStyles({
     },
 }));
 
-const CORDOVA = `cordova`;
-
-const CUSTOM_UA = process.env.CUSTOM_UA || CORDOVA;
-
-const BASE_36 = 36;
+const CUSTOM_UA = process.env.CUSTOM_UA || `cordova`;
 
 interface Props {
     useInAppBrowser: boolean;
@@ -50,7 +46,7 @@ export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
     const theme = useTheme();
     const frameRef = useRef<HTMLIFrameElement>(null);
-    const [ key, setKey ] = useState(Math.random().toString(BASE_36));
+    const [ key, setKey ] = useState(Math.random().toString(36));
     const locale = useRecoilValue(localeState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
@@ -103,7 +99,7 @@ export function Auth ({ useInAppBrowser }: Props) {
             console.error(`no browser tab available`);
             console.error(failureResp);
         });
-
+        
         if (process.env.NODE_ENV === `production`) {
             setTimeout(() => setIsShowOnBoarding(true), 500);
         }
@@ -114,14 +110,14 @@ export function Auth ({ useInAppBrowser }: Props) {
         isShowOnBoarding,
     ]);
 
-    if (loading) return null;
+    if(loading) return null;
 
     if (!loading && !authenticated && isShowOnBoarding) {
-        return (<Redirect to="/on-boarding" />);
+        return(<Redirect to="/on-boarding" />);
     }
 
-    if (authenticated) {
-        return (<Redirect to="/select-user-role" />);
+    if(authenticated){
+        return(<Redirect to="/" />);
     }
 
     if (useInAppBrowser) {
@@ -135,12 +131,10 @@ export function Auth ({ useInAppBrowser }: Props) {
                     height: `100%`,
                     padding: theme.spacing(2),
                 }}
-                spacing={2}
-            >
+                spacing={2}>
                 <LoadingWithRetry
                     messageId="auth_waiting_for_authentication"
-                    retryCallback={() => setKey(Math.random().toString(BASE_36))}
-                />
+                    retryCallback={() => setKey(Math.random().toString(36))} />
                 {process.env.NODE_ENV === `development` && (
                     <Grid
                         item
@@ -159,8 +153,7 @@ export function Auth ({ useInAppBrowser }: Props) {
                     width="100%"
                     height="100%"
                     frameBorder="0"
-                    src={authEndpoint}
-                />
+                    src={authEndpoint}></iframe>
             </div>
         );
     }
