@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.21.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.1...v6.21.2) (2022-06-20)
+
+
+### ♻️ Chores
+
+* bump live-state to 1.8.0 + upgrade webpack-cli (#214) ([ec8af6b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ec8af6be3279c80c0779bd350b620181e7bedf7c)), closes [SFU-208](https://calmisland.atlassian.net/browse/SFU-208)
+
 ### [6.21.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.0...v6.21.1) (2022-06-20)
 
 
