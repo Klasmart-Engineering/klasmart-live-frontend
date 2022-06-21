@@ -5,10 +5,17 @@ import {
     THEME_COLOR_GREY_400,
     THEME_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
-import { ActiveClassDrawerState, ClassDrawerSections } from "@/store/layoutAtoms";
-import { Box, Grid, Theme } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {
+    ActiveClassDrawerState,
+    ClassDrawerSections,
+} from "@/store/layoutAtoms";
+import {
+    Box,
+    Grid,
+    Theme,
+} from "@mui/material";
 import Fab from "@mui/material/Fab";
+import makeStyles from '@mui/styles/makeStyles';
 import { Person as ParticipantsIcon } from "@styled-icons/material/Person";
 import { FilePaper as LessonPlanIcon } from "@styled-icons/remix-fill/FilePaper";
 import clsx from "clsx";
@@ -25,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         zIndex: CLASS_DRAWER_ZINDEX,
         width: 90,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             width: `100%`,
         },
     },
@@ -39,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     mobileMargins: {
         margin: theme.spacing(1),
-    }
+    },
 }));
 
 export interface ClassSidebarProps {
@@ -53,7 +60,7 @@ function ClassSidebar (props: ClassSidebarProps) {
     const [ activeClassDrawer, setActiveClassDrawer ] = useRecoilState(ActiveClassDrawerState);
 
     const handleToggle = (section: ClassDrawerSections) => {
-        setActiveClassDrawer(activeClassDrawer === section ? '' : section);
+        setActiveClassDrawer(activeClassDrawer === section ? `` : section);
     };
 
     return (
@@ -104,7 +111,7 @@ function ClassSidebar (props: ClassSidebarProps) {
                     </Fab>
                 </Box>
             </Grid>
-            <Grid 
+            <Grid
                 item
                 className={classes.mobileMargins}
             >

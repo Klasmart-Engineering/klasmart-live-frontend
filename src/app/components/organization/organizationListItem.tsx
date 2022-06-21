@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
     orgAvatar: {
         borderRadius: `${theme.spacing(1.5)} !important`,
 
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             width: `50px !important`,
             height: `50px !important`,
             fontSize: `12px !important`,
@@ -89,7 +89,7 @@ export const OrganizationListItem: React.FC<Props> = ({
                     primary={organization.organization_name}
                     primaryTypographyProps={{
                         className: clsx(classes.listItem, {
-                            [classes.listItemSelected] : isSelected,
+                            [classes.listItemSelected]: isSelected,
                         }),
                         variant: isSmUp ? `h5` : `h6`,
                     }}

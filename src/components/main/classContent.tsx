@@ -127,8 +127,8 @@ export function ClassContent () {
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
-    const isMobileWeb = !process.env.IS_CORDOVA_BUILD && isXsDown;
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMobileWeb = !process.env.IS_CORDOVA_BUILD && isSmDown;
 
     const handlePrev = () => {
         setMaterialActiveIndex(materialActiveIndex - 1);

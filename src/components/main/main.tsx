@@ -23,14 +23,14 @@ import { useSetRecoilState } from "recoil";
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {
         height: `100%`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             flex: `1 1 40%`,
         },
     },
     contentContainer: {
         margin: theme.spacing(1, 1, 0, 1),
         overflowY: `hidden`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             margin: 0,
         },
     },
@@ -62,7 +62,7 @@ function Main () {
     } = useResizeDetector();
 
     const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     useEffect(() => {
         setMainActivitySize({
@@ -107,7 +107,7 @@ function Main () {
                     {renderContent()}
                 </div>
             </Grid>
-            {classType === ClassType.LIVE && !isXsDown && (
+            {classType === ClassType.LIVE && !isSmDown && (
                 <Grid item>
                     <Toolbar />
                 </Grid>

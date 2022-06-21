@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         position: `relative`,
         zIndex: 9,
         wrap: `nowrap`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             flex: `0 1 auto`,
         },
     },

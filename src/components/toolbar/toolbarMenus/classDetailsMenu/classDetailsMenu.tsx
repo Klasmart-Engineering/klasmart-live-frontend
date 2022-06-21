@@ -59,7 +59,7 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
     const classes = useStyles();
     const intl = useIntl();
     const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ tabValue, setTabValue ] = useState(0);
@@ -72,7 +72,7 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
         <StyledPopper
             open={isClassDetailsOpen}
             anchorEl={anchor}
-            dialog={isXsDown}
+            dialog={isSmDown}
             dialogClose={() => setIsClassDetailsOpen(open => !open)}
         >
             <div className={classes.popperStyle}>

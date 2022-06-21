@@ -50,7 +50,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const { roomId, sessionId } = useSessionContext();
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const rewardTrophy = (user: string, kind: string) => {
         rewardTrophyMutation({
@@ -102,7 +102,7 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
         <StyledPopper
             open={isGlobalActionsOpen}
             anchorEl={anchor}
-            dialog={isXsDown}
+            dialog={isSmDown}
             dialogClose={() => setIsGlobalActionsOpen(open => !open)}
         >
             <Grid

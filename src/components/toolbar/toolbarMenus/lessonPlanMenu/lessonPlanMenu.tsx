@@ -19,13 +19,13 @@ function LessonPlanMenu (props: LessonPlanMenuProps) {
     const { anchor } = props;
     const theme = useTheme();
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     return (
         <StyledPopper
             open={isLessonPlanOpen}
             anchorEl={anchor}
-            dialog={isXsDown}
+            dialog={isSmDown}
             dialogClose={() => setIsLessonPlanOpen(open => !open)}
         >
             <LessonPlan />

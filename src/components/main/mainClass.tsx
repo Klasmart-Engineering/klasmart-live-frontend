@@ -77,7 +77,7 @@ function MainClass () {
 
     const theme = useTheme();
     const isApp = process.env.IS_CORDOVA_BUILD;
-    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
+    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`sm`)) && !isApp;
 
     const ButtonSelectAttendees = () => {
         return (

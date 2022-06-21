@@ -15,7 +15,11 @@ import {
     showEndStudyState,
 } from "@/store/layoutAtoms";
 import { classGetInformation } from "@/utils/utils";
-import { Box, useMediaQuery, useTheme } from '@mui/material';
+import {
+    Box,
+    useMediaQuery,
+    useTheme,
+} from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React,
@@ -48,7 +52,7 @@ const useStyles = makeStyles(() => ({
 export function Room () {
     const classes = useStyles();
     const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const [ classInfo, setClassInfo ] = useState<ClassInformation>();
     const setRecoilClassInfo = useSetRecoilState(classInfoState);
@@ -76,7 +80,8 @@ export function Room () {
     }, []);
 
     useEffect(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true)
+            .sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
         if (host){
             host?.id === sessionId ? setHasControls(true) : setHasControls(false);
@@ -116,8 +121,10 @@ export function Room () {
                     hour12: true,
                 };
 
-                const startAt = new Date(classInformationData.start_at * 1000).toLocaleString(`en-GB`, dateOptions);
-                const endAt = new Date(classInformationData.end_at * 1000).toLocaleString(`en-GB`, dateOptions);
+                const startAt = new Date(classInformationData.start_at * 1000)
+                    .toLocaleString(`en-GB`, dateOptions);
+                const endAt = new Date(classInformationData.end_at * 1000)
+                    .toLocaleString(`en-GB`, dateOptions);
 
                 const subject = classInformationData && classInformationData.subjects
                                 && classInformationData.subjects.length > 0 ? classInformationData.subjects[0] : undefined;
@@ -137,7 +144,8 @@ export function Room () {
                     end_at: endAt,
                 });
 
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error(error);
             });
     }, [
@@ -154,7 +162,7 @@ export function Room () {
 
     return (
         <Box
-            flexDirection={isXsDown ? `column` : `row`}
+            flexDirection={isSmDown ? `column` : `row`}
             className={clsx(classes.root, {
                 [classes.blueBackground]: classType === ClassType.STUDY || showEndStudy,
                 [classes.rootSafeArea]: deviceOrientation === `landscape-primary`,
@@ -164,7 +172,7 @@ export function Room () {
             {classType === ClassType.LIVE && (
                 <>
                     <Sidebar />
-                    {isXsDown && (
+                    {isSmDown && (
                         <Toolbar />
                     )}
                 </>

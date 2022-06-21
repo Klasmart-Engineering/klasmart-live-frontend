@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: theme.palette.background.default,
         padding: 10,
         overflowY: `hidden`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             flexBasis: `300px`,
         },
     },
@@ -99,7 +99,7 @@ function Sidebar () {
     const { isTeacher, type } = useSessionContext();
 
     const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const sidebarTabs = type === ClassType.PREVIEW ? [
         {
@@ -142,7 +142,7 @@ function Sidebar () {
 
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
-    if (isXsDown) return (
+    if (isSmDown) return (
         <div className={classes.tabInner}>
             {sidebarTabs[0].content}
         </div>

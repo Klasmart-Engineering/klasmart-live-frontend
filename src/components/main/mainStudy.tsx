@@ -8,7 +8,7 @@ import {
     classLeftState,
     hasJoinedClassroomState,
     materialActiveIndexState,
-    showEndStudyState 
+    showEndStudyState,
 } from "@/store/layoutAtoms";
 import {
     Box,
@@ -50,7 +50,7 @@ function MainStudy () {
     const intl = useIntl();
     const theme = useTheme();
     const isApp = process.env.IS_CORDOVA_BUILD;
-    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
+    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`sm`)) && !isApp;
 
     const onCloseButtonClick = () => {
         showPopup({

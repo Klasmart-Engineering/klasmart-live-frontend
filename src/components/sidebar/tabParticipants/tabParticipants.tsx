@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
             padding: `0`,
             minHeight: `auto`,
         },
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             flexWrap: `nowrap`,
             margin: theme.spacing(1, 0),
         },
@@ -116,7 +116,7 @@ function TabParticipants () {
     const sessions = useSessions();
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
     const { isTeacher } = useSessionContext();
     const hasControls = useRecoilValue(hasControlsState);
 
@@ -212,12 +212,12 @@ function TabParticipants () {
                         {teachersSessions.length ? (
                             <div className={clsx(classes.cameraGrid, {
                                 [classes.cameraGridTwoColumns]: isTeacher,
-                                [classes.cameraGridSingleTeacher]: isTeacher && teachersSessions.length === 1 && !isXsDown,
+                                [classes.cameraGridSingleTeacher]: isTeacher && teachersSessions.length === 1 && !isSmDown,
                             })}
                             >
                                 <ListUserCamera
                                     users={teachersSessions}
-                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
+                                    minHeight={isSmDown && !isTeacher ? 192 : undefined}
                                 />
                             </div>
                         ) : (
@@ -243,7 +243,7 @@ function TabParticipants () {
                             >
                                 <ListUserCamera
                                     users={studentsSessions}
-                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
+                                    minHeight={isSmDown && !isTeacher ? 192 : undefined}
                                 />
                             </div>
                         ) : (

@@ -1,11 +1,16 @@
-import { ListSubheader, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+    ListSubheader,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
+import { grey } from '@mui/material/colors';
 import {
     createStyles,
     makeStyles,
 } from '@mui/styles';
 import clsx from "clsx";
 import React from "react";
-import { grey } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme) => createStyles({
     listSubheaderText: {
@@ -27,18 +32,20 @@ export default function ScheduleListSectionHeader (props: Props) {
     const { title, disablePadding } = props;
     const theme = useTheme();
     const classes = useStyles();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+
     return (
         <ListSubheader
             disableGutters
             component="div"
         >
             <Typography
-                variant={isXsDown ? `subtitle1` : `h6`}
+                variant={isSmDown ? `subtitle1` : `h6`}
                 className={clsx(classes.listSubheaderText, {
                     [classes.disablePadding]: disablePadding,
                 })}
-            >{title}</Typography>
+            >{title}
+            </Typography>
         </ListSubheader>
     );
 }

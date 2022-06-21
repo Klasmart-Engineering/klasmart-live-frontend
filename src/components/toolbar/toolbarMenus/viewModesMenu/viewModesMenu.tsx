@@ -42,7 +42,7 @@ function ViewModesMenu (props: ViewModesMenuProps) {
     const [ isViewModesOpen, setIsViewModesOpen ] = useRecoilState(isViewModesOpenState);
     const observeDisable = useRecoilValue(observeDisableState);
     const { enqueueSnackbar } = useSnackbar();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     const onClickOnStage = () => setInteractiveMode(InteractiveMode.ONSTAGE);
     const onClickPresent = () => setInteractiveMode(InteractiveMode.PRESENT);
@@ -62,7 +62,7 @@ function ViewModesMenu (props: ViewModesMenuProps) {
             <StyledPopper
                 open={isViewModesOpen}
                 anchorEl={anchor}
-                dialog={isXsDown}
+                dialog={isSmDown}
                 dialogClose={() => setIsViewModesOpen(open => !open)}
             >
                 <Box display="flex" >

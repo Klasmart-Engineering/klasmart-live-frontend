@@ -8,7 +8,11 @@ import {
     TEXT_COLOR_STUDY_PRIMARY,
     THEME_COLOR_BACKGROUND_BLUE,
 } from "@/config";
-import { Grid, Typography, useTheme } from "@mui/material";
+import {
+    Grid,
+    Typography,
+    useTheme,
+} from "@mui/material";
 import {
     createStyles,
     makeStyles,
@@ -29,7 +33,7 @@ const useStyles = makeStyles((theme) => createStyles({
         bottom: 10,
         position: `relative`,
         padding: `10px 20px`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             width: `60%`,
         },
     },
@@ -44,7 +48,7 @@ const useStyles = makeStyles((theme) => createStyles({
     },
     image: {
         width: `70%`,
-        [theme.breakpoints.down(`xs`)]: {
+        [theme.breakpoints.down(`sm`)]: {
             width: `100%`,
         },
     },
@@ -84,31 +88,36 @@ export default function NoSchedule (props: Props) {
             className={classes.root}
             alignItems="center"
             justifyContent="center"
-            direction="column">
+            direction="column"
+        >
             <Grid
                 item
                 className={classes.text}
                 style={{
                     backgroundColor: textBackground,
                     color: textColor,
-                }}>
+                }}
+            >
                 <Typography
                     style={{
                         fontWeight: theme.typography.fontWeightBold,
                     }}
                     variant="h5"
-                    align="center">
+                    align="center"
+                >
                     <FormattedMessage id={text} />
                 </Typography>
                 <div
                     className={classes.textTip}
                     style={{
                         backgroundImage: `url(${textTip})`,
-                    }}></div>
+                    }}
+                />
             </Grid>
             <Grid
                 item
-                className={classes.image}>
+                className={classes.image}
+            >
                 <img
                     alt="No Schedule"
                     src={image}
