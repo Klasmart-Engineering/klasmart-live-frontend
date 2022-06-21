@@ -119,11 +119,9 @@ function ToolbarItem (props: Props) {
     const activeTab = useRecoilValue(activeTabState);
 
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
 
-    if(!display){
-        return(null);
-    }
+    if(!display) return(null);
 
     return (
         <>
@@ -150,7 +148,7 @@ function ToolbarItem (props: Props) {
                         {icon}
                         {label && (
                             <Typography className={clsx(classes.label, {
-                                [classes.labelMd]: isMdDown,
+                                [classes.labelMd]: isLgDown,
                             })}
                             >
                                 {label}

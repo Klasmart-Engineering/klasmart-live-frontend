@@ -11,9 +11,17 @@ import {
     useScreenshare,
     useStream,
 } from "@kl-engineering/live-state/ui";
-import { Box, Button, Grid, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import PresentToAllIcon from '@mui/icons-material/PresentToAll';
+import {
+    Box,
+    Button,
+    Grid,
+    Theme,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React,
 {
     useEffect,
@@ -69,7 +77,7 @@ const ScreensharePresent: VoidFunctionComponent = () => {
     const setIsGlobalActionsOpen = useSetRecoilState(isGlobalActionsOpenState);
 
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
 
     const screenshare = useScreenshare();
 
@@ -128,7 +136,7 @@ const ScreensharePresent: VoidFunctionComponent = () => {
             <Grid
                 item
                 xs={6}
-                hidden={isMdDown}
+                hidden={isLgDown}
             >
                 <StyledVideo stream={stream} />
             </Grid>

@@ -3,30 +3,33 @@ import { isKeyboardVisibleState } from "@/app/model/appModel";
 import Chat from "@/components/main/chat/chat";
 import { isChatOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
-import { 
-    useMediaQuery, 
-    useTheme 
+import {
+    useMediaQuery,
+    useTheme,
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 
 const useStyles = makeStyles((theme) => ({}));
 
-interface ChatMenuProps {
+interface Props {
 	anchor: HTMLElement;
 }
 
-function ChatMenu (props: ChatMenuProps) {
+function ChatMenu (props: Props) {
     const { anchor } = props;
 
     const [ isChatOpen, setisChatOpen ] = useRecoilState(isChatOpenState);
     const isKeyboardVisible = useRecoilValue(isKeyboardVisibleState);
     const { isAndroid } = useCordovaSystemContext();
     const theme = useTheme();
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
-    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
-    const popperHeight = isMdDown ? (isKeyboardVisible ? `100vh` : `calc(100vh - 95px)`) : 400;
+    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
+    const popperHeight = isLgDown ? (isKeyboardVisible ? `100vh` : `calc(100vh - 95px)`) : 400;
 
     return (
         <StyledPopper
@@ -37,10 +40,10 @@ function ChatMenu (props: ChatMenuProps) {
             open={isChatOpen}
             anchorEl={anchor}
             isKeyboardVisible={isKeyboardVisible}
-            dialog={isXsDown}
+            dialog={isSmDown}
             dialogClose={() => setisChatOpen(open => !open)}
         >
-            <Chat dialog={isXsDown} />
+            <Chat dialog={isSmDown} />
         </StyledPopper>
     );
 }

@@ -34,9 +34,14 @@ import {
     unreadMessagesState,
 } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
-import { Grid, Theme, useMediaQuery, useTheme } from "@mui/material";
+import {
+    Grid,
+    Theme,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { CaretDownFill as CaretDownFill } from "@styled-icons/bootstrap/CaretDownFill";
 import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
@@ -161,7 +166,7 @@ function Toolbar () {
     const hasControls = useRecoilValue(hasControlsState);
 
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
     const isMobileWebToolbar = useMediaQuery(theme.breakpoints.down(MAX_MOBILE_TOOLBAR_WIDTH));
 
     const classDetailsRef = React.useRef<any>();
@@ -222,7 +227,7 @@ function Toolbar () {
                 container
                 className={clsx(classes.root, {
                     [classes.rootMosaic]: activeTab === ActiveTabStateType.MOSAIC,
-                    [classes.rootMd]: isMdDown,
+                    [classes.rootMd]: isLgDown,
                     [classes.rootTeacherMobile]: hasControls && isMobileWebToolbar,
                 })}
             >

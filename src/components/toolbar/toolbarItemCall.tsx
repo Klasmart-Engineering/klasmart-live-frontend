@@ -1,10 +1,18 @@
-import { alpha, Badge, Theme, Tooltip, Typography, useMediaQuery, useTheme } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import LockIcon from "@mui/icons-material/Lock";
+import {
+    alpha,
+    Badge,
+    Theme,
+    Tooltip,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
+import { red } from '@mui/material/colors';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { red } from '@mui/material/colors';
 
 const useStyles = makeStyles((theme: Theme) => ({
     itemRoot: {
@@ -43,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:hover": {
             transform: `scale(1.1)`,
         },
-        "& svg" : {
+        "& svg": {
             width: `1.25em`,
             height: `1.25em`,
         },
@@ -96,7 +104,7 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
     } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
 
     return (
         <>
@@ -105,7 +113,7 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                     id={id}
                     role="button"
                     className={clsx(classes.itemRoot, {
-                        [classes.itemRootMd]: isMdDown,
+                        [classes.itemRootMd]: isLgDown,
                     })}
                     onClick={onClick}
                 >
