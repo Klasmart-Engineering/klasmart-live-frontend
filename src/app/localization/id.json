@@ -203,7 +203,7 @@
     "settings.general.language": "Bahasa",
     "settings.language.title": "Pilih Bahasa",
     "scheduleDetails.description": "Deskripsi",
-    "scheduleDetails.startTime": "Waktu Mulai",
+    "scheduleDetails.moreTeacher": "Waktu Mulai",
     "scheduleDetails.endTime": "Waktu Berakhir",
     "scheduleDetails.notApplicable": "N/A",
     "scheduleDetails.dueDate": "Tanggal Jatuh Tempo",
@@ -372,5 +372,8 @@
     "schedule.hfs.detail": "Pekerjaan Rumah",
     "schedule.seeDetails": "Lihat detail",
     "schedule.status.start": "Mulai",
-    "schedule.tab.anytime": "Kapanpun"
+    "schedule.tab.anytime": "Kapanpun",
+    "scheduleDetails.teacherCount": "Teachers ({value})",
+    "scheduleDetails.empty.description": "No description available",
+    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
 }
