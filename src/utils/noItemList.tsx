@@ -1,29 +1,30 @@
-import { makeStyles, Theme, Typography } from "@material-ui/core";
-import React from "react";
-import { ReactElement } from "react";
+import { Typography } from "@mui/material";
+import { makeStyles } from '@mui/styles';
+import React,
+{ ReactElement } from "react";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+const useStyles = makeStyles((theme) => ({
+    root: {
         display: `flex`,
         justifyContent: `center`,
         alignItems: `center`,
         height: `100%`,
     },
-    inner:{
+    inner: {
         display: `flex`,
         flexDirection: `column`,
         alignItems: `center`,
         textAlign: `center`,
     },
-    icon:{
+    icon: {
         marginBottom: 10,
-        "& svg":{
+        "& svg": {
             height: `4rem`,
             width: `4rem`,
             opacity: 0.1,
         },
     },
-    text:{
+    text: {
         color: theme.palette.grey[700],
     },
 }));

@@ -1,6 +1,6 @@
 import { defaultDevicesState } from '@/store/layoutAtoms';
 import { useSnackbar } from '@kl-engineering/kidsloop-px';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
 import { MicFill as MicIcon } from "@styled-icons/bootstrap/MicFill";
 import { Video as VideoIcon } from "@styled-icons/boxicons-solid/Video";
 import { Speaker2 as SpeakerIcon } from "@styled-icons/fluentui-system-filled/Speaker2";

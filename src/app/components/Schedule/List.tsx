@@ -1,18 +1,13 @@
-import {
-    SCHEDULE_FETCH_INTERVAL_MINUTES,
-    SCHEDULE_FETCH_MONTH_DIFF,
-    THEME_COLOR_BACKGROUND_LIST,
-} from "@/config";
+import CategoryItem from "./CategoryItem";
+import { THEME_COLOR_BACKGROUND_LIST } from "@/config";
+import { ClassType } from "@/store/actions";
+import { List } from "@mui/material";
 import {
     createStyles,
-    List,
     makeStyles,
-} from "@material-ui/core";
+} from "@mui/styles";
 import React from "react";
 import { useHistory } from "react-router";
-
-import { ClassType } from "@/store/actions";
-import CategoryItem from "./CategoryItem";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
@@ -25,7 +20,11 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
-const classTypes: ClassType[] = [ClassType.LIVE, ClassType.STUDY, ClassType.HOME_FUN_STUDY];
+const classTypes: ClassType[] = [
+    ClassType.LIVE,
+    ClassType.STUDY,
+    ClassType.HOME_FUN_STUDY,
+];
 
 export default function CategoryList () {
     const classes = useStyles();
@@ -33,15 +32,15 @@ export default function CategoryList () {
 
     const handleDetailOpen = (classType?: ClassType) => {
         switch (classType) {
-            case ClassType.LIVE:
-                history.push(`/schedule/category-live`);
-                break;
-            default:
-                history.push(`/schedule/category-study/${classType}`);
-                break;
+        case ClassType.LIVE:
+            history.push(`/schedule/category-live`);
+            break;
+        default:
+            history.push(`/schedule/category-study/${classType}`);
+            break;
         }
     };
-    
+
     return (
         <List
             className={classes.listRoot}

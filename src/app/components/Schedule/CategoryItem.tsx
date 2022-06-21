@@ -1,9 +1,10 @@
+import ScheduleJoinButton from "./ScheduleJoinButton";
+import HomeFunImg from "@/assets/img/home/home-fun.svg";
+import LiveImg from "@/assets/img/home/live.svg";
+import StudyImg from "@/assets/img/home/study.svg";
 import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg";
 import LiveJoinArrow from "@/assets/img/schedule-icon/live_join_arrow.svg";
 import StudyJoinArrow from "@/assets/img/schedule-icon/study_join_arrow.svg";
-import LiveImg from "@/assets/img/home/live.svg";
-import StudyImg from "@/assets/img/home/study.svg";
-import HomeFunImg from "@/assets/img/home/home-fun.svg";
 import {
     THEME_COLOR_BACKGROUND_PAPER,
     THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
@@ -12,22 +13,23 @@ import {
     THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
     THEME_COLOR_STUDY_SCHEDULE_CARD,
 } from "@/config";
+import { ClassType } from "@/store/actions";
 import {
     Box,
-    createStyles,
     Grid,
-    makeStyles,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import {
+    createStyles,
+    makeStyles,
+} from "@mui/styles";
 import React from "react";
 import { useIntl } from "react-intl";
-import ScheduleJoinButton from "./ScheduleJoinButton";
-import { ClassType } from "@/store/actions";
 
 const useStyles = makeStyles((theme) => createStyles({
     container: {
         backgroundColor: theme.palette.background.paper,
-        borderRadius: theme.spacing(5,1.5,5,5),
+        borderRadius: theme.spacing(5, 1.5, 5, 5),
         marginBottom: theme.spacing(3),
         padding: theme.spacing(1.5),
         position: `relative`,
@@ -78,7 +80,7 @@ export interface Props {
     onDetailClick?: () => void;
 }
 
-export default function CategoryItem(props: Props) {
+export default function CategoryItem (props: Props) {
     const {
         classType,
         onDetailClick,
@@ -118,7 +120,7 @@ export default function CategoryItem(props: Props) {
                     defaultMessage: `Start Studying`,
                 }),
             };
-        
+
         default:
             return {
                 title: intl.formatMessage({
@@ -138,26 +140,29 @@ export default function CategoryItem(props: Props) {
     };
 
     return (
-        <Box 
+        <Box
             className={classes.container}
             style={{
                 backgroundColor: getClassTypeProperty().backgroundCard,
             }}
             onClick={onDetailClick}
         >
-             <Box className={classes.contentContainer}>
+            <Box className={classes.contentContainer}>
                 <Typography
                     variant={`h4`}
                     className={classes.title}
                 >
                     {getClassTypeProperty().title}
-                </Typography> 
+                </Typography>
                 <Grid
                     container
                     justifyContent="space-between"
                     wrap="nowrap"
                 >
-                    <Grid item className={classes.actionButtonContainer}>
+                    <Grid
+                        item
+                        className={classes.actionButtonContainer}
+                    >
                         <ScheduleJoinButton
                             title={getClassTypeProperty().actionTitle}
                             backgroundColor={getClassTypeProperty().actionButtonBackground}
@@ -176,7 +181,7 @@ export default function CategoryItem(props: Props) {
                     </Grid>
                     <Grid item>
                         <img
-                            alt={getClassTypeProperty().title + ` icon`}
+                            alt={`${getClassTypeProperty().title} icon`}
                             src={getClassTypeProperty().icon}
                             className={classes.thumbnail}
                         />
