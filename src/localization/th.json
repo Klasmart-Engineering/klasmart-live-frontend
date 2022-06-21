@@ -266,7 +266,6 @@
     "screenShare.stop": "หยุดนำเสนอ",
     "viewMode.screenShare": "แชร์หน้าจอ",
     "live.class.shareScreen.error.notAvailable": "ไม่รองรับคุณสมบัติการรู้จำเสียงบนเบราว์เซอร์มือถือ",
-    "live.class.leave": "ออกจากชั้นเรียน",
     "canvas.tool.pen": "ปากกา",
     "canvas.tool.text": "ข้อความ",
     "canvas.tool.move": "เคลื่อนไหว",
@@ -320,5 +319,6 @@
     "canvas.tool.thickness": "Thickness",
     "content.pdf.notAvailable": "Cannot load PDF",
     "live.tooltip.previousPage": "Previous Page",
-    "live.tooltip.nextPage": "Next Page"
+    "live.tooltip.nextPage": "Next Page",
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
 }
