@@ -1,11 +1,11 @@
 import { classInfoState } from "@/store/layoutAtoms";
-import { Theme, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     table: {
         width: `100%`,
         borderCollapse: `collapse`,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => ({
                 },
             },
 
-            [theme.breakpoints.down(`sm`)]: {
+            [theme.breakpoints.down(`md`)]: {
                 "& > td": {
                     paddingBottom: `10px`,
 
@@ -72,8 +72,18 @@ function ClassDetails () {
                         <td><Typography><FormattedMessage id="classdetails_enrolled_participants" /></Typography></td>
                         <td>
                             <Typography>
-                                {classInfo.teachers.length} <FormattedMessage id="common_teacher_count" values={{ count: classInfo.teachers.length }} />,&nbsp;
-                                {classInfo.students.length} <FormattedMessage id="common_student_count" values={{ count: classInfo.students.length }} />
+                                {classInfo.teachers.length} <FormattedMessage
+                                    id="common_teacher_count"
+                                    values={{
+                                        count: classInfo.teachers.length,
+                                    }}
+                                                            />,&nbsp;
+                                {classInfo.students.length} <FormattedMessage
+                                    id="common_student_count"
+                                    values={{
+                                        count: classInfo.students.length,
+                                    }}
+                                                            />
                             </Typography>
                         </td>
                     </tr>
@@ -93,7 +103,11 @@ function ClassDetails () {
                         <td><Typography><FormattedMessage id="classdetails_lesson_materials" /></Typography></td>
                         <td><Typography>{classInfo.materials} <span style={{
                             textTransform: `lowercase`,
-                        }}><FormattedMessage id="classdetails_lesson_materials" /></span></Typography></td>
+                        }}
+                        ><FormattedMessage id="classdetails_lesson_materials" />
+                        </span>
+                        </Typography>
+                        </td>
                     </tr>
                     <tr>
                         <td><Typography><FormattedMessage id="classdetails_start_time" /></Typography></td>

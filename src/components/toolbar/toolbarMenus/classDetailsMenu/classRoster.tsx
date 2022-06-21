@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         margin: `-8px 0`,
         minHeight: `447px`,
 
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             minHeight: `347px`,
         },
     },

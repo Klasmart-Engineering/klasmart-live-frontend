@@ -3,13 +3,13 @@ import {
     TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Grid,
     ListItemText,
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
-import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React,
 { useMemo } from "react";
 import { useIntl } from "react-intl";
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
         overflow: `hidden`,
         WebkitBoxOrient: `vertical`,
         WebkitLineClamp: 2,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             fontSize: `1rem`,
         },
     },
@@ -82,7 +82,7 @@ export const UserListItem: React.FC<Props> = ({
 
     const subTitle = useMemo(() => {
         if (!displayName) {
-            return  intl.formatMessage({
+            return intl.formatMessage({
                 id: `selectUser.updateProfile`,
             });
         }

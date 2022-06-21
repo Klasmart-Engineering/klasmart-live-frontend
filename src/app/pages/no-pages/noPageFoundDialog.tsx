@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingTop: theme.spacing(3),
         paddingBottom: theme.spacing(1.5),
 
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             fontSize: `1.25rem`,
         },
     },

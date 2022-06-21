@@ -27,7 +27,7 @@ function ChatMenu (props: Props) {
     const isKeyboardVisible = useRecoilValue(isKeyboardVisibleState);
     const { isAndroid } = useCordovaSystemContext();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
     const isLgDown = useMediaQuery(theme.breakpoints.down(`lg`));
     const popperHeight = isLgDown ? (isKeyboardVisible ? `100vh` : `calc(100vh - 95px)`) : 400;
 
@@ -40,10 +40,10 @@ function ChatMenu (props: Props) {
             open={isChatOpen}
             anchorEl={anchor}
             isKeyboardVisible={isKeyboardVisible}
-            dialog={isSmDown}
+            dialog={isMdDown}
             dialogClose={() => setisChatOpen(open => !open)}
         >
-            <Chat dialog={isSmDown} />
+            <Chat dialog={isMdDown} />
         </StyledPopper>
     );
 }

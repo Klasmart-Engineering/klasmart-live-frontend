@@ -115,7 +115,7 @@ function TabParticipants () {
     const intl = useIntl();
     const sessions = useSessions();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     const { isTeacher } = useSessionContext();
     const hasControls = useRecoilValue(hasControlsState);
@@ -162,7 +162,7 @@ function TabParticipants () {
                 container
                 direction="column"
                 className={clsx(classes.fullheight, {
-                    [classes.rootSm] : isSmDown,
+                    [classes.rootSm]: isMdDown,
                 })}
             >
                 <Grid
@@ -211,8 +211,8 @@ function TabParticipants () {
                     >
                         {teachersSessions.length ? (
                             <div className={clsx(classes.cameraGrid, {
-                                [classes.cameraGridTwoColumns] : isTeacher,
-                                [classes.cameraGridSingleTeacher] : isTeacher && teachersSessions.length === 1 && !isXsDown,
+                                [classes.cameraGridTwoColumns]: isTeacher,
+                                [classes.cameraGridSingleTeacher]: isTeacher && teachersSessions.length === 1 && !isXsDown,
                             })}
                             >
                                 <ListUserCamera
@@ -233,12 +233,12 @@ function TabParticipants () {
                         item
                         xs
                         className={clsx({
-                            [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
+                            [classes.gridContainerStudents]: studentsSessions.length && !isMdDown,
                         })}
                     >
                         {studentsSessions.length ? (
                             <div className={clsx(classes.cameraGrid, {
-                                [classes.cameraGridTwoColumns] : isTeacher,
+                                [classes.cameraGridTwoColumns]: isTeacher,
                             })}
                             >
                                 <ListUserCamera

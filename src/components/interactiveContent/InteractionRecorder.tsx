@@ -88,7 +88,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     const classes = useStyles();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     const {
         roomId,
@@ -383,7 +383,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
     }
 
-    function onLoadIframe() {
+    function onLoadIframe () {
         sendIframeClassActiveUser(classActiveUserId);
         onLoad();
         if (classType !== ClassType.STUDY) {
@@ -515,7 +515,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                             <RefreshIcon
                                 size="1rem"
                                 style={{
-                                    marginLeft: isSmDown ? 0 : 4,
+                                    marginLeft: isMdDown ? 0 : 4,
                                 }}
                             />
                         </Button>

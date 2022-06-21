@@ -19,7 +19,6 @@ import {
     Typography,
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
-import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
@@ -119,7 +118,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         background: `rgb(255 255 255 / 55%)`,
         fontWeight: theme.typography.fontWeightBold as number,
         borderRadius: `0 10px 0 0`,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             fontSize: `0.7rem`,
         },
     },

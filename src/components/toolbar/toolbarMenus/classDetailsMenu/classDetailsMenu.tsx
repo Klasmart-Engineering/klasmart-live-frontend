@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         minWidth: `400px`,
         maxWidth: `500px`,
 
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             width: `100vw`,
             minWidth: `0`,
             maxWidth: `calc(100vw - 30px)`,

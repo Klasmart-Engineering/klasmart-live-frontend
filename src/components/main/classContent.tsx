@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
         boxShadow: `0 10px 15px rgb(0 0 0 / 13%), 0 3px 8px rgb(0 0 0 / 13%)`,
         padding: theme.spacing(2.5),
         boxSizing: `border-box`,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             padding: theme.spacing(1.25),
         },
     },

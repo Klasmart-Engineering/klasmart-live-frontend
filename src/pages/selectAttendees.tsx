@@ -143,20 +143,22 @@ export function ClassSelectAttendees () {
         const relationObject = await getClassAttendeesIds(scheduleId, cmsEndpoint);
 
         const attendeeIdsAndType: Omit<AttendeeType, "name">[] = await Promise.all([
-            ...Array.from(new Set([ ...relationObject.class_roster_teacher_ids, ...relationObject.participant_teacher_ids ])).map((id: string) => {
-                const teacherAttendee: Omit<AttendeeType, `name`> = {
-                    id,
-                    type: `Teacher`,
-                };
-                return teacherAttendee;
-            }),
-            ...Array.from(new Set([ ...relationObject.class_roster_student_ids, ...relationObject.participant_student_ids ])).map((id: string) => {
-                const studentAttendee: Omit<AttendeeType, `name`> = {
-                    id,
-                    type: `Student`,
-                };
-                return studentAttendee;
-            }),
+            ...Array.from(new Set([ ...relationObject.class_roster_teacher_ids, ...relationObject.participant_teacher_ids ]))
+                .map((id: string) => {
+                    const teacherAttendee: Omit<AttendeeType, `name`> = {
+                        id,
+                        type: `Teacher`,
+                    };
+                    return teacherAttendee;
+                }),
+            ...Array.from(new Set([ ...relationObject.class_roster_student_ids, ...relationObject.participant_student_ids ]))
+                .map((id: string) => {
+                    const studentAttendee: Omit<AttendeeType, `name`> = {
+                        id,
+                        type: `Student`,
+                    };
+                    return studentAttendee;
+                }),
         ]);
         const userIds = attendeeIdsAndType.map(attendeeIdAndType => attendeeIdAndType.id);
         const attendeeNames = await getAttendeesFullNames(userIds, endpointAttendee);
@@ -170,7 +172,8 @@ export function ClassSelectAttendees () {
             };
         });
 
-        setAllAttendees(attendees.sort((a, b) => b.type.localeCompare(a.type) || a.name.localeCompare(b.name)).sort(a => a.id === user_id ? -1 : 1));
+        setAllAttendees(attendees.sort((a, b) => b.type.localeCompare(a.type) || a.name.localeCompare(b.name))
+            .sort(a => a.id === user_id ? -1 : 1));
         setSelectedAttendees(selectedAttendees.length ? selectedAttendees : attendees);
         setLoading(false);
     };
@@ -184,7 +187,7 @@ export function ClassSelectAttendees () {
     }, [ selectedAttendees, allAttendees ]);
 
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     if(loading){
         return <Loading messageId="loading" />;
@@ -207,7 +210,7 @@ export function ClassSelectAttendees () {
                             mb={4}
                             px={4}
                             flexDirection={
-                                isSmDown ? `column` : `row`
+                                isMdDown ? `column` : `row`
                             }
                         >
                             <Typography
@@ -219,7 +222,7 @@ export function ClassSelectAttendees () {
                             <Box
                                 display="flex"
                                 alignItems="center"
-                                mt={isSmDown ? 3 : 0}
+                                mt={isMdDown ? 3 : 0}
                             >
 
                                 <FormControlLabel

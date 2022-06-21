@@ -1,5 +1,12 @@
 import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
-import { Box, Fab, Theme, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+    Box,
+    Fab,
+    Theme,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -11,14 +18,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: theme.typography.fontWeightBold as number,
         color: theme.palette.background.paper,
         marginBottom: theme.spacing(2),
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             marginBottom: theme.spacing(1),
         },
     },
     icon: {
         width: `calc(${FAB_SIZE} - ${theme.spacing(7)})`,
         height: `calc(${FAB_SIZE} - ${theme.spacing(7)})`,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             width: `calc(${FAB_SIZE} - ${theme.spacing(7)} - 12)`,
             height: `calc(${FAB_SIZE} - ${theme.spacing(7)} - 12)`,
         },
@@ -28,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
         width: FAB_SIZE,
         height: FAB_SIZE,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             width: `calc(${FAB_SIZE} - ${theme.spacing(5.5)})`,
             height: `calc(${FAB_SIZE} - ${theme.spacing(5.5)})`,
         },
@@ -51,18 +58,21 @@ export default function RoundButton (props: Props){
         id,
     } = props;
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     return (
         <Box
             display="flex"
             alignItems="center"
             flexDirection="column"
-            mx={isSmDown ? 4 : 6}
+            mx={isMdDown ? 4 : 6}
         >
             <Typography
-                variant= {isSmDown ? `subtitle2` : `h6`}
-                className={classes.titleStyle}><FormattedMessage id={id} /></Typography>
+                variant= {isMdDown ? `subtitle2` : `h6`}
+                className={classes.titleStyle}
+            >
+                <FormattedMessage id={id} />
+            </Typography>
             <Fab
                 className={classes.fab}
                 onClick={onClick}

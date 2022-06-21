@@ -2,12 +2,17 @@ import { cameraErrorState } from "@/app/model/appModel";
 import Camera from "@/components/media/camera";
 import { preferedVideoInput } from "@/components/mediaDeviceSelect";
 import { useSessionContext } from "@/providers/session-context";
-import { Grid, Theme, Typography, useMediaQuery } from "@mui/material";
+import {
+    Grid,
+    Theme,
+    Typography,
+    useMediaQuery,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import {
     createStyles,
     makeStyles,
 } from '@mui/styles';
-import { useTheme } from "@mui/material/styles";
 import React,
 {
     useEffect,
@@ -15,7 +20,10 @@ import React,
 } from "react";
 import { useAsync } from "react-async-hook";
 import { FormattedMessage } from "react-intl";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,13 +50,14 @@ export const CameraPreview: VoidFunctionComponent<{
 }> = ({ paused }) => {
     const theme = useTheme();
     const classes = useStyles();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
 
     const deviceId = useRecoilValue(preferedVideoInput);
     const setCameraError = useSetRecoilState(cameraErrorState);
     const { name } = useSessionContext();
     const camera = useAsync(() => {
-        camera?.result?.getTracks().forEach(t => t.stop());
+        camera?.result?.getTracks()
+            .forEach(t => t.stop());
         if(paused || deviceId === undefined) {return Promise.resolve(undefined);}
         return navigator.mediaDevices.getUserMedia({
             video: {
@@ -60,9 +69,10 @@ export const CameraPreview: VoidFunctionComponent<{
     });
 
     //On component unmount stop the camera
-    useEffect(() => () => camera?.result?.getTracks().forEach(t => t.stop()), [ camera.result ]);
+    useEffect(() => () => camera?.result?.getTracks()
+        .forEach(t => t.stop()), [ camera.result ]);
 
-    if(camera.result) { return <Camera mediaStream={camera.result} /> ;}
+    if(camera.result) { return <Camera mediaStream={camera.result} />;}
     return (
         <Grid
             container
@@ -73,7 +83,7 @@ export const CameraPreview: VoidFunctionComponent<{
             className={classes.root}
         >
             <Typography
-                variant={isSmDown ? `body1` : `h5`}
+                variant={isMdDown ? `body1` : `h5`}
                 align="center"
                 className={classes.disabledCameraMessage}
             >

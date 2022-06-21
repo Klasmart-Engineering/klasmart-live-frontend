@@ -37,27 +37,27 @@ export const FULL_DRAWER_WIDTH = `100%`;
 const useStyles = makeStyles((theme: Theme) => ({
     drawer: {
         flexBasis: LARGE_DRAWER_WIDTH,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             flexBasis: SMALL_DRAWER_WIDTH,
         },
     },
     drawerStudent: {
         flexBasis: LARGE_DRAWER_WIDTH_ST,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             flexBasis: SMALL_DRAWER_WIDTH_ST,
         },
     },
     drawerPaper: {
         border: 0,
         width: LARGE_DRAWER_WIDTH,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             width: SMALL_DRAWER_WIDTH,
         },
     },
     drawerPaperStudent: {
         border: 0,
         width: LARGE_DRAWER_WIDTH_ST,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             width: SMALL_DRAWER_WIDTH_ST,
         },
     },

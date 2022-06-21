@@ -1,7 +1,10 @@
 import { UserListItem } from "./userListItem";
 import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { THEME_COLOR_PRIMARY_SELECT_DIALOG } from "@/config";
-import { Grid, List, Typography } from "@mui/material";
+import {
+    Grid,
+    Typography,
+} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import { FormattedMessage } from "react-intl";
@@ -13,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: theme.spacing(8),
         paddingBottom: theme.spacing(5),
         color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             paddingTop: theme.spacing(3),
             paddingBottom: theme.spacing(3),
             fontSize: `1.25rem`,
@@ -36,14 +39,16 @@ export const UserList: React.FC<Props> = ({
         <>
             <Typography
                 className={classes.selectUser}
-                variant="h4">
+                variant="h4"
+            >
                 <FormattedMessage
                     id="account_selectUser_whichUser"
-                    defaultMessage={`Who's studying today?`}/>
+                    defaultMessage={`Who's studying today?`}
+                />
             </Typography>
 
             <Grid container>
-                {users?.map((user) =>
+                {users?.map((user) => (
                     <Grid
                         key={user.user_id}
                         item
@@ -55,7 +60,8 @@ export const UserList: React.FC<Props> = ({
                             isSelected={selectedUser && selectedUser.user_id === user.user_id}
                             onClick={onClick}
                         />
-                    </Grid>)
+                    </Grid>
+                ))
                 }
             </Grid>
         </>

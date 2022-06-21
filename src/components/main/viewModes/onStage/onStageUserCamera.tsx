@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
         textAlign: `center`,
         position: `relative`,
         overflow: `hidden`,
-        [theme.breakpoints.down(`sm`)]: {
+        [theme.breakpoints.down(`md`)]: {
             borderRadius: 0,
         },
     },
