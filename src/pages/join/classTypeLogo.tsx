@@ -17,13 +17,12 @@ const useStyles = makeStyles((theme) => createStyles({
     logo: {
         display: `block`,
         margin: `0 auto`,
-        marginBottom: theme.spacing(2),
         width: `auto`,
         maxHeight: theme.spacing(3.25),
         height: theme.spacing(8),
         objectFit: `contain`,
-        [theme.breakpoints.down(`sm`)]: {
-            marginBottom: 0,
+        [theme.breakpoints.up(`md`)]: {
+            marginBottom: theme.spacing(2),
         },
     },
 }));

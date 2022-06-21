@@ -89,20 +89,20 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         cardContent: {
             padding: `22px !important`,
-            [theme.breakpoints.down(`sm`)]: {
+            [theme.breakpoints.down(`md`)]: {
                 padding: `12px 14px !important`,
             },
         },
         header: {
             color: `#fff`,
             padding: `5rem 0 3rem 0`,
-            [theme.breakpoints.down(`sm`)]: {
+            [theme.breakpoints.down(`md`)]: {
                 padding: theme.spacing(2, 0),
             },
         },
         headerText: {
             fontWeight: theme.typography.fontWeightBold as number,
-            [theme.breakpoints.down(`sm`)]: {
+            [theme.breakpoints.down(`md`)]: {
                 fontSize: `1.6rem`,
             },
         },
@@ -126,7 +126,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 left: `50%`,
                 transform: `translateX(-50%)`,
             },
-            [theme.breakpoints.down(`sm`)]: {
+            [theme.breakpoints.down(`md`)]: {
                 height: `490px`,
             },
         },
@@ -137,7 +137,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: 150,
                 margin: `2rem 0`,
                 height: `auto`,
-                [theme.breakpoints.down(`sm`)]: {
+                [theme.breakpoints.down(`md`)]: {
                     width: 110,
                     margin: `1.2rem 0`,
                 },
@@ -164,8 +164,7 @@ export default function Join (props: Props): JSX.Element {
     } = props;
     const classes = useStyles();
     const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
-    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
 
     const {
         classType,
@@ -241,22 +240,19 @@ export default function Join (props: Props): JSX.Element {
                     paddingBottom: `20px`,
                 }}
             >
-                <Container maxWidth={enableCamera ? (isSmDown ? `sm` : `md`) : `xs`}>
+                <Container maxWidth={enableCamera ? (isMdUp ? `md` : `sm`) : `xs`}>
                     <Card className={classes.card}>
                         <CardContent className={classes.cardContent}>
                             <Grid
                                 container
-                                direction={isXsDown ? `column` : `row`}
+                                direction={isMdUp ? `row` : `column`}
                                 justifyContent="center"
                                 alignItems="center"
-                                spacing={enableCamera ? 4 : 0}
+                                spacing={enableCamera ? 2 : 0}
                             >
-                                {(isSmDown || !enableCamera) && (
+                                {(!isMdUp || !enableCamera) && (
                                     <Grid
                                         item
-                                        style={{
-                                            padding: theme.spacing(2.5, 2.5, 0),
-                                        }}
                                     >
                                         <ClassTypeLogo
                                             isTeacher={isTeacher}
@@ -292,7 +288,7 @@ export default function Join (props: Props): JSX.Element {
                                     xs={enableCamera ? 6 : 10}
                                     md={enableCamera ?? 5}
                                 >
-                                    {!isSmDown && enableCamera && (
+                                    {isMdUp && enableCamera && (
                                         <Box my={1}>
                                             <ClassTypeLogo
                                                 isTeacher={isTeacher}
