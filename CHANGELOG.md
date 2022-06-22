@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.21.3](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.2...v6.21.3) (2022-06-22)
+
+
+### ♻️ Chores
+
+* **localization:** update translations #218 ([c4710c2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c4710c22b1042dfe02feb385a0b5e6b02ca155b7))
+* **localization:** update translations #218 ([a325ccc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/a325cccb139bbe2d7f0cc6f3e2297914131d0f5f))
+* **translation:** update translations (#219) ([77013e0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/77013e04fe7b27a7b2e5d53536d8f0f4b20d0b62))
+
 ### [6.21.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.1...v6.21.2) (2022-06-20)
 
 
