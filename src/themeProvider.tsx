@@ -75,7 +75,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
 
     const palette: PaletteOptions = {
         background: {
-            default:  THEME_COLOR_BACKGROUND_DEFAULT,
+            default: THEME_COLOR_BACKGROUND_DEFAULT,
             paper: THEME_COLOR_BACKGROUND_PAPER,
         },
         primary: {
@@ -224,6 +224,9 @@ export function themeProvider (languageCode: string, themeMode: string) {
                         fontWeight: localeTypography.localeWeightBold,
                         color: palette.text?.secondary,
                         lineHeight: `28px`,
+                        "&.MuiListSubheader-sticky": {
+                            backgroundColor: `inherit`,
+                        },
                     },
                 },
             },
