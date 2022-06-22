@@ -266,6 +266,7 @@
     "screenShare.stop": "停止演示",
     "viewMode.screenShare": "共享屏幕",
     "live.class.shareScreen.error.notAvailable": "“共享屏幕”在手机浏览器上不可用",
+    "live.class.leave": "退出",
     "canvas.tool.pen": "笔",
     "canvas.tool.text": "文本",
     "canvas.tool.move": "移动",

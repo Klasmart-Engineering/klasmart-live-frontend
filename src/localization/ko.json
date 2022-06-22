@@ -266,6 +266,7 @@
     "screenShare.stop": "발표 중지하기",
     "viewMode.screenShare": "화면 공유",
     "live.class.shareScreen.error.notAvailable": "모바일 브라우저에서는 '화면 공유'를 사용할 수 없습니다",
+    "live.class.leave": "클래스 나가기",
     "canvas.tool.pen": "펜",
     "canvas.tool.text": "텍스트",
     "canvas.tool.move": "이동",
