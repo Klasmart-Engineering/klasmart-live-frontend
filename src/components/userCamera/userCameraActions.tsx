@@ -20,13 +20,13 @@ import {
     MenuItem,
     Theme,
     Tooltip,
+    useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
-import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
 import { MicFill as MicFillIcon } from "@styled-icons/bootstrap/MicFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
@@ -44,7 +44,7 @@ import { useRecoilValue } from "recoil";
 import { StyledIconProps } from "styled-icons/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         position: `absolute`,
         zIndex: 9,
         width: `100%`,
@@ -55,31 +55,31 @@ const useStyles = makeStyles((theme: Theme) => ({
         transition: `all 100ms ease-in-out`,
         visibility: `visible`,
     },
-    backdropOverlay:{
+    backdropOverlay: {
         backdropFilter: `blur(2px)`,
         backgroundColor: `rgba(0,0,0,0.3)`,
     },
-    controlsIcon:{
+    controlsIcon: {
         padding: theme.spacing(1),
         color: theme.palette.common.white,
     },
-    menuPaperTrophies:{
+    menuPaperTrophies: {
         borderRadius: 30,
-        "& $menuItem":{
+        "& $menuItem": {
             padding: theme.spacing(0.75),
             color: amber[500],
         },
     },
-    menuItem:{
+    menuItem: {
         color: theme.palette.grey[800],
         fontWeight: theme.typography.fontWeightBold as number,
     },
-    expand:{
+    expand: {
         position: `absolute`,
         top: theme.spacing(1),
         left: theme.spacing(1),
     },
-    iconButton:{
+    iconButton: {
         color: theme.palette.common.white,
         margin: theme.spacing(0, -0.5),
         padding: theme.spacing(1, 1.25),
@@ -138,7 +138,7 @@ const UserCameraActions = ({
                 justifyContent="center"
                 alignItems="center"
                 className={clsx(classes.root, {
-                    [classes.backdropOverlay] : isTeacher,
+                    [classes.backdropOverlay]: isTeacher,
                 })}
             >
                 {expanded && (<ExpandCamera user={user} />) }
@@ -162,11 +162,11 @@ const UserCameraActions = ({
                         {!isSelf && isTeacher && (
                             <TooltipIntl id="live.class.stickers">
                                 <IconButton
-                                    aria-label="Trophy"
+                                    aria-label="Stickers Actions Icon"
                                     className={classes.iconButton}
                                     onClick={handleTrophyOpen}
                                 >
-                                    <TrophyIcon size="0.7em" />
+                                    <StarFillIcon size="0.7em" />
                                 </IconButton>
                             </TooltipIntl>
                         )}
@@ -219,11 +219,6 @@ const UserCameraActions = ({
                     id="give_star"
                     icon={<StarFillIcon size="1.2rem" />}
                     onClick={() => rewardTrophy(user.id, `star`)}
-                />
-                <ToolTipMenuItem
-                    id="give_heart"
-                    icon={<HeartFillIcon size="1.2rem" />}
-                    onClick={() => rewardTrophy(user.id, `heart`)}
                 />
             </Menu>
         </>

@@ -47,8 +47,8 @@ import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill"
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
+import { StarFill as StickersActionsIcon } from "@styled-icons/bootstrap/StarFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
-import { Heart as StickersActionsIcon } from "@styled-icons/entypo/Heart";
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
 import { PresentationChartBar as PresentIcon } from "@styled-icons/heroicons-solid/PresentationChartBar";
@@ -217,8 +217,7 @@ function Toolbar () {
         initOnBack();
     }, []);
 
-    const caretDisplay = activeTab === ActiveTabStateType.MOSAIC ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes
-        ;
+    const caretDisplay = activeTab === ActiveTabStateType.MOSAIC ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes;
     const [ showCanvasMenu, setShowCanvasMenu ] = useState<boolean>(true);
 
     return (

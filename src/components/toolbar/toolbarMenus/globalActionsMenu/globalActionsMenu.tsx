@@ -11,7 +11,6 @@ import {
     useTheme,
 } from "@material-ui/core";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
-import { HeartFill as HeartFillIcon } from "@styled-icons/bootstrap/HeartFill";
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import React from "react";
@@ -86,15 +85,6 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             }),
             icon: <StarFillIcon size="1.4rem" />,
             onClick: () => rewardTrophy(sessionId, `star`),
-        },
-        {
-            id: `global-action-give-heart`,
-            title: intl.formatMessage({
-                id: `give_heart`,
-            }),
-            icon: <HeartFillIcon size="1.4rem" />,
-            onClick: () => rewardTrophy(sessionId, `heart`),
-            variant: `red`,
         },
     ];
 
