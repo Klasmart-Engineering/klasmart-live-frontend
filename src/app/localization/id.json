@@ -373,7 +373,7 @@
     "schedule.seeDetails": "Lihat detail",
     "schedule.status.start": "Mulai",
     "schedule.tab.anytime": "Kapanpun",
-    "scheduleDetails.teacherCount": "Teachers ({value})",
-    "scheduleDetails.empty.description": "No description available",
-    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
+    "scheduleDetails.teacherCount": "Guru ({value})",
+    "scheduleDetails.empty.description": "Tidak ada deskripsi",
+    "schedule.moreTeacher": "+ {value} lebih {value, plural, one {guru} other {guru}}"
 }
