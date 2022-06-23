@@ -4,7 +4,11 @@ import { OrganizationList } from "@/app/components/organization/organizationList
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
-import { dialogsState, selectOrgAfterSwitchingProfile } from "@/app/model/appModel";
+import {
+    dialogsState,
+    selectOrgAfterSwitchingProfile,
+    selectOrgFromParentDashboardState,
+} from "@/app/model/appModel";
 import {
     THEME_BACKGROUND_SELECT_DIALOG,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
@@ -28,7 +32,11 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
-import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme) => ({
     fullWidth: {
@@ -71,9 +79,10 @@ export function useShouldSelectOrganization () {
 
     const selectOrgAfterSwitchingProfileValue = useRecoilValue(selectOrgAfterSwitchingProfile);
     const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
+    const isSelectOrgFromParentDashboard = useRecoilValue(selectOrgFromParentDashboardState);
 
     useEffect(() => {
-        if (meDataLoading) return;
+        if (meDataLoading || isSelectOrgFromParentDashboard) return;
 
         // 1. User profile haven't been selected
         if (!meData?.me) {
@@ -115,7 +124,7 @@ export function useShouldSelectOrganization () {
             setDialogs({
                 ...dialogs,
                 isSelectOrganizationOpen: false,
-            })
+            });
 
         } else { // 2. User has more than 2 organizations
             setShouldSelectOrganization(true);
@@ -170,7 +179,7 @@ export function SelectOrgDialog () {
             ...dialogs,
             isSelectUserOpen: true,
         });
-    }
+    };
 
     return (
         <Dialog
@@ -191,22 +200,27 @@ export function SelectOrgDialog () {
                     container
                     alignItems="center"
                     justifyContent="flex-start"
-                    direction="column">
+                    direction="column"
+                >
                     <Grid
                         item
                         xs={8}
-                        sm={6}>
+                        sm={6}
+                    >
                         <Typography
                             variant={isSmUp ? `h4` : `h5`}
-                            className={classes.header}>
+                            className={classes.header}
+                        >
                             <FormattedMessage
                                 id="account_selectOrg_whichOrg"
-                                defaultMessage="Which organization are you studying with?" />
+                                defaultMessage="Which organization are you studying with?"
+                            />
                         </Typography>
                     </Grid>
                     <Grid
                         item
-                        className={classes.fullWidth}>
+                        className={classes.fullWidth}
+                    >
                         <OrganizationList
                             organizations={activeOrganizations}
                             selectedOrganization={selectedOrganization}

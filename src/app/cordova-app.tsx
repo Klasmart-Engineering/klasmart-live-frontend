@@ -1,4 +1,5 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { ParentDashboardPage } from "./pages/parent-dashboard/parentDashboardPage";
 import ReportPage from "./pages/report";
 import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
 import LiveStudyListPage from "./pages/schedule/category-live";
@@ -21,6 +22,7 @@ import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
+    selectOrgFromParentDashboardState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
@@ -75,25 +77,32 @@ export function CordovaApp ({ history }: {
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
+    const isSelectOrgFromParentDashboard = useRecoilValue(selectOrgFromParentDashboardState);
 
     useEffect(() => {
         if (loading) return;
         if (!authenticated) {
-            cmsQueryClient.getQueryCache().clear();
-            cmsQueryClient.getMutationCache().clear();
+            cmsQueryClient.getQueryCache()
+                .clear();
+            cmsQueryClient.getMutationCache()
+                .clear();
             signOut();
+            return;
+        }
+        if (isSelectOrgFromParentDashboard && shouldSelectUser) {
             return;
         }
         setDialogs({
             ...dialogs,
-            isSelectUserOpen: shouldSelectUser,
-            isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization,
+            isSelectUserOpen: shouldSelectUser && !isSelectOrgFromParentDashboard,
+            isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization && !isSelectOrgFromParentDashboard,
             isShowNoOrgProfile: shouldShowNoOrgProfile,
             isShowNoStudentRole: shouldShowNoStudentRole,
         });
     }, [
         authenticated,
         loading,
+        isSelectOrgFromParentDashboard,
         shouldSelectUser,
         shouldSelectOrganization,
         shouldShowNoOrgProfile,
@@ -172,6 +181,10 @@ export function CordovaApp ({ history }: {
                     <UserRoute
                         path="/settings"
                         component={SettingsPage}
+                    />
+                    <UserRoute
+                        path="/parent-dashboard"
+                        component={ParentDashboardPage}
                     />
                     <UserRoute
                         path="/report/parent-dashboard"

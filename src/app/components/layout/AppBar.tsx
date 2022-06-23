@@ -1,5 +1,9 @@
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
 import {
+    THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_ORG_MENU_DRAWER,
+} from "@/config";
+import {
     AppBar as MUIAppBar,
     createStyles,
     Grid,
@@ -7,13 +11,30 @@ import {
     Toolbar,
     Typography,
 } from "@material-ui/core";
+import clsx from "clsx";
 import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         borderBottom: `1px solid ${theme.palette.divider}`,
     },
-    centeredLogo:{
+    roundedAppbar: {
+        backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
+        borderBottomLeftRadius: theme.spacing(3),
+        height: theme.spacing(8),
+        fontWeight: theme.typography.fontWeightBold as number,
+        color: THEME_COLOR_BACKGROUND_PAPER,
+        [theme.breakpoints.up(`sm`)]: {
+            height: theme.spacing(12),
+        },
+        "& $titleInAppBar": {
+            fontSize: `1.25rem`,
+        },
+        "& $toolbar": {
+            padding: theme.spacing(0, 1),
+        },
+    },
+    centeredLogo: {
         position: `absolute`,
         textAlign: `center`,
         zIndex: -1,
@@ -34,10 +55,16 @@ const useStyles = makeStyles((theme) => createStyles({
     },
 }));
 
+export enum AppBarStyle {
+    DEFAULT,
+    ROUNDED,
+}
+
 interface Props {
     title?: string;
     leading?: React.ReactNode;
     trailing?: React.ReactNode;
+    style?: AppBarStyle;
 }
 
 export default function AppBar (props: Props) {
@@ -45,15 +72,21 @@ export default function AppBar (props: Props) {
         title,
         leading,
         trailing,
+        style = AppBarStyle.DEFAULT,
     } = props;
     const classes = useStyles();
 
     return (
-        <div>
+        <div className={clsx({
+            [classes.root]: style === AppBarStyle.DEFAULT,
+        })}
+        >
             <MUIAppBar
                 position="sticky"
                 elevation={0}
-                className={classes.root}
+                className={clsx({
+                    [classes.roundedAppbar]: style === AppBarStyle.ROUNDED,
+                })}
             >
                 <Toolbar className={classes.toolbar}>
                     <Grid

@@ -31,6 +31,7 @@ export enum ClassType {
     HOME_FUN_STUDY = `home_fun_study`,
     REVIEW = `review`,
     PREVIEW = `preview`,
+    REPORT = `report`,
 }
 
 export const CLASS_TYPES = Object.values(ClassType);
