@@ -4,13 +4,17 @@ import {
     ContentType,
     InteractiveMode,
 } from "@/pages/utils";
-import { activeTabState } from "@/store/layoutAtoms";
+import {
+    activeTabState,
+    ActiveTabStateType,
+} from "@/store/layoutAtoms";
 import { UserNode } from "@/types/attendee";
 import {
     LessonMaterial,
     MaterialTypename,
 } from "@/types/lessonMaterial";
 import {
+    Dialog,
     Drawer,
     Fade,
     makeStyles,
@@ -60,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginLeft: theme.spacing(2),
         height: `100%`,
     },
-    popperRoot:{
+    popperRoot: {
         zIndex: CLASS_POPPER_ZINDEX,
     },
     popperPapper: {
@@ -121,7 +125,7 @@ function StyledDrawer (props: StyledDrawerProps) {
             <div
                 className={classes.styledDrawerInner}
                 style={{
-                    marginBottom: activeTab === `mosaic` ? 20 : ``,
+                    marginBottom: activeTab === ActiveTabStateType.MOSAIC ? 20 : ``,
                 }}
             >{children}
             </div>
@@ -132,7 +136,7 @@ function StyledDrawer (props: StyledDrawerProps) {
 export { StyledDrawer };
 
 interface StyledPopperProps {
-	children: any;
+	children: React.ReactNode;
 	open?: boolean;
     anchorEl?: HTMLElement | null;
     placement?: PopperPlacementType;
@@ -140,6 +144,8 @@ interface StyledPopperProps {
     showScrollbar?: boolean;
     modifiers?: Record<string, unknown>;
     isKeyboardVisible?: boolean;
+    dialog?: boolean;
+    dialogClose?: () => void;
 }
 
 function StyledPopper (props: StyledPopperProps) {
@@ -157,7 +163,20 @@ function StyledPopper (props: StyledPopperProps) {
             },
         },
         isKeyboardVisible = false,
+        dialog = false,
+        dialogClose,
     } = props;
+
+    if(dialog){
+        return(
+            <Dialog
+                open={open}
+                onClose={dialogClose}
+            >
+                {children}
+            </Dialog>
+        );
+    }
 
     return (
         <Popper
@@ -216,56 +235,6 @@ function TabPanel (props: TabPanelProps) {
     );
 }
 export { TabPanel };
-
-const useStylesNoItemList = makeStyles((theme: Theme) => ({
-    root:{
-        display: `flex`,
-        justifyContent: `center`,
-        alignItems: `center`,
-        height: `100%`,
-    },
-    inner:{
-        display: `flex`,
-        flexDirection: `column`,
-        alignItems: `center`,
-        textAlign: `center`,
-    },
-    icon:{
-        marginBottom: 10,
-        "& svg":{
-            height: `4rem`,
-            width: `4rem`,
-            opacity: 0.1,
-        },
-    },
-    text:{
-        color: theme.palette.grey[700],
-    },
-}));
-
-interface NoItemListProps {
-	icon?: any;
-	text?: string;
-}
-
-function NoItemList (props: NoItemListProps) {
-    const classes = useStylesNoItemList();
-    const {
-        icon,
-        text,
-    } = props;
-
-    return (
-        <div className={classes.root}>
-            <div className={classes.inner}>
-                <div className={classes.icon}>{icon}</div>
-                <Typography className={classes.text}>{text}</Typography>
-            </div>
-        </div>
-    );
-}
-
-export { NoItemList };
 
 declare global {
     interface Document {
@@ -386,7 +355,8 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
             credentials: `include`,
         });
 
-        if (response.status === 200) return response.clone().json();
+        if (response.status === 200) return response.clone()
+            .json();
     }
 
     try { data = await Promise.all([ classAPI() ]); }
@@ -517,7 +487,8 @@ export async function getAttendeeFullName (userId: string, endpoint: string) {
 
 export function removeKLLH5PStateStorage (){
     const search = `kll-h5p-state`;
-    const keys = Object.keys(localStorage).filter((key) => key.startsWith(search) );
+    const keys = Object.keys(localStorage)
+        .filter((key) => key.startsWith(search) );
     keys.forEach((key) => {
         localStorage.removeItem(key);
     });
@@ -529,3 +500,8 @@ export const usePrevious = <T,>(value: T): T | undefined => {
     });
     return ref.current;
 };
+
+export const changeStatusBarColor = (color: string) => {
+    const StatusBar = (window as any).StatusBar;
+    StatusBar.backgroundColorByHexString(color);
+}

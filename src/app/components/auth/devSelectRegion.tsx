@@ -63,6 +63,10 @@ export function DevSelectRegion (){
             id: `auth.research.kidsloop.live`,
             name: `R&D Korea`,
         },
+        {
+            id: `auth.prelaunch.kidsloop.live`,
+            name: `Prelaunch`,
+        },
     ];
 
     const [ selectedRegion, setSelectedRegion ] = useRecoilState(selectedRegionState);
@@ -82,7 +86,7 @@ export function DevSelectRegion (){
     return (
         <>
             {regions.map(region =>
-                <Button
+                (<Button
                     key={region.id}
                     fullWidth
                     variant="contained"
@@ -93,7 +97,7 @@ export function DevSelectRegion (){
                     onClick={() => { selectRegionWithId(region.id); }}
                 >
                 Select region: {region.name}
-                </Button>)}
+                 </Button>))}
         </>
     );
 }

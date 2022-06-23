@@ -9,19 +9,21 @@ import React, {
 
 type Props = {
     children: ReactChild | ReactChildren | null;
-    sessionId: string;
 }
 
-export function CompositionRoot ({ children, sessionId }: Props) {
+export function CompositionRoot ({ children }: Props) {
+
     return (
+
         <RegionSelectProvider>
             <FeatureProvider>
                 <ServicesProvider>
-                    <SessionContextProvider sessionId={sessionId}>
-                        { children }
+                    <SessionContextProvider>
+                        {children}
                     </SessionContextProvider>
                 </ServicesProvider>
             </FeatureProvider>
         </RegionSelectProvider>
+
     );
 }

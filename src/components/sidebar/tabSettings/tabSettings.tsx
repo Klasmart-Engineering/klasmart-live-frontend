@@ -3,6 +3,7 @@ import TabSettingsMenu from "./tabSettingsMenu";
 import {
     activeSettingsStateTab,
     activeTabState,
+    ActiveTabStateType,
 } from "@/store/layoutAtoms";
 import {
     Fade,
@@ -18,17 +19,17 @@ import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     fullheight: {
-        height : `100%`,
+        height: `100%`,
     },
-    tabContainer:{
+    tabContainer: {
         marginLeft: theme.spacing(1),
     },
-    tabPaper:{
-        height : `100%`,
+    tabPaper: {
+        height: `100%`,
         backgroundColor: theme.palette.background.paper,
         borderRadius: 12,
     },
-    tabInner:{
+    tabInner: {
         padding: theme.spacing(2),
     },
 }));
@@ -49,7 +50,7 @@ function TabSettings () {
             }),
             icon: <SettingsIcon size="1.5rem" />,
             content: <Settings />,
-            disabled : false,
+            disabled: false,
         },
         /*
         {
@@ -96,9 +97,9 @@ function TabSettings () {
     const activeTabContent = settingsTabs.find(item=> item.name === activeSettingsTab)?.content;
 
     useEffect(() => {
-        const listener = (event:any) => {
+        const listener = (event: any) => {
             if (event.code === `27` || event.code === `Escape`) {
-                setActiveTab(`participants`);
+                setActiveTab(ActiveTabStateType.PARTICIPANTS);
             }
         };
         window.addEventListener(`keydown`, listener);
@@ -109,14 +110,16 @@ function TabSettings () {
         <Fade in>
             <Grid
                 container
-                className={classes.fullheight}>
+                className={classes.fullheight}
+            >
                 <Grid item>
                     <TabSettingsMenu menu={settingsTabs} />
                 </Grid>
                 <Grid
                     item
                     xs
-                    className={classes.tabContainer}>
+                    className={classes.tabContainer}
+                >
                     {activeTabContent}
                 </Grid>
             </Grid>

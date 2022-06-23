@@ -277,7 +277,7 @@ export function ReportDetail () {
         },
     }
 
-    const studyDueAt = formatDueDateMillis(assessmentData?.schedule_due_at ?? 0, intl);
+    const studyDueAt = formatDueDateMillis(fromSecondsToMilliseconds(assessmentData?.schedule_due_at ?? 0), intl);
 
     const liveClassDateTime = formatStartEndDateTimeMillis(fromSecondsToMilliseconds(reportDetail.start_at), fromSecondsToMilliseconds(assessmentData?.class_end_at ?? 0), intl, false);
 

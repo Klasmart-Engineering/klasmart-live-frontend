@@ -4,19 +4,18 @@ import {
     makeStyles,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React,
-{ useEffect } from "react";
+import React from "react";
 
 const useStyles = makeStyles((theme) => createStyles({
     border: {
-        position: `absolute`,
+        position: `fixed`,
         borderStyle: `solid`,
         borderWidth: theme.spacing(0.5),
         borderRadius: theme.spacing(0.5),
         pointerEvents: `none`,
     },
     borderFullScreen: {
-        position: `absolute`,
+        position: `fixed`,
         borderStyle: `solid`,
         borderWidth: theme.spacing(0.5),
         borderRadius: theme.spacing(0.5),

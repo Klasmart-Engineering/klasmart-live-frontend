@@ -4,13 +4,13 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import {
     activeTabState,
+    ActiveTabStateType,
     mosaicViewSizeState,
 } from "@/store/layoutAtoms";
 import {
     Fade,
     Grid,
     makeStyles,
-    Theme,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
@@ -20,76 +20,76 @@ import React,
 } from "react";
 import { useRecoilState } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles((theme) => ({
     cameraGrid: {
         display: `grid`,
         gridTemplateColumns: `repeat(4, 1fr)`,
         gridGap: 20,
         padding: `0 30px`,
-        "&>div":{
+        "&>div": {
             minHeight: 260,
         },
     },
-    gridContainerTeachers:{
+    gridContainerTeachers: {
         marginBottom: 15,
-        "& $cameraGrid":{
+        "& $cameraGrid": {
             display: `flex`,
             justifyContent: `center`,
-            "&>div":{
+            "&>div": {
                 minHeight: 150,
                 width: 260,
             },
         },
     },
     gridContainerStudents: {
-        overflowY : `scroll`,
+        overflowY: `scroll`,
         position: `relative`,
         paddingBottom: 20,
     },
     fullheight: {
         height: `100%`,
     },
-    viewContainer:{
+    viewContainer: {
         height: `calc(100% - 10px)`,
         position: `relative`,
         overflow: `hidden`,
     },
-    drawerContainer:{
+    drawerContainer: {
         paddingBottom: 20,
     },
-    toolbarContainer:{
+    toolbarContainer: {
         width: `calc(100% + 20px)`,
         margin: -10,
         marginTop: 0,
     },
-    cameraGrid2:{
+    cameraGrid2: {
         gridTemplateColumns: `repeat(7, 1fr)`,
-        "&>div":{
+        "&>div": {
             minHeight: 115,
             fontSize: `0.8rem`,
         },
     },
-    cameraGrid3:{
+    cameraGrid3: {
         gridTemplateColumns: `repeat(6, 1fr)`,
-        "&>div":{
+        "&>div": {
             minHeight: 135,
         },
     },
-    cameraGrid4:{
+    cameraGrid4: {
         gridTemplateColumns: `repeat(5, 1fr)`,
-        "&>div":{
+        "&>div": {
             minHeight: 175,
         },
     },
-    cameraGrid5:{
+    cameraGrid5: {
         gridTemplateColumns: `repeat(4, 1fr)`,
-        "&>div":{
+        "&>div": {
             minHeight: 210,
         },
     },
-    cameraGrid6:{
+    cameraGrid6: {
         gridTemplateColumns: `repeat(3, 1fr)`,
-        "&>div":{
+        "&>div": {
             minHeight: 280,
         },
     },
@@ -114,9 +114,9 @@ function TabMosaic () {
     }, [ sessions, sessions.size ]);
 
     useEffect(() => {
-        const listener = (event: any) => {
+        const listener = (event: KeyboardEvent) => {
             if (event.code === `27` || event.code === `Escape`) {
-                setActiveTab(`participants`);
+                setActiveTab(ActiveTabStateType.PARTICIPANTS);
             }
         };
         window.addEventListener(`keydown`, listener);
@@ -128,17 +128,21 @@ function TabMosaic () {
             <Grid
                 container
                 direction="column"
-                className={classes.fullheight}>
+                className={classes.fullheight}
+            >
                 <Grid
                     item
-                    xs>
+                    xs
+                >
                     <Grid
                         container
                         direction="column"
-                        className={classes.viewContainer}>
+                        className={classes.viewContainer}
+                    >
                         <Grid
                             item
-                            className={classes.gridContainerTeachers}>
+                            className={classes.gridContainerTeachers}
+                        >
                             <div className={classes.cameraGrid}>
                                 <ListUserCamera users={teachersSessions} />
                             </div>
@@ -146,14 +150,16 @@ function TabMosaic () {
                         <Grid
                             item
                             xs
-                            className={classes.gridContainerStudents}>
+                            className={classes.gridContainerStudents}
+                        >
                             <div className={clsx(classes.cameraGrid, {
-                                [classes.cameraGrid2] : mosaicViewSize === 2,
-                                [classes.cameraGrid3] : mosaicViewSize === 3,
-                                [classes.cameraGrid4] : mosaicViewSize === 4,
-                                [classes.cameraGrid5] : mosaicViewSize === 5,
-                                [classes.cameraGrid6] : mosaicViewSize === 6,
-                            })}>
+                                [classes.cameraGrid2]: mosaicViewSize === 2,
+                                [classes.cameraGrid3]: mosaicViewSize === 3,
+                                [classes.cameraGrid4]: mosaicViewSize === 4,
+                                [classes.cameraGrid5]: mosaicViewSize === 5,
+                                [classes.cameraGrid6]: mosaicViewSize === 6,
+                            })}
+                            >
                                 <ListUserCamera users={studentsSessions} />
                             </div>
                         </Grid>
@@ -161,7 +167,8 @@ function TabMosaic () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.toolbarContainer}>
+                    className={classes.toolbarContainer}
+                >
                     <Toolbar />
                 </Grid>
             </Grid>

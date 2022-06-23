@@ -8,13 +8,15 @@ import {
     Tab,
     Tabs,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import RosterIcon from '@material-ui/icons/AccessibilityNew';
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     boxStyle: {
@@ -56,8 +58,10 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
     const { anchor } = props;
     const classes = useStyles();
     const intl = useIntl();
+    const theme = useTheme();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
-    const isClassDetailsOpen = useRecoilValue(isClassDetailsOpenState);
+    const [ isClassDetailsOpen, setIsClassDetailsOpen ] = useRecoilState(isClassDetailsOpenState);
     const [ tabValue, setTabValue ] = useState(0);
 
     const handleChange = (event: React.ChangeEvent<{}>, newTabValue: number) => {
@@ -67,7 +71,10 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
     return (
         <StyledPopper
             open={isClassDetailsOpen}
-            anchorEl={anchor}>
+            anchorEl={anchor}
+            dialog={isXsDown}
+            dialogClose={() => setIsClassDetailsOpen(open => !open)}
+        >
             <div className={classes.popperStyle}>
                 <Tabs
                     centered
@@ -81,25 +88,29 @@ function ClassDetailsMenu (props: GlobaActionsMenuProps) {
                         icon={<InfoIcon />}
                         label={intl.formatMessage({
                             id: `classdetails_details`,
-                        })} />
+                        })}
+                    />
 
                     <Tab
                         disableRipple
                         icon={<RosterIcon />}
                         label={intl.formatMessage({
                             id: `classdetails_roster`,
-                        })} />
+                        })}
+                    />
                 </Tabs>
 
                 <TabPanel
                     value={tabValue}
-                    index={0}>
+                    index={0}
+                >
                     <ClassDetails />
                 </TabPanel>
 
                 <TabPanel
                     value={tabValue}
-                    index={1}>
+                    index={1}
+                >
                     <ClassRoster />
                 </TabPanel>
             </div>
@@ -135,7 +146,8 @@ function TabPanel (props: TabPanelProps) {
         >
             {value === index && (
                 <Box
-                    className={classes.boxStyle}>
+                    className={classes.boxStyle}
+                >
                     {children}
                 </Box>
             )}

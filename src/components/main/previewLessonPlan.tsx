@@ -7,7 +7,7 @@ import {
 } from "@/store/layoutAtoms";
 import { MaterialTypename } from "@/types/lessonMaterial";
 import { useMaterialToHref } from "@/utils/contentUtils";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import ContainedWhiteboard from "@/whiteboard/components/ContainedWhiteboard";
 import { Typography } from "@material-ui/core";

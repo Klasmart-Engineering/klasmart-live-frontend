@@ -312,13 +312,14 @@
     "screenShare.error.default": "抱歉！无法共享屏幕",
     "screenShare.error.NotAllowedError": "你需要允许授权来分享你的屏幕",
     "screenShare.error.NotReadableError": "抱歉！你的系统没有共享屏幕的权限",
-    "live.class.participant.title": "Participants ({count})",
-    "tooltip.zoomIn": "Zoom In",
-    "tooltip.zoomOut": "Zoom Out",
-    "tooltip.fitToWidth": "Fit to Width",
-    "tooltip.fitToHeight": "Fit to Height",
-    "canvas.tool.thickness": "Thickness",
-    "content.pdf.notAvailable": "Cannot load PDF",
-    "live.tooltip.previousPage": "Previous Page",
-    "live.tooltip.nextPage": "Next Page"
+    "live.class.participant.title": "参与者 ( {count} )",
+    "tooltip.zoomIn": "放大",
+    "tooltip.zoomOut": "缩小",
+    "tooltip.fitToWidth": "适合宽度",
+    "tooltip.fitToHeight": "适合高度",
+    "canvas.tool.thickness": "厚度",
+    "content.pdf.notAvailable": "无法加载 PDF",
+    "live.tooltip.previousPage": "上一页",
+    "live.tooltip.nextPage": "下一页",
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
 }

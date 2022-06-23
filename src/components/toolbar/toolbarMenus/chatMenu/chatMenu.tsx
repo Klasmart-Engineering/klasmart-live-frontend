@@ -4,36 +4,14 @@ import Chat from "@/components/main/chat/chat";
 import { isChatOpenState } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import {
-    Grid,
     makeStyles,
-    Theme,
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
 import React from "react";
-import {
-    isBrowser,
-    isTablet,
-} from "react-device-detect";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        padding: 4,
-    },
-    item:{
-        padding: `8px 16px`,
-        margin: `0 4px`,
-        cursor: `pointer`,
-        borderRadius: 10,
-        transition: `100ms all ease-in-out`,
-        "&:hover": {
-            backgroundColor: theme.palette.grey[200],
-        },
-    },
-    itemClear:{},
-    itemToggleCanvas:{},
-}));
+const useStyles = makeStyles((theme) => ({}));
 
 interface ChatMenuProps {
 	anchor: HTMLElement;
@@ -41,13 +19,12 @@ interface ChatMenuProps {
 
 function ChatMenu (props: ChatMenuProps) {
     const { anchor } = props;
-    const classes = useStyles();
 
-    const isChatOpen = useRecoilValue(isChatOpenState);
-
+    const [ isChatOpen, setisChatOpen ] = useRecoilState(isChatOpenState);
     const isKeyboardVisible = useRecoilValue(isKeyboardVisibleState);
     const { isAndroid } = useCordovaSystemContext();
     const theme = useTheme();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
     const popperHeight = isMdDown ? (isKeyboardVisible ? `100vh` : `calc(100vh - 95px)`) : 400;
 
@@ -63,17 +40,11 @@ function ChatMenu (props: ChatMenuProps) {
             height={popperHeight}
             open={isChatOpen}
             anchorEl={anchor}
-            isKeyboardVisible={isKeyboardVisible}>
-            <Grid
-                container
-                alignItems="stretch"
-                className={classes.root}>
-                <Grid
-                    item
-                    xs>
-                    <Chat />
-                </Grid>
-            </Grid>
+            isKeyboardVisible={isKeyboardVisible}
+            dialog={isXsDown}
+            dialogClose={() => setisChatOpen(open => !open)}
+        >
+            <Chat dialog={isXsDown} />
         </StyledPopper>
     );
 }

@@ -9,12 +9,12 @@ import { useSessions } from "@/data/live/state/useSessions";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { hasControlsState } from "@/store/layoutAtoms";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import {
+    ButtonBase,
     Fade,
     Grid,
     makeStyles,
-    Theme,
     Tooltip,
     Typography,
     useMediaQuery,
@@ -46,19 +46,21 @@ const useStyles = makeStyles((theme) => ({
             padding: `0`,
             minHeight: `auto`,
         },
-        "& $cameraGrid":{
-            gridTemplateColumns: `1fr`,
+        [theme.breakpoints.down(`xs`)]: {
+            flexWrap: `nowrap`,
+            margin: theme.spacing(1, 0),
         },
     },
     cameraGrid: {
         display: `grid`,
-        gridTemplateColumns: `1fr 1fr`,
-        gridGap: `10px`,
-    },
-    studentCameraGrid: {
-        display: `grid`,
         gridTemplateColumns: `1fr`,
         gridGap: `10px`,
+    },
+    cameraGridTwoColumns: {
+        gridTemplateColumns: `1fr 1fr`,
+        [theme.breakpoints.between(`sm`, 1024)]: {
+            gridTemplateColumns: `1fr`,
+        },
     },
     cameraGridSingleTeacher:{
         gridTemplateColumns: `1fr`,
@@ -72,8 +74,13 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: -10,
         paddingBottom: 10,
     },
+    gridContainerAll: {
+        overflowY: `auto`,
+        height: `100%`,
+    },
     fullheight: {
         height: `100%`,
+        flexWrap: `nowrap`,
     },
     participants: {
         display: `flex`,
@@ -109,6 +116,7 @@ function TabParticipants () {
     const sessions = useSessions();
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     const { isTeacher } = useSessionContext();
     const hasControls = useRecoilValue(hasControlsState);
 
@@ -177,7 +185,9 @@ function TabParticipants () {
                                     title={action.title ?? ``}
                                     placement="bottom"
                                 >
-                                    <div
+                                    <ButtonBase
+                                        disableRipple
+                                        disableTouchRipple
                                         id={action.id}
                                         className={clsx(classes.globalMuteActionIcon, {
                                             [classes.active]: action.active,
@@ -185,7 +195,7 @@ function TabParticipants () {
                                         onClick={action.onClick}
                                     >
                                         {action.activeIcon ? ( action.active ? action.activeIcon : action.icon ) : action.icon}
-                                    </div>
+                                    </ButtonBase>
                                 </Tooltip>
                             ))}
                         </>
@@ -193,48 +203,58 @@ function TabParticipants () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.gridContainerTeachers}
+                    className={classes.gridContainerAll}
                 >
-                    {teachersSessions.length ? (
-                        <div className={clsx(classes.cameraGrid, {
-                            [classes.cameraGridSingleTeacher] : isTeacher && teachersSessions.length === 1,
-                            [classes.studentCameraGrid]: !isTeacher,
-                        })}
-                        >
-                            <ListUserCamera users={teachersSessions} />
-                        </div>
-                    ) : (
-                        <NoItemList
-                            icon={<UserIcon />}
-                            text={intl.formatMessage({
-                                id: `no_teachers_connected`,
+                    <Grid
+                        item
+                        className={classes.gridContainerTeachers}
+                    >
+                        {teachersSessions.length ? (
+                            <div className={clsx(classes.cameraGrid, {
+                                [classes.cameraGridTwoColumns] : isTeacher,
+                                [classes.cameraGridSingleTeacher] : isTeacher && teachersSessions.length === 1 && !isXsDown,
                             })}
-                        />
-                    )}
-                </Grid>
-                <Grid
-                    item
-                    xs
-                    className={clsx({
-                        [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
-                    })}
-                >
-                    {studentsSessions.length ? (
-                        <div className={clsx({
-                            [classes.studentCameraGrid]: !isTeacher,
-                            [classes.cameraGrid]: isTeacher,
+                            >
+                                <ListUserCamera
+                                    users={teachersSessions}
+                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
+                                />
+                            </div>
+                        ) : (
+                            <NoItemList
+                                icon={<UserIcon />}
+                                text={intl.formatMessage({
+                                    id: `no_teachers_connected`,
+                                })}
+                            />
+                        )}
+                    </Grid>
+                    <Grid
+                        item
+                        xs
+                        className={clsx({
+                            [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
                         })}
-                        >
-                            <ListUserCamera users={studentsSessions} />
-                        </div>
-                    ) : (
-                        <NoItemList
-                            icon={<UserIcon />}
-                            text={intl.formatMessage({
-                                id: `no_students_connected`,
+                    >
+                        {studentsSessions.length ? (
+                            <div className={clsx(classes.cameraGrid, {
+                                [classes.cameraGridTwoColumns] : isTeacher,
                             })}
-                        />
-                    )}
+                            >
+                                <ListUserCamera
+                                    users={studentsSessions}
+                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
+                                />
+                            </div>
+                        ) : (
+                            <NoItemList
+                                icon={<UserIcon />}
+                                text={intl.formatMessage({
+                                    id: `no_students_connected`,
+                                })}
+                            />
+                        )}
+                    </Grid>
                 </Grid>
             </Grid>
         </Fade>

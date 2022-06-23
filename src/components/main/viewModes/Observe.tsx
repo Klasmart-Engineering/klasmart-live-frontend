@@ -4,7 +4,6 @@ import InteractionRecorder from "@/components/interactiveContent/InteractionReco
 import Loading from "@/components/interactiveContent/loading";
 import {
     THEME_COLOR_GREY_200,
-    THEME_COLOR_GREY_BORDER_FULLSCREEN,
     THEME_COLOR_NAME_FULLSCREEN,
 } from "@/config";
 import { useContent } from "@/data/live/state/useContent";
@@ -13,17 +12,13 @@ import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { isShowContentLoadingState } from "@/store/layoutAtoms";
 import { useContentToHref } from "@/utils/contentUtils";
-import {
-    NoItemList,
-    toggleFullScreenById,
-} from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
     makeStyles,
     Theme,
     Typography,
 } from "@material-ui/core";
-import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
 import { Book as PlanIcon } from "@styled-icons/boxicons-regular/Book";
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
@@ -217,7 +212,8 @@ export default function Observe (props: Props) {
                 <div className={classes.fullHeight}>
                     <div className={clsx(classes.root, {
                         [classes.rootFullScreen]: isFullScreen,
-                    })}>
+                    })}
+                    >
                         {studentSessions.map((session) => {
                             return (
                                 <StudentPreviewCard
@@ -309,14 +305,17 @@ function StudentPreviewCard (props: StudentPreviewCardProps) {
             <div className={isFullScreen ? classes.previewNameContainer : ``}>
                 <Typography className={clsx(classes.previewName, {
                     [classes.previewNameFullScreen]: isFullScreen,
-                })}>{session.name}</Typography>
+                })}
+                >{session.name}
+                </Typography>
             </div>
             {session?.streamId
                 ? (
                     <div className={classes.centerContent}>
                         <div
                             className={classes.previewExpand}
-                            onClick={() => onToggleFullScreen(session.id)}>
+                            onClick={() => onToggleFullScreen(session.id)}
+                        >
                             {isFullScreen ? <ArrowsCompress size="1em" /> : <ArrowsExpand size="1em" />}
                         </div>
                         <InteractionPlayer

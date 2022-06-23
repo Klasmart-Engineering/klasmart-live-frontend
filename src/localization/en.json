@@ -275,10 +275,10 @@
     "canvas.tool.myCanvas.off": "Turn off my canvas",
     "canvas.tool.allCanvas.on": "Turn on for everyone",
     "canvas.tool.allCanvas.off": "Turn off for everyone",
-    "globalMute.notification.micOff": "Your microphone is turned off for everyone",
-    "globalMute.notification.camOff": "Your camera is turned off for everyone",
-    "globalMute.notification.micOn": "Your microphone is turned on for everyone",
-    "globalMute.notification.camOn": "Your camera is turned on for everyone",
+    "globalMute.notification.micOff": "The teacher has turned off your microphone.",
+    "globalMute.notification.camOff": "The teacher has turned off your camera.",
+    "globalMute.notification.micOn": "The teacher has turned on your microphone.",
+    "globalMute.notification.camOn": "The teacher has turned on your camera.",
     "live.class.stickers": "Stickers",
     "canvas.turnOn": "Turn canvas on",
     "canvas.turnOff": "Turn canvas off",
@@ -289,8 +289,8 @@
     "content.pdf.page": "Page {current} of {total}",
     "content.pdf.chapter": "Chapter",
     "classtype.preview.live": "Preview Live",
-    "study.exit.leave": "Leave",
-    "study.exit.startAgain": "Start Again",
+    "study.exit.leave": "Exit",
+    "study.exit.startAgain": "Restart",
     "class.exit.exitClass": "Exit Class",
     "stream.loading": "Loading stream",
     "stream.waiting": "Waiting stream",
@@ -320,5 +320,6 @@
     "canvas.tool.thickness": "Thickness",
     "content.pdf.notAvailable": "Cannot load PDF",
     "live.tooltip.previousPage": "Previous Page",
-    "live.tooltip.nextPage": "Next Page"
+    "live.tooltip.nextPage": "Next Page",
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
 }

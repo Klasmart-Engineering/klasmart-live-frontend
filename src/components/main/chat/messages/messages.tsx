@@ -3,7 +3,7 @@ import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-c
 import { dialogsState, isKeyboardVisibleState } from "@/app/model/appModel";
 import DialogParentalLock from "@/app/components/ParentalLock";
 import { useMessages } from "@/data/live/state/useMessages";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import { openHyperLink } from "@/app/utils/link";
 import {
     Box,

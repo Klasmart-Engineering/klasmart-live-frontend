@@ -1,166 +1,181 @@
-import React, { useState } from "react";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { FormattedMessage, useIntl } from "react-intl";
-import AppBar from "@material-ui/core/AppBar";
-import { makeStyles } from "@material-ui/core/styles";
+import { ConfirmSignOutDialog } from "../../dialogs/confirmSignOutDialog";
+import AppBar,
+{ AppBarStyle } from "@/app/components/layout/AppBar";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import {
-  BG_COLOR_CAROUSEL_DOT_INACTIVE,
-  TEXT_COLOR_CONSTRAST_DEFAULT,
-  THEME_BACKGROUND_SELECT_DIALOG,
-  THEME_COLOR_ORG_MENU_DRAWER,
+    isShowOnBoardingState,
+    shouldClearCookieState,
+} from "@/app/model/appModel";
+import ParentImage from "@/assets/img/select-type/parent-illustration.svg";
+import StudentImage from "@/assets/img/select-type/student-illustration.svg";
+import {
+    BACKGROUND_PROCESS_GREY,
+    TEXT_COLOR_CONSTRAST_DEFAULT,
+    THEME_BACKGROUND_SELECT_DIALOG,
 } from "@/config";
-import { dialogsState } from "@/app/model/appModel";
-import Typography from "@material-ui/core/Typography";
-import Grid from "@material-ui/core/Grid";
-import StudentImage from "@/assets/img/select-type/student-illustration-mobile.svg";
-import ParentImage from "@/assets/img/select-type/parent-illustration-mobile.svg";
+import { ButtonBase } from "@material-ui/core";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
-import { ConfirmSignOutDialog } from "../../dialogs/confirmSignOutDialog";
+import { makeStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import clsx from "clsx";
+import React,
+{ useState } from "react";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
+import { useHistory } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+
+export enum SelectionTypes {
+    STUDENT = `Student`,
+    PARENT = `Parent`
+}
+
+const SELECTIONS = [
+    {
+        id: SelectionTypes.STUDENT,
+        type: `userSelection.student`,
+        image: StudentImage,
+        route: `/`,
+    },
+    {
+        id: SelectionTypes.PARENT,
+        type: `userSelection.parent`,
+        image: ParentImage,
+        route: `/parent-dashboard`,
+    },
+];
 
 const useStyles = makeStyles((theme) => ({
-  appbar: {
-    backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
-    borderBottomLeftRadius: theme.spacing(3),
-    height: "3rem",
-    [theme.breakpoints.up('sm')]: {
-      height: "6rem",
-    }
-  },
-  content: {
-    backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
-    width: '100%',
-    height: '100%'
-  },
-  title: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontWeight: theme.typography.fontWeightMedium as number,
-    color: TEXT_COLOR_CONSTRAST_DEFAULT,
-    fontSize: theme.spacing(2.5),
-    width: "100",
-    height: "100%",
-    fontFamily: "rooney-sans",
-    [theme.breakpoints.up('sm')]: {
-      fontSize: theme.spacing(3.5),
-    }
-  },
-  wrapper: {
-    height: "85%",
-    marginTop: theme.spacing(11),
-    flex: 1,
-    padding: theme.spacing(0, 2),
-    [theme.breakpoints.up('sm')]: {
-      marginTop: '10vh',
-    }
-  },
-  wrapperSelectItem: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    flexDirection: "column",
-    backgroundColor: TEXT_COLOR_CONSTRAST_DEFAULT,
-    height: "30vh",
-    borderRadius: theme.spacing(1.5),
-    marginBottom: theme.spacing(1),
-    [theme.breakpoints.up('sm')]: {
-      margin: theme.spacing(0, 10, 2, 10),
-      borderRadius: theme.spacing(2.5)
-    }
-  },
-  selectionTitle: {
-    fontFamily: "rooney-sans",
-    fontWeight: theme.typography.fontWeightMedium as number,
-    fontSize: "1.15rem",
-    [theme.breakpoints.up('sm')]: {
-      fontSize: "2rem",
-    }
-  },
-  image: {
-    width: "22vh",
-    height: "20vh",
-  },
-  signOutButton: {
-    borderRadius: theme.spacing(3),
-    borderTopRightRadius: theme.spacing(1),
-    fontFamily: "rooney-sans",
-    color: TEXT_COLOR_CONSTRAST_DEFAULT,
-    backgroundColor: BG_COLOR_CAROUSEL_DOT_INACTIVE,
-    fontSize: "1.15rem",
-    marginTop: "auto",
-    height: "7vh",
-    fontWeight: theme.typography.fontWeightBold as number,
-    [theme.breakpoints.up('sm')]: {
-      fontSize: theme.spacing(3.5),
-    }
-  },
-  container: {
-    width: '100%',
-    height: '100%'
-  }
+    wrapperSelectItem: {
+        flexDirection: `column`,
+        backgroundColor: TEXT_COLOR_CONSTRAST_DEFAULT,
+        height: `30vh`,
+        borderRadius: theme.spacing(1.5),
+        marginTop: theme.spacing(1),
+        [theme.breakpoints.up(`sm`)]: {
+            margin: theme.spacing(0, 10, 2, 10),
+            borderRadius: theme.spacing(2.5),
+        },
+    },
+    selectionTitle: {
+        fontWeight: theme.typography.fontWeightMedium as number,
+        fontSize: `1.15rem`,
+        [theme.breakpoints.up(`sm`)]: {
+            fontSize: `2rem`,
+        },
+    },
+    selectionButtons: {
+        marginTop: theme.spacing(2),
+        display: `flex`,
+        flexDirection: `column`,
+        padding: theme.spacing(0, 2),
+        [theme.breakpoints.up(`sm`)]: {
+            marginTop: theme.spacing(4),
+        },
+    },
+    image: {
+        width: `22vh`,
+        height: `20vh`,
+    },
+    signOutButton: {
+        borderRadius: theme.spacing(3),
+        borderTopRightRadius: theme.spacing(1),
+        color: TEXT_COLOR_CONSTRAST_DEFAULT,
+        backgroundColor: BACKGROUND_PROCESS_GREY,
+        "&:hover": {
+            backgroundColor: BACKGROUND_PROCESS_GREY,
+        },
+        fontSize: `1.15rem`,
+        margin: theme.spacing(`auto`, 2, 8, 2),
+        height: theme.spacing(7),
+        fontWeight: theme.typography.fontWeightBold as number,
+        [theme.breakpoints.up(`sm`)]: {
+            height: theme.spacing(9),
+            fontSize: theme.spacing(3.5),
+            marginLeft: theme.spacing(2.5),
+            marginRight: theme.spacing(2.5),
+        },
+    },
+    container: {
+        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
+        display: `flex`,
+        flexDirection: `column`,
+    },
+    flexCenter: {
+        display: `flex`,
+        justifyContent: `center`,
+        alignItems: `center`,
+    },
+    fullWidthHeight: {
+        width: `100%`,
+        height: `100%`,
+    },
 }));
 
-export function SelectTypePage(): JSX.Element {
-  const intl = useIntl();
-  const dialogs = useRecoilValue(dialogsState);
-  const classes = useStyles();
-  const [openConfirmationPopup, setOpenConfirmationPopup] = useState<boolean>(false);
+export function SelectTypePage () {
+    const intl = useIntl();
+    const classes = useStyles();
+    const { actions } = useAuthenticationContext();
+    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
+    const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
+    const [ openConfirmationPopup, setOpenConfirmationPopup ] = useState(false);
+    const history = useHistory();
 
-  const statusBar = (window as any).StatusBar;
-  statusBar.backgroundColorByHexString(THEME_COLOR_ORG_MENU_DRAWER);
-  statusBar.overlaysWebView(true);
-
-  const selections = [
-    {
-      type: "Student",
-      image: StudentImage,
-    },
-    {
-      type: "Parent",
-      image: ParentImage,
-    },
-  ];
-
-  return (
-    <Grid container direction="column" className={classes.container}>
-      <Grid item>
-        <AppBar className={classes.appbar} elevation={0}>
-          <Typography className={classes.title}>Choose your role</Typography>
-        </AppBar>
-      </Grid>
-      <Grid item className={classes.content}>
-        <Grid container direction="column" className={classes.wrapper}>
-          {selections.map((selection) => (
-            <Grid item>
-              <Box className={classes.wrapperSelectItem} onClick={() => { }}>
-                <img src={selection.image} className={classes.image} />
-
-                <Typography className={classes.selectionTitle}>
-                  {selection.type}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
-          <Button
-            className={classes.signOutButton}
-            onClick={() => setOpenConfirmationPopup(true)}
-          >
-            Sign Out
-          </Button>
-        </Grid>
-      </Grid>
-      <ConfirmSignOutDialog
-        visible={openConfirmationPopup}
-        onClose={() => setOpenConfirmationPopup(false)}
-        closeLabel={intl.formatMessage({
-          id: `button_cancel`,
-        })}
-        confirmLabel={'Sign Out'}
-        title={intl.formatMessage({
-          id: `hamburger.signOut.confirm`,
-        })}
-      />
-    </Grid>
-  );
+    return (
+        <Box className={clsx(classes.container, classes.fullWidthHeight)}>
+            <AppBar
+                style={AppBarStyle.ROUNDED}
+                title={intl.formatMessage({
+                    id: `userSelection.title`,
+                    defaultMessage: `Choose your role`,
+                })}
+            />
+            <Box className={classes.selectionButtons}>
+                {SELECTIONS.map((selection) => (
+                    <ButtonBase
+                        key={selection.id}
+                        className={clsx(classes.wrapperSelectItem, classes.flexCenter)}
+                        onClick={() => history.push(selection.route)}
+                    >
+                        <img
+                            src={selection.image}
+                            className={classes.image}
+                            alt={`Icon ${selection.id}`}
+                        />
+                        <Typography className={classes.selectionTitle}>
+                            <FormattedMessage id={selection.type} />
+                        </Typography>
+                    </ButtonBase>
+                ))}
+            </Box>
+            <Button
+                className={classes.signOutButton}
+                onClick={() => setOpenConfirmationPopup(true)}
+            >
+                <FormattedMessage id="account_selectOrg_signOut" />
+            </Button>
+            <ConfirmSignOutDialog
+                visible={openConfirmationPopup}
+                closeLabel={intl.formatMessage({
+                    id: `button_cancel`,
+                })}
+                confirmLabel={intl.formatMessage({
+                    id: `account_selectOrg_signOut`,
+                })}
+                title={intl.formatMessage({
+                    id: `hamburger.signOut.confirm`,
+                })}
+                onClose={() => setOpenConfirmationPopup(false)}
+                onConfirm={() => {
+                    setOpenConfirmationPopup(false);
+                    actions?.signOut();
+                    setShouldClearCookie(true);
+                    setShowOnBoarding(true);
+                }}
+            />
+        </Box>
+    );
 }

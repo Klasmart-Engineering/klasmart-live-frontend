@@ -2,17 +2,21 @@
 import { parseTokenParams } from "@/app/utils/parseTokenUtils";
 import { AuthTokenProvider } from "@/services/auth-token/AuthTokenProvider";
 import { ClassType } from "@/store/actions";
+import { hasJoinedClassroomState } from "@/store/layoutAtoms";
 import { LessonMaterial } from "@/types/lessonMaterial";
 import React,
 {
     createContext,
     ReactChild,
     ReactChildren,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
     useState,
 } from "react";
+import { useRecoilValue } from "recoil";
+import { v4 as uuid } from "uuid";
 
 interface Teacher {
     id: string;
@@ -29,6 +33,7 @@ const DEFAULT_SESSION_CONTEXT = {
     classType: ClassType.LIVE,
     user_id: ``,
     isReview: false,
+    type: ``,
 };
 
 export interface ISessionContext {
@@ -47,12 +52,14 @@ export interface ISessionContext {
     teachers?: Teacher[];
     dueDate?: number;
     startTime?: number;
+    type?: string;
     setName: React.Dispatch<React.SetStateAction<string | undefined>>;
     setToken: React.Dispatch<React.SetStateAction<string | undefined>>;
     setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
     setTeachers: React.Dispatch<React.SetStateAction<Teacher[] | undefined>>;
     setDueDate: React.Dispatch<React.SetStateAction<number | undefined>>;
     setStartTime: React.Dispatch<React.SetStateAction<number | undefined>>;
+    renewSessionId: () => void;
 }
 
 const SessionContext = createContext<ISessionContext>({
@@ -62,15 +69,18 @@ const SessionContext = createContext<ISessionContext>({
     setTeachers: () => null,
     setDueDate: () => null,
     setStartTime: () => null,
+    renewSessionId: () => null,
     ...DEFAULT_SESSION_CONTEXT,
 });
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
-    sessionId: string;
 }
 
-export function SessionContextProvider ({ children, sessionId }: Props) {
+export function SessionContextProvider ({ children }: Props) {
+    const [ sessionId, setSessionId ] = useState(uuid());
+    const [ sessionIdHasBeenUsed, setSesionIdHasBeenUsed ] = useState(false);
+    const hasJoinedClassroom = useRecoilValue(hasJoinedClassroomState);
     const [ token, setToken ] = useState(() => AuthTokenProvider.retrieveToken()??undefined);
 
     const [ selectedName, setSelectedName ] = useState<string>();
@@ -81,7 +91,19 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
     const [ teachers, setTeachers ] = useState<Teacher[]>();
     const [ dueDate, setDueDate ] = useState<number>();
 
-    useEffect(()=>{
+    const renewSessionId = useCallback(() => {
+        if(!sessionIdHasBeenUsed) return;
+        setSesionIdHasBeenUsed(false);
+        const newSessionId = uuid();
+        setSessionId(newSessionId);
+    }, [ sessionIdHasBeenUsed ]);
+
+    useEffect(() => {
+        if(!hasJoinedClassroom) return;
+        setSesionIdHasBeenUsed(true);
+    }, [ hasJoinedClassroom ]);
+
+    useEffect(() => {
         const authToken = AuthTokenProvider.retrieveToken();
         if(!authToken) return;
 
@@ -107,6 +129,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
             setTeachers,
             setDueDate,
             setStartTime,
+            renewSessionId,
         };
 
         const parsedTokenState = params
@@ -119,6 +142,7 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
                 classType: params.classtype as ClassType,
                 user_id: params.user_id,
                 isReview: params.is_review,
+                type: params.type,
             }
             : DEFAULT_SESSION_CONTEXT;
 
@@ -136,6 +160,8 @@ export function SessionContextProvider ({ children, sessionId }: Props) {
         dueDate,
         teachers,
         startTime,
+        sessionId,
+        renewSessionId,
     ]);
 
     return (

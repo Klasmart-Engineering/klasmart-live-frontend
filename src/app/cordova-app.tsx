@@ -1,5 +1,10 @@
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { ParentDashboardPage } from "./pages/parent-dashboard/parentDashboardPage";
 import ReportPage from "./pages/report";
+import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
+import LiveStudyListPage from "./pages/schedule/category-live";
+import StudyListPage from "./pages/schedule/category-study";
+import { SelectTypePage } from "./pages/select-type/selectTypePage";
 import { ReportType } from "@/app/components/report/share";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -17,6 +22,7 @@ import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
+    selectOrgFromParentDashboardState,
     shouldShowNoOrgProfileState,
     shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
@@ -47,10 +53,6 @@ import {
     useRecoilState,
     useRecoilValue,
 } from "recoil";
-import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
-import LiveStudyListPage from "./pages/schedule/category-live";
-import StudyListPage from "./pages/schedule/category-study";
-import { SelectTypePage } from "./pages/select-type/selectTypePage";
 
 export function CordovaApp ({ history }: {
     history: any;
@@ -75,25 +77,32 @@ export function CordovaApp ({ history }: {
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
+    const isSelectOrgFromParentDashboard = useRecoilValue(selectOrgFromParentDashboardState);
 
     useEffect(() => {
         if (loading) return;
         if (!authenticated) {
-            cmsQueryClient.getQueryCache().clear();
-            cmsQueryClient.getMutationCache().clear();
+            cmsQueryClient.getQueryCache()
+                .clear();
+            cmsQueryClient.getMutationCache()
+                .clear();
             signOut();
+            return;
+        }
+        if (isSelectOrgFromParentDashboard && shouldSelectUser) {
             return;
         }
         setDialogs({
             ...dialogs,
-            isSelectUserOpen: shouldSelectUser,
-            isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization,
+            isSelectUserOpen: shouldSelectUser && !isSelectOrgFromParentDashboard,
+            isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization && !isSelectOrgFromParentDashboard,
             isShowNoOrgProfile: shouldShowNoOrgProfile,
             isShowNoStudentRole: shouldShowNoStudentRole,
         });
     }, [
         authenticated,
         loading,
+        isSelectOrgFromParentDashboard,
         shouldSelectUser,
         shouldSelectOrganization,
         shouldShowNoOrgProfile,
@@ -174,6 +183,10 @@ export function CordovaApp ({ history }: {
                         component={SettingsPage}
                     />
                     <UserRoute
+                        path="/parent-dashboard"
+                        component={ParentDashboardPage}
+                    />
+                    <UserRoute
                         path="/report/parent-dashboard"
                         component={() => <ReportPage type={ReportType.PARENT_DASHBOARD} />}
                     />
@@ -218,6 +231,10 @@ export function CordovaApp ({ history }: {
                         component={SelectTypePage}
                     />
                     <UserRoute
+                        path="/select-user-role"
+                        component={SelectTypePage}
+                    />
+                    <UserRoute
                         path="/"
                         component={SchedulePage}
                     />
@@ -225,8 +242,6 @@ export function CordovaApp ({ history }: {
             </Router>
             {authenticated && (
                 <>
-                    <SelectOrgDialog />
-                    <SelectUserDialog />
                     <NoPageFoundDialog
                         open={dialogs.isShowNoOrgProfile}
                         title="signIn.noOrganization.title"

@@ -9,10 +9,12 @@ import {
     materialActiveIndexState,
     showEndStudyState,
 } from "@/store/layoutAtoms";
+import { useMediaQuery } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {
     makeStyles,
     Theme,
+    useTheme,
 } from "@material-ui/core/styles";
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
 import { ChevronRight as ArrowForwardIcon } from "@styled-icons/entypo/ChevronRight";
@@ -24,6 +26,8 @@ import React,
     useState,
 } from "react";
 import { useRecoilState } from "recoil";
+
+const ARROW_SIZE = 120;
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton: {
@@ -42,17 +46,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     content:{
         background: theme.palette.background.paper,
-        borderRadius: 20,
+        borderRadius: theme.spacing(2.5),
         height: `100%`,
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
         position: `relative`,
         boxShadow: `0 10px 15px rgb(0 0 0 / 13%), 0 3px 8px rgb(0 0 0 / 13%)`,
-        padding: 20,
+        padding: theme.spacing(2.5),
         boxSizing: `border-box`,
         [theme.breakpoints.down(`sm`)]: {
-            padding: 10,
+            padding: theme.spacing(1.25),
         },
     },
     fullHeight:{
@@ -72,6 +76,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         animation: `$showEndStudyButtons 5000ms ease-in-out`,
     },
+    mobileWebNavigationArrows: {
+        flex: `auto`,
+        maxHeight: ARROW_SIZE,
+        width: ARROW_SIZE,
+    },
+    orderTwo: {
+        order: 2,
+    },
+    orderThree: {
+        order: 3,
+    },
     "@keyframes showEndStudyButtons": {
         "0%": {
             opacity: 0,
@@ -89,6 +104,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     contentClass: {
         margin: theme.spacing(0, 2.5),
     },
+    mobileWebContent: {
+        borderRadius: 0,
+        margin: 0,
+        padding: 0,
+        boxShadow: `none`,
+    },
 }));
 
 export function ClassContent () {
@@ -100,12 +121,15 @@ export function ClassContent () {
     } = useSessionContext();
 
     const classes = useStyles();
+    const theme = useTheme();
 
     const [ materialActiveIndex, setMaterialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
     const [ rewardTrophyMutation ] = useRewardTrophyMutation();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
+    const isMobileWeb = !process.env.IS_CORDOVA_BUILD && isXsDown;
 
     const handlePrev = () => {
         setMaterialActiveIndex(materialActiveIndex - 1);
@@ -143,12 +167,12 @@ export function ClassContent () {
     return(
         <Grid
             container
-            wrap="nowrap"
+            wrap={isMobileWeb ? `wrap` : `nowrap`}
             className={classes.fullHeight}
         >
             <Grid
                 item
-                className={classes.navigationColumn}
+                className={clsx(classes.navigationColumn, isMobileWeb && ([ classes.mobileWebNavigationArrows, classes.orderTwo ]) )}
             >
                 <MaterialNavigation
                     direction="prev"
@@ -159,7 +183,7 @@ export function ClassContent () {
 
             <Grid
                 item
-                xs
+                xs={12}
             >
                 {showEndStudy ? (
                     <div className={classes.centeredContent}>
@@ -167,6 +191,7 @@ export function ClassContent () {
                     </div> ) : (
                     <div className={clsx(classes.content, {
                         [classes.contentClass]: classType === ClassType.CLASSES,
+                        [classes.mobileWebContent]: isMobileWeb,
                     })}
                     >
                         <div
@@ -180,11 +205,12 @@ export function ClassContent () {
             </Grid>
             <Grid
                 item
-                className={classes.navigationColumn}
+                className={clsx(classes.navigationColumn, isMobileWeb && ([ classes.mobileWebNavigationArrows, classes.orderThree ]) )}
             >
                 <MaterialNavigation
                     direction="next"
                     disabled={materialActiveIndex >= materials.length}
+                    isMobileWeb={isMobileWeb}
                     onClick={() => handleNext()}
                 />
             </Grid>
@@ -196,6 +222,7 @@ export interface MaterialNavigationProps {
     direction: "prev" | "next";
     disabled?: boolean;
     onClick?: any;
+    isMobileWeb?: boolean;
 }
 
 const MaterialNavigation = (props: MaterialNavigationProps) => {
@@ -203,7 +230,7 @@ const MaterialNavigation = (props: MaterialNavigationProps) => {
         direction,
         disabled,
         onClick,
-
+        isMobileWeb,
     } = props;
     const classes = useStyles();
     const { classType } = useSessionContext();
@@ -213,7 +240,7 @@ const MaterialNavigation = (props: MaterialNavigationProps) => {
         <div
             className={clsx(classes.arrowButton, {
                 [classes.arrowButtonDisabled]: disabled,
-                [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY,
+                [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY && !isMobileWeb,
                 [classes.arrowButtonClass]: classType === ClassType.CLASSES && !showEndStudy,
             })}
             onClick={onClick}

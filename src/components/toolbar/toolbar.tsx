@@ -19,11 +19,12 @@ import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
 import { LIVE_ON_BACK_ID } from "@/pages/room/room-with-context";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import {
     activeTabState,
+    ActiveTabStateType,
     hasControlsState,
     interactiveModeState,
-    isActiveGlobalScreenshareState,
     isCanvasOpenState,
     isChatOpenState,
     isClassDetailsOpenState,
@@ -40,9 +41,11 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
+import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import { CaretDownFill as CaretDownFill } from "@styled-icons/bootstrap/CaretDownFill";
 import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill";
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
+import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Heart as StickersActionsIcon } from "@styled-icons/entypo/Heart";
@@ -65,6 +68,7 @@ import {
 } from "recoil";
 
 const CARRET_BUTTON_SIZE = 25;
+const MAX_MOBILE_TOOLBAR_WIDTH = 754;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -73,14 +77,22 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.text.primary,
         position: `relative`,
         zIndex: 9,
+        wrap: `nowrap`,
+        [theme.breakpoints.down(`xs`)]: {
+            flex: `0 1 auto`,
+        },
     },
-    rootMosaic:{
+    rootTeacherMobile: {
+        wrap: `wrap`,
+        justifyContent: `center`,
+    },
+    rootMosaic: {
         backgroundColor: `rgba(49,49,60,0.85)`,
         color: `#fff`,
-        paddingLeft:  theme.spacing(5),
-        paddingRight:  theme.spacing(5),
+        paddingLeft: theme.spacing(5),
+        paddingRight: theme.spacing(5),
     },
-    rootMd:{
+    rootMd: {
         fontSize: `0.9rem`,
     },
     iconGroup: {
@@ -108,6 +120,18 @@ const useStyles = makeStyles((theme: Theme) => ({
         top: -theme.spacing(2),
         zIndex: 9,
     },
+    canvasIconGroup: {
+        order: 2,
+    },
+    endClassIconGroup: {
+        order: 1,
+        width: `100%`,
+        margin: 0,
+        justifyContent: `center`,
+    },
+    globalActionsIconGroup: {
+        order: 3,
+    },
 }));
 
 export const viewModesBadge = (interactiveMode: InteractiveMode) => {
@@ -128,7 +152,7 @@ export const viewModesBadge = (interactiveMode: InteractiveMode) => {
 function Toolbar () {
     const classes = useStyles();
     const intl = useIntl();
-    const { isTeacher } = useSessionContext();
+    const { isTeacher, type } = useSessionContext();
     const { addOnBack } = useCordovaSystemContext();
     const [ isGlobalActionsOpen, setIsGlobalActionsOpen ] = useRecoilState(isGlobalActionsOpenState);
     const [ isLessonPlanOpen, setIsLessonPlanOpen ] = useRecoilState(isLessonPlanOpenState);
@@ -143,6 +167,7 @@ function Toolbar () {
 
     const theme = useTheme();
     const isMdDown = useMediaQuery(theme.breakpoints.down(`md`));
+    const isMobileWebToolbar = useMediaQuery(theme.breakpoints.down(MAX_MOBILE_TOOLBAR_WIDTH));
 
     const classDetailsRef = React.useRef<any>();
     const canvasRef = React.useRef<any>();
@@ -192,7 +217,7 @@ function Toolbar () {
         initOnBack();
     }, []);
 
-    const caretDisplay = activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes
+    const caretDisplay = activeTab === ActiveTabStateType.MOSAIC ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes
         ;
     const [ showCanvasMenu, setShowCanvasMenu ] = useState<boolean>(true);
 
@@ -201,24 +226,26 @@ function Toolbar () {
             <Grid
                 container
                 className={clsx(classes.root, {
-                    [classes.rootMosaic] : activeTab === `mosaic`,
-                    [classes.rootMd] : isMdDown,
+                    [classes.rootMosaic]: activeTab === ActiveTabStateType.MOSAIC,
+                    [classes.rootMd]: isMdDown,
+                    [classes.rootTeacherMobile]: hasControls && isMobileWebToolbar,
                 })}
             >
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.canvasIconGroup]: hasControls && isMobileWebToolbar,
+                    })}
                 >
                     <div ref={classDetailsRef}>
                         <ToolbarItem
-                            display={activeTab !== `mosaic`}
+                            display={activeTab !== ActiveTabStateType.MOSAIC}
                             icon={<InfoIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_class_details`,
                             })}
                             active={isClassDetailsOpen}
-                            disabled={Boolean(handleTooltip(`classDetails`))}
-                            tooltip={handleTooltip(`classDetails`)}
+                            disabled={type === ClassType.PREVIEW}
                             onClick={() => {
                                 resetDrawers();
                                 setIsClassDetailsOpen(!isClassDetailsOpen);
@@ -242,14 +269,13 @@ function Toolbar () {
                             </div>
                         )}
                         <ToolbarItem
-                            display={activeTab === `mosaic` ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes}
+                            display={activeTab === ActiveTabStateType.MOSAIC ? false : hasControls ? true : isGlobalCanvasEnabled && permissionsGlobalCanvas.allowCreateShapes}
                             icon={<CanvasIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_canvas`,
                             })}
                             active={isCanvasOpen}
-                            disabled={Boolean(handleTooltip(`canvas`))}
-                            tooltip={handleTooltip(`canvas`)}
+                            disabled={type === ClassType.PREVIEW}
                             onClick={() => {
                                 resetDrawers();
                                 if(hasControls){
@@ -263,9 +289,20 @@ function Toolbar () {
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.endClassIconGroup]: hasControls && isMobileWebToolbar,
+                    })}
                 >
-                    <ToolbarItemMicrophone />
+                    {type === ClassType.PREVIEW ? (
+                        <ToolbarItem
+                            display
+                            disabled
+                            icon={<MicDisabledIcon />}
+                        />
+                    ) : (
+                        <ToolbarItemMicrophone />
+                    )}
+
                     <ToolbarItemCall
                         id="toolbar-item-call"
                         locked={!isTeacher}
@@ -276,11 +313,22 @@ function Toolbar () {
                         src={LeaveClassIcon}
                         onClick={() => endCall()}
                     />
-                    <ToolbarItemCamera />
+
+                    {type === ClassType.PREVIEW ? (
+                        <ToolbarItem
+                            display
+                            disabled
+                            icon={<CameraDisabledIcon />}
+                        />
+                    ) : (
+                        <ToolbarItemCamera />
+                    )}
                 </Grid>
                 <Grid
                     item
-                    className={classes.iconGroup}
+                    className={clsx(classes.iconGroup, {
+                        [classes.globalActionsIconGroup]: hasControls && isMobileWebToolbar,
+                    })}
                 >
                     <div ref={globalActionsRef}>
                         <ToolbarItem
@@ -289,9 +337,8 @@ function Toolbar () {
                             label={intl.formatMessage({
                                 id: `live.class.stickers`,
                             })}
-                            disabled={Boolean(handleTooltip(`stickers`))}
-                            tooltip={handleTooltip(`stickers`)}
                             active={isGlobalActionsOpen}
+                            disabled={type === ClassType.PREVIEW}
                             onClick={() => {
                                 resetDrawers();
                                 setIsGlobalActionsOpen(!isGlobalActionsOpen);
@@ -300,13 +347,11 @@ function Toolbar () {
                     </div>
                     <div ref={lessonPlanRef}>
                         <ToolbarItem
-                            display={hasControls ? activeTab !== `mosaic` : false}
+                            display={hasControls && activeTab !== ActiveTabStateType.MOSAIC}
                             icon={<LessonPlanIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_lesson_plan`,
                             })}
-                            disabled={Boolean(handleTooltip(`lessonPlan`))}
-                            tooltip={handleTooltip(`lessonPlan`)}
                             active={isLessonPlanOpen}
                             onClick={() => {
                                 resetDrawers();
@@ -316,15 +361,14 @@ function Toolbar () {
                     </div>
                     <div ref={viewModesRef}>
                         <ToolbarItem
-                            display={hasControls && activeTab !== `mosaic`}
+                            display={hasControls && activeTab !== ActiveTabStateType.MOSAIC}
                             icon={<ViewModesIcon />}
                             label={intl.formatMessage({
                                 id: `toolbar_view_modes`,
                             })}
                             active={isViewModesOpen}
-                            badge={viewModesBadge(interactiveMode)}
-                            disabled={Boolean(handleTooltip(`viewModes`))}
-                            tooltip={handleTooltip(`viewModes`)}
+                            disabled={type === ClassType.PREVIEW}
+                            badge={type !== ClassType.PREVIEW && viewModesBadge(interactiveMode)}
                             onClick={() => {
                                 resetDrawers();
                                 setIsViewModesOpen(!isViewModesOpen);
@@ -338,8 +382,9 @@ function Toolbar () {
                             label={intl.formatMessage({
                                 id: `toolbar_chat`,
                             })}
-                            badge={unreadMessages ? unreadMessages : null}
+                            badge={type !== ClassType.PREVIEW && unreadMessages}
                             active={isChatOpen}
+                            disabled={type === ClassType.PREVIEW}
                             onClick={() => {
                                 resetDrawers();
                                 setIsChatOpen(!isChatOpen);
@@ -351,7 +396,7 @@ function Toolbar () {
 
             <ClassDetailsMenu anchor={classDetailsRef.current} />
 
-            {activeTab !== `mosaic` && (
+            {activeTab !== ActiveTabStateType.MOSAIC && (
                 <CanvasMenu
                     anchor={canvasRef.current}
                     showCanvasMenu={showCanvasMenu}
@@ -382,33 +427,3 @@ function Toolbar () {
 }
 
 export default Toolbar;
-
-function handleTooltip (item: string){
-    const intl = useIntl();
-    const isActiveGlobalScreenshare = useRecoilValue(isActiveGlobalScreenshareState);
-    const activeTab = useRecoilValue(activeTabState);
-
-    const tooltips: any = {
-        classDetails: {
-            mosaic: `Class details are not available in mosaic mode`,
-        },
-        canvas: {
-            mosaic: `Canvas is not available in mosaic mode`,
-        },
-        lessonPlan: {
-            mosaic: `Lesson plan is not available in mosaic mode`,
-        },
-        viewModes: {
-            screenshare: intl.formatMessage({
-                id: `toolbar_view_modes_disabled_screenshare`,
-            }),
-            mosaic: `View modes are not available in mosaic mode`,
-        },
-    };
-
-    if(isActiveGlobalScreenshare && tooltips[item]?.screenshare !== undefined){return tooltips[item].screenshare;}
-
-    if(activeTab === `mosaic` && tooltips[item]?.mosaic !== undefined){return tooltips[item].mosaic;}
-
-    return(``);
-}

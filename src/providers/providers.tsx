@@ -1,4 +1,5 @@
 import { CompositionRoot } from "./composition-root";
+import { KidsloopPxProvider } from "./kidsloop-px-provider";
 import RouterProvider from "@/router/Provider";
 import { themeProvider } from "@/themeProvider";
 import {
@@ -15,9 +16,6 @@ import React,
     useState,
 } from 'react';
 import { RawIntlProvider } from "react-intl";
-import { v4 as uuid } from "uuid";
-
-export const sessionId = uuid();
 
 type Props = {
     children?: ReactChild | ReactChildren | null;
@@ -43,11 +41,13 @@ function Providers ({ children }: Props) {
     return (
         <ThemeContext.Provider value={themeContext}>
             <RawIntlProvider value={locale}>
-                <CompositionRoot sessionId={sessionId}>
+                <CompositionRoot>
                     <ThemeProvider theme={themeProvider(`en`, `light`)}>
-                        <RouterProvider>
-                            {children}
-                        </RouterProvider>
+                        <KidsloopPxProvider>
+                            <RouterProvider>
+                                {children}
+                            </RouterProvider>
+                        </KidsloopPxProvider>
                     </ThemeProvider>
                 </CompositionRoot>
             </RawIntlProvider>

@@ -14,14 +14,16 @@ interface Props {
 }
 
 const RouterProvider: React.FC<Props> = (props) => {
+
     return (
+
         <Router history={history}>
             <Switch>
                 <Route
                     exact
                     path="/health"
                 >
-                    <HealthPage/>
+                    <HealthPage />
                 </Route>
                 <Route
                     exact
@@ -34,6 +36,7 @@ const RouterProvider: React.FC<Props> = (props) => {
                 </Route>
             </Switch>
         </Router>
+
     );
 };
 

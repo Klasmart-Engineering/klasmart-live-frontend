@@ -78,10 +78,11 @@ const useStyles = makeStyles(() => ({
 
 interface ItemUserCameraProps extends React.HTMLAttributes<HTMLDivElement> {
     user: Session;
+    minHeight?: number;
 }
 
 function ItemUserCamera ({
-    user, className, ...rest
+    user, minHeight, className, ...rest
 }: ItemUserCameraProps) {
     const classes = useStyles();
     const [ isHover, setIsHover ] = useState(false);
@@ -164,6 +165,9 @@ function ItemUserCamera ({
                 [classes.rootMedium]: itemWidthVariant === `medium`,
                 [classes.rootSmall]: itemWidthVariant === `small`,
             })}
+            style={minHeight ? {
+                minHeight: `${minHeight}px`,
+            }: undefined}
             onMouseEnter={() => setIsHover(true)}
             onMouseLeave={() => setIsHover(false)}
             {...rest}
@@ -174,7 +178,7 @@ function ItemUserCamera ({
                 className={clsx(classes.userCameraRoot)}
             />
             {
-                (!isSelf && !video.isConsumable) &&
+                ((isSelf && video.isPausedLocally) || (!isSelf && !video.isConsumable)) &&
                 <NoCamera
                     name={user.name}
                 />

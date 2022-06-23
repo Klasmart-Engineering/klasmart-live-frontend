@@ -2,6 +2,7 @@ import { useDeviceOrientationValue } from "@/app/model/appModel";
 import background_study_blue from "@/assets/img/background/background_study.svg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
+import Toolbar from "@/components/toolbar/toolbar";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
@@ -165,7 +166,12 @@ export function Room () {
         >
             <Main />
             {classType === ClassType.LIVE && (
-                <Sidebar />
+                <>
+                    <Sidebar />
+                    {isXsDown && (
+                        <Toolbar />
+                    )}
+                </>
             )}
         </Box>
     );

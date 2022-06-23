@@ -1,21 +1,18 @@
-import GlobalMuteOverlay from '../globalMuteOverlay';
 import MainStudy from "./mainStudy";
+import GlobalMuteProvider from '@/components/globalMuteProvider';
 import MainClass from "@/components/main/mainClass";
 import MainView from "@/components/main/mainView";
 import Toolbar from "@/components/toolbar/toolbar";
 import { THEME_COLOR_GREY_200 } from "@/config";
-import { useSessions } from "@/data/live/state/useSessions";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import { mainActivitySizeState } from "@/store/layoutAtoms";
 import {
-    useCamera,
-    useMicrophone,
-} from '@kl-engineering/live-state/ui';
-import {
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
+    useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
 import React,
@@ -26,10 +23,16 @@ import { useSetRecoilState } from "recoil";
 const useStyles = makeStyles((theme: Theme) => ({
     fullHeight: {
         height: `100%`,
+        [theme.breakpoints.down(`xs`)]: {
+            flex: `1 1 40%`,
+        },
     },
     contentContainer: {
         margin: theme.spacing(1, 1, 0, 1),
-        overflowY: `auto`,
+        overflowY: `hidden`,
+        [theme.breakpoints.down(`xs`)]: {
+            margin: 0,
+        },
     },
     activityContainer: {
         display: `flex`,
@@ -42,35 +45,24 @@ const useStyles = makeStyles((theme: Theme) => ({
         borderRadius: theme.spacing(1.5),
         position: `relative`,
     },
-    globalMuteOverlayContainer: {
-        alignItems: `center`,
-        display: `flex`,
-        justifyContent: `space-evenly`,
-        position: `absolute`,
-        height: `100%`,
-        width: `100%`,
-        pointerEvents: `none`,
-    },
 }));
 
 function Main () {
     const classes = useStyles();
-    const { sessionId, classType } = useSessionContext();
+    const {
+        classType,
+        type,
+    } = useSessionContext();
     const setMainActivitySize = useSetRecoilState(mainActivitySizeState);
-    const sessions = useSessions();
-    const localSession = sessions.get(sessionId);
-
-    const camera = useCamera();
-    const microphone = useMicrophone();
-
-    const isCameraPausedGlobally = camera.isPausedGlobally;
-    const isMicrophonePausedGlobally = microphone.isPausedGlobally;
 
     const {
         ref: containerRef,
         height: containerHeight = 0,
         width: containerWidth = 0,
     } = useResizeDetector();
+
+    const theme = useTheme();
+    const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
     useEffect(() => {
         setMainActivitySize({
@@ -84,13 +76,8 @@ function Main () {
         case(ClassType.LIVE): return (
             <>
                 <MainView />
-                {!localSession?.isHost && (
-                    <div className={classes.globalMuteOverlayContainer}>
-                        <GlobalMuteOverlay
-                            isCameraPausedGlobally={isCameraPausedGlobally}
-                            isMicrophonePausedGlobally={isMicrophonePausedGlobally}
-                        />
-                    </div>
+                {type !== ClassType.PREVIEW && (
+                    <GlobalMuteProvider />
                 )}
             </>
         );
@@ -120,7 +107,7 @@ function Main () {
                     {renderContent()}
                 </div>
             </Grid>
-            {classType === ClassType.LIVE && (
+            {classType === ClassType.LIVE && !isXsDown && (
                 <Grid item>
                     <Toolbar />
                 </Grid>

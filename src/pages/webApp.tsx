@@ -8,18 +8,26 @@ import {
 import { ClassSelectAttendees } from './selectAttendees';
 import { useAuthenticationContext } from '@/app/context-provider/authentication-context';
 import { useServices } from '@/app/context-provider/services-provider';
+import { updatePageEvent } from '@/firebase/config';
+import useDetectNewDevice from '@/hooks/useDetectNewDevice';
 import { useRegionSelect } from '@/providers/region-select-context';
 import { useSessionContext } from '@/providers/session-context';
+import { WebRtcConditionalProvider } from '@/providers/webrtc-context';
 import { ClassType } from '@/store/actions';
 import {
     hasJoinedClassroomState,
     showSelectAttendeesState,
 } from "@/store/layoutAtoms";
 import { useInterval } from '@/utils/useInterval';
-import { WebRtcProvider } from "@kl-engineering/live-state/ui";
 import React,
-{ useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
+{
+    useEffect,
+    useMemo,
+} from 'react';
+import {
+    useHistory,
+    useLocation,
+} from 'react-router-dom';
 import { useRecoilValue } from "recoil";
 
 const TOKEN_REFRESH_INTERVAL_MS = 10 * 60 * 1000; //Ten Minutes
@@ -31,11 +39,14 @@ export function WebApp () {
         sessionId,
         classType,
         token,
+        type,
     } = useSessionContext();
     const { actions } = useAuthenticationContext();
     const { authenticationService } = useServices();
     useInterval(() => authenticationService?.refresh(), TOKEN_REFRESH_INTERVAL_MS);
     const showSelectParticipants = useRecoilValue(showSelectAttendeesState);
+
+    useDetectNewDevice();
 
     const schedule = () => {
         if (process.env.IS_CORDOVA_BUILD) {
@@ -73,21 +84,28 @@ export function WebApp () {
         }
     };
 
+    const location = useLocation();
+    useEffect(() => {
+        updatePageEvent();
+    }, [ location ]);
+
     return (
-        <WebRtcProvider
+        <WebRtcConditionalProvider
+            enabled={type !== ClassType.PREVIEW}
             sessionId={sessionId}
             endpoint={endpoint}
-            onAuthorizationExpired={schedule}
-            onAuthorizationInvalid={schedule}
-            onAuthenticationInvalid={actions?.refreshAuthenticationToken}
-            onAuthenticationExpired={actions?.refreshAuthenticationToken}
-            onTokenMismatch={schedule}
+            schedule={schedule}
+            actions={actions}
         >
             {hasJoinedClassroom && name ? (
                 <RoomWithContext>{renderChildren()}</RoomWithContext>
             )
-                : process.env.IS_CORDOVA_BUILD ? <JoinApp /> : <Join />
+                : process.env.IS_CORDOVA_BUILD ? (<JoinApp />) : (
+                    <Join
+                        enableCamera={classType === ClassType.LIVE && type !== ClassType.PREVIEW}
+                    />
+                )
             }
-        </WebRtcProvider>
+        </WebRtcConditionalProvider>
     );
 }

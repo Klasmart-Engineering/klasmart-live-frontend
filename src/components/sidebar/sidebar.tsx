@@ -5,7 +5,12 @@ import TabParticipants from "./tabParticipants/tabParticipants";
 import { useDeviceOrientationValue } from "@/app/model/appModel";
 import { CLASS_DRAWER_ZINDEX } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
-import { activeTabState } from "@/store/layoutAtoms";
+import { ClassType } from "@/store/actions";
+import {
+    activeTabState,
+    ActiveTabStateType,
+} from "@/store/layoutAtoms";
+import { NoItemList } from "@/utils/noItemList";
 import {
     Box,
     Drawer,
@@ -17,6 +22,7 @@ import {
 } from "@material-ui/core";
 import { Grid as MosaicIcon } from "@styled-icons/bootstrap/Grid";
 import { PeopleOutline as ParticipantsIcon } from "@styled-icons/evaicons-outline/PeopleOutline";
+import { UserTimes as PreviewIcon } from "@styled-icons/fa-solid/UserTimes";
 import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -60,20 +66,25 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     fullheight: {
         height: `100%`,
+        flexWrap: `nowrap`,
     },
     tabInner: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
+        overflowY: `hidden`,
+        [theme.breakpoints.down(`xs`)]: {
+            flexBasis: `300px`,
+        },
     },
-    tabInnerSafeArea:{
+    tabInnerSafeArea: {
         paddingRight: `env(safe-area-inset-right)`, // iPhone Notch
     },
-    sliderIconButton:{
+    sliderIconButton: {
         color: theme.palette.text.primary,
         boxShadow: `0 2px 6px 0px rgba(0,0,0,0.3)`,
         transform: `scale(0.8)`,
     },
-    slider:{
+    slider: {
         minHeight: 150,
         margin: `10px 3px`,
     },
@@ -85,15 +96,32 @@ function Sidebar () {
 
     const activeTab = useRecoilValue(activeTabState);
     const deviceOrientation = useDeviceOrientationValue();
-    const { isTeacher } = useSessionContext();
+    const { isTeacher, type } = useSessionContext();
 
     const theme = useTheme();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
 
-    const sidebarTabs = [
+    const sidebarTabs = type === ClassType.PREVIEW ? [
         {
             id: 1,
-            name: `participants`,
+            name: ActiveTabStateType.PARTICIPANTS,
+            label: intl.formatMessage({
+                id: `title_participants`,
+            }),
+            icon: <ParticipantsIcon />,
+            content: (
+                <NoItemList
+                    icon={<PreviewIcon />}
+                    text={intl.formatMessage({
+                        id: `preview_guide_text_3`,
+                    })}
+                />
+            ),
+        },
+    ] : [
+        {
+            id: 1,
+            name: ActiveTabStateType.PARTICIPANTS,
             label: intl.formatMessage({
                 id: `title_participants`,
             }),
@@ -102,7 +130,7 @@ function Sidebar () {
         },
         {
             id: 2,
-            name: `mosaic`,
+            name: ActiveTabStateType.MOSAIC,
             label: intl.formatMessage({
                 id: `title_mosaic`,
             }),
@@ -114,12 +142,16 @@ function Sidebar () {
 
     const activeTabContent = sidebarTabs.find(item => item.name === activeTab)?.content;
 
-    if (isXsDown) return sidebarTabs[0].content;
+    if (isXsDown) return (
+        <div className={classes.tabInner}>
+            {sidebarTabs[0].content}
+        </div>
+    );
 
     return (
         <Drawer
             open
-            variant={activeTab === `participants` ? `persistent` : `temporary`}
+            variant={activeTab === ActiveTabStateType.PARTICIPANTS ? `persistent` : `temporary`}
             anchor="right"
             style={{
                 zIndex: CLASS_DRAWER_ZINDEX,
@@ -129,7 +161,7 @@ function Sidebar () {
                     [classes.drawerStudent]: !isTeacher,
                 }),
                 paper: clsx(classes.drawerPaper, {
-                    [classes.drawerPaperFull]: activeTab !== `participants`,
+                    [classes.drawerPaperFull]: activeTab !== ActiveTabStateType.PARTICIPANTS,
                     [classes.drawerPaperStudent]: !isTeacher,
                 }),
             }}
@@ -170,14 +202,13 @@ function Sidebar () {
                                     })}
                                 </Box>
                             </Grid>
-                            {activeTab === `mosaic` &&
-                        (
-                            <Grid item>
-                                <Box py={3}>
-                                    <MosaicSlider />
-                                </Box>
-                            </Grid>
-                        )}
+                            {activeTab === ActiveTabStateType.MOSAIC && (
+                                <Grid item>
+                                    <Box py={3}>
+                                        <MosaicSlider />
+                                    </Box>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
                 )}
@@ -185,7 +216,7 @@ function Sidebar () {
                     item
                     xs
                     className={clsx(classes.tabInner, {
-                        [classes.tabInnerSafeArea] : deviceOrientation === `landscape-secondary`,
+                        [classes.tabInnerSafeArea]: deviceOrientation === `landscape-secondary`,
                     })}
                 >
                     {activeTabContent}

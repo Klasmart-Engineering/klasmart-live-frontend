@@ -5,7 +5,12 @@ import {
     TEXT_COLOR_CONSTRAST_DEFAULT,
     TEXT_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
-import { classLeftState } from "@/store/layoutAtoms";
+import {
+    classLeftState,
+    classEndedState,
+    hasJoinedClassroomState
+} from "@/store/layoutAtoms";
+import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import {
     Fade,
     Grid,
@@ -14,12 +19,14 @@ import {
     Typography,
 } from '@material-ui/core';
 import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
-import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import { useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     container:{
@@ -72,19 +79,15 @@ function EndClass () {
     useWebrtcClose();
 
     const { addOnBack } = useCordovaSystemContext();
-    const classLeft = useRecoilValue(classLeftState);
-
-    const { restart } = useCordovaSystemContext();
+    const [ classLeft, setClassLeft ] = useRecoilState(classLeftState);
+    const setClassEnded = useSetRecoilState(classEndedState);
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
 
     const onCloseButtonClick = () => {
-        // TODO: The WebRTC context can't properly initiate another session unless the context
-        // is completely restarted. This is something we'd have to solve at some point, but
-        // the current workaround is to reload the entire app instead.
-        if (restart) {
-            restart();
-        } else {
-            history.push(`/schedule`);
-        }
+        history.goBack();
+        setClassEnded(false);
+        setClassLeft(false);
+        setHasJoinedClassroom(false);
     };
 
     useEffect(() => {
@@ -94,10 +97,12 @@ function EndClass () {
         });
     }, []);
 
+    const isApp = process.env.IS_CORDOVA_BUILD;
+
     return (
-        <Fade in={true}>
+        <Fade in>
             <>
-                {process.env.IS_CORDOVA_BUILD &&
+                {isApp && (
                     <div className={classes.appHeader}>
                         <div className={classes.appHeaderRight}>
                             <CloseIconButton
@@ -109,37 +114,35 @@ function EndClass () {
                             />
                         </div>
                     </div>
-                }
+                )}
                 <Grid
                     container
                     alignItems="center"
                     justifyContent="center"
-                    className={classes.container}>
+                    className={classes.container}
+                >
                     <Grid
                         item
-                        className={classes.root}>
-                        {!process.env.IS_CORDOVA_BUILD &&
+                        className={classes.root}
+                    >
+                        {!isApp && (
                             <div className={classes.icon}>
                                 <ClassEndedIcon />
                             </div>
-                        }
+                        )}
                         <Typography variant="h3"><FormattedMessage id={classLeft ? `class_ended_you_have_left` : `class_ended_title`} /></Typography>
                         <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
 
                         <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
                         <Feedback type="END_CLASS" />
 
-                        {HUB_ENDPOINT &&
+                        {HUB_ENDPOINT && !isApp && (
                             <Typography className={classes.returnToHub}>
-                                {
-                                    process.env.IS_CORDOVA_BUILD
-                                        ? <a
-                                            href="#"
-                                            onClick={onCloseButtonClick}><FormattedMessage id="class_ended_return_to_hub" /></a>
-                                        : <a href={HUB_ENDPOINT}><FormattedMessage id="class_ended_return_to_hub" /></a>
-                                }
+                                <a href={HUB_ENDPOINT}>
+                                    <FormattedMessage id="class_ended_return_to_hub" />
+                                </a>
                             </Typography>
-                        }
+                        )}
                     </Grid>
                 </Grid>
             </>

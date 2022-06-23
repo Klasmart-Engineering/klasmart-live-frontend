@@ -14,10 +14,14 @@ export const themeState = atom<ThemeStateType>({
 });
 
 // LAYOUT
-export type ActiveTabStateType = "participants" | "mosaic" | "settings";
-export const activeTabState = atom({
+export enum ActiveTabStateType {
+    PARTICIPANTS,
+    MOSAIC,
+    SETTINGS,
+}
+export const activeTabState = atom<ActiveTabStateType>({
     key: `activeTabState`,
-    default: `participants`,
+    default: ActiveTabStateType.PARTICIPANTS,
 });
 
 export type ActiveSettingsTabStateType = "schedule" | "settings" | "toolbar" | "record";
@@ -224,4 +228,9 @@ export const ActiveClassDrawerState = atom<ClassDrawerSections | ''>({
 export const classActiveUserIdState = atom<string | undefined>({
     key: `classActiveUserIdState`,
     default: undefined,
+});
+
+export const defaultDevicesState = atom<MediaDeviceInfo[]>({
+    key: `defaultDevices`,
+    default: [],
 });

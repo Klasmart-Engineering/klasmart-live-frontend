@@ -2,6 +2,157 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.21.3](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.2...v6.21.3) (2022-06-22)
+
+
+### ♻️ Chores
+
+* **localization:** update translations #218 ([c4710c2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c4710c22b1042dfe02feb385a0b5e6b02ca155b7))
+* **localization:** update translations #218 ([a325ccc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/a325cccb139bbe2d7f0cc6f3e2297914131d0f5f))
+* **translation:** update translations (#219) ([77013e0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/77013e04fe7b27a7b2e5d53536d8f0f4b20d0b62))
+
+### [6.21.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.1...v6.21.2) (2022-06-20)
+
+
+### ♻️ Chores
+
+* bump live-state to 1.8.0 + upgrade webpack-cli (#214) ([ec8af6b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ec8af6be3279c80c0779bd350b620181e7bedf7c)), closes [SFU-208](https://calmisland.atlassian.net/browse/SFU-208)
+
+### [6.21.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.0...v6.21.1) (2022-06-20)
+
+
+### ♻️ Chores
+
+* **translation:** update translations (#209) ([0555fa2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0555fa2104439f8916ec692f159b34b5a19be698))
+
+
+### 🗑 Reverts
+
+* Revert "feat: implement UI selection types of parent and student (#178)" (#212) ([6f126b2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6f126b2447c5310d0173e919a838a04429bb9b31)), closes [NAT-898](https://calmisland.atlassian.net/browse/NAT-898)
+
+
+### 🐛 Bug Fixes
+
+* the camera and mic can appear after rejoin without restart the app (#211) ([d255592](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d25559293996743db30e71ba8943b56a8342a4c1)), closes [NAT-967](https://calmisland.atlassian.net/browse/NAT-967) [nat-955](https://calmisland.atlassian.net/browse/nat-955)
+
+## [6.21.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.20.0...v6.21.0) (2022-06-17)
+
+
+### ✨ Features
+
+* **localization:** add new translations (#205) ([ec63b44](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ec63b445e96af801dc10621425cb7eefa9272ceb))
+
+
+### ♻️ Chores
+
+* **KLL-3663:** add new domain for testing app (#200) ([93c537a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/93c537acb7adb43217dd0d7a5561969ffadb0a9b)), closes [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663) [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663) [KLL-3663](https://calmisland.atlassian.net/browse/KLL-3663)
+
+
+### 🐛 Bug Fixes
+
+* disable toolbar actions in preview mode + some refactor (#207) ([5ce7972](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5ce79723df6873812a276e4681852b1dc188ae98)), closes [KLL-3570](https://calmisland.atlassian.net/browse/KLL-3570)
+* improve portrait toolbar spacing for student (#203) ([a7d5bc2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/a7d5bc2c916622d7ec454f02d7a0cbb456a49126))
+* reduce height of popper to fit in mobile (#206) ([40a224f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/40a224fd70e84054992d1aa701c0bde96e9a5069)), closes [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564)
+
+## [6.20.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.1...v6.20.0) (2022-06-14)
+
+
+### ✨ Features
+
+* implement UI selection types of parent and student (#178) ([b46c68b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b46c68b7d140f09eac2ef664e04edddf8f656cca)), closes [NAT-898](https://calmisland.atlassian.net/browse/NAT-898)
+
+
+### ♻️ Chores
+
+* **KLL-3651:** update pdf endpoint (#194) ([dd4de66](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/dd4de66f59020d62724b967d63acc607da712e65)), closes [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651) [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651) [KLL-3651](https://calmisland.atlassian.net/browse/KLL-3651)
+
+
+### 🗑 Reverts
+
+* revert pdf endpoint change (#196) ([658c730](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/658c730e94e63409d4ec1de5d0d751b8813a2bab))
+
+
+### 🐛 Bug Fixes
+
+* fix portrait mode padding (#202) ([da51db0](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/da51db05f593a8418b5520e59bc4345ffb037f95))
+* **KLL-3668:** move GlobalMuteOverlay within GlobalMuteProvider to fix preview mode (#195) ([2d19624](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2d1962499a6aa745fe3120de4bfe7168bc87753c)), closes [KLL-3668](https://calmisland.atlassian.net/browse/KLL-3668)
+* **KLL-3671:** remove duplicated logo ClassType on join page (#197) ([94ad3d8](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/94ad3d8ee791627bd509999fb07def560fb65ddb)), closes [KLL-3671](https://calmisland.atlassian.net/browse/KLL-3671) [KLL-3671](https://calmisland.atlassian.net/browse/KLL-3671)
+* update preview image + separate component for classTypeLogo (#199) ([50e4710](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/50e47105f806b1509bfb756e8e513e2b6014cf7b)), closes [KLL-3668](https://calmisland.atlassian.net/browse/KLL-3668)
+* wrong empty string, datetime parent dashboard (#201) ([c141c07](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c141c07054da9ffe656880792863f274327b1873)), closes [NAT-965](https://calmisland.atlassian.net/browse/NAT-965)
+
+### [6.19.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.19.0...v6.19.1) (2022-06-13)
+
+
+### 🧪 Tests
+
+* **KLL-3641:** Add unit tests covering AuthenticationToken (#180) ([e318592](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e318592735cb09970914bc57ee47d7ff15ad93ac)), closes [KLL-3641](https://calmisland.atlassian.net/browse/KLL-3641) [KLL-3641](https://calmisland.atlassian.net/browse/KLL-3641)
+* **KLL-3644:** Add unit tests covering EventRecorderService (#176) ([9b305bc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9b305bcf5f88b9a5e5441e15a78c1771ebb29e9c)), closes [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644) [KLL-3644](https://calmisland.atlassian.net/browse/KLL-3644)
+
+
+### ♻️ Chores
+
+* remove unused loader packages + minor packages update (#188) ([026d881](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/026d8810d919e2acb7a05211c5c016ff3b58e941))
+* upgrade @kl-engineering/eslint-config 2.0.3 ->  2.1.1 (#191) ([6a15742](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/6a15742e8599a6b57ce57c8ca59862b1c43f4f34))
+
+
+### 🐛 Bug Fixes
+
+* **analytics:** add page route events ([9828e57](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9828e57788da1ae94d4b23fabc3e1c1a96371664))
+* hide scrollbar when not needed (#192) ([b94b1bc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b94b1bc3636f57f2408fdccf35037f912361d836))
+* remove link on mobile last page (#186) ([b8e4605](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b8e460581d67f41b405ff6115b3009ef12c58b8e)), closes [NAT-956](https://calmisland.atlassian.net/browse/NAT-956)
+* wait until iframe finishes loading source (#102) ([3404061](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3404061faa01197b1ab49d71b02cb8f4e3b2f996))
+* when user pausesLocally, show noCameraIcon instead of black box (#193) ([8043e95](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8043e951c48df45421e483aa84c5b527a726229e)), closes [SFU-207](https://calmisland.atlassian.net/browse/SFU-207)
+
+## [6.19.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.18.0...v6.19.0) (2022-06-09)
+
+
+### ♻️ Chores
+
+* **KLL-3623:** add firebase analytics (#167) ([83b1b9e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/83b1b9e5e8b3597a2eca0b3358f9bcee870fec07)), closes [KLL-3623](https://calmisland.atlassian.net/browse/KLL-3623) [KLL-3623](https://calmisland.atlassian.net/browse/KLL-3623)
+
+
+### 🐛 Bug Fixes
+
+* **app:** speech recognition doesn't work (#172) ([b34548d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b34548d0dec5ce30273420e9ec5d7bccc4dcf492)), closes [NAT-936](https://calmisland.atlassian.net/browse/NAT-936)
+* center screenshare texts (#171) ([642ae18](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/642ae18d421de4b8f457146e8141934d60aa716e))
+* fix(android): when leaving a class via back button it does not disconnect (#177) ([9cb3184](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9cb31840e48b2b3a61e8ae3c6567dbcb884ef548)), closes [SFU-201](https://calmisland.atlassian.net/browse/SFU-201)
+* **KLL-3465:** fix audio infinite loading in observe mode for Safari Browser(#184) ([3ac20d7](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3ac20d70c152b7dc8a5a331e43c676189d75f4bd)), closes [KLL-3465](https://calmisland.atlassian.net/browse/KLL-3465)
+* nolistitem ui fix (#179) ([fde4d93](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fde4d932584cecda1564b0fb555ca6043280ea23)), closes [KLL-3533](https://calmisland.atlassian.net/browse/KLL-3533)
+* shaky canvas (#170) ([7ae0c1c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7ae0c1c5a4bc5fde0cfd68635ba7a8f81b326b2b))
+* use video height and width from metadata in camera component (#183) ([f41c68f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f41c68f62525635e2c2127722436af3db9e34890)), closes [KLL-3645](https://calmisland.atlassian.net/browse/KLL-3645)
+
+
+### ✨ Features
+
+* add error if metadata api fails kll-3533 (#145) ([529ad4c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/529ad4c524ef7f1e37de0bd3c70d14f90367d907)), closes [kll-3533](https://calmisland.atlassian.net/browse/kll-3533) [kll-3533](https://calmisland.atlassian.net/browse/kll-3533)
+* **KLL-3490:** portrait mode for LIVE (#117) ([de3a1c5](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/de3a1c5e635144562c0997a36ee9f73619f0d9f8)), closes [KLL-3490](https://calmisland.atlassian.net/browse/KLL-3490) [KLL-3490](https://calmisland.atlassian.net/browse/KLL-3490)
+* **KLL-3564:** portrait mode for CLASS and STUDY (#130) ([7568a48](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7568a489f115b00068c54b015e93b9f8e24d1cba)), closes [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564) [KLL-3564](https://calmisland.atlassian.net/browse/KLL-3564)
+* notify user when third party device is connected (#141) ([1503f12](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1503f1265e029d53139b8918eb6e385d3c46ca14)), closes [KLL-3626](https://calmisland.atlassian.net/browse/KLL-3626)
+* remove sfu/webrtc in preview mode (#113) ([226149b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/226149b0a9640bec019bfd548548615b5aa2ff29)), closes [KLL-3570](https://calmisland.atlassian.net/browse/KLL-3570)
+
+## [6.18.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.17.0...v6.18.0) (2022-06-03)
+
+
+### ♻️ Chores
+
+* **KLL-3643:** remove unused file (#164) ([c95ff49](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c95ff4954402d7abe897fcd282e589299cf2f1ad)), closes [KLL-3643](https://calmisland.atlassian.net/browse/KLL-3643) [KLL-3643](https://calmisland.atlassian.net/browse/KLL-3643)
+* remove wrong translation files (#165) ([bdb90ef](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/bdb90efaa1e16ff93b829b52a34358c93a7c5e49))
+
+
+### ✨ Features
+
+* categorized by type of the schedule (#163) ([c9aeb00](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c9aeb00f9626b4cc1e2d14e0f8638bf7517bffb3)), closes [nat-70](https://calmisland.atlassian.net/browse/nat-70) [NAT-70](https://calmisland.atlassian.net/browse/NAT-70)
+* **localization:** add new translations (#166) ([0e79ec6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e79ec65a5b56027f16746bbe3b54b9ee7c7dc2f))
+
+
+### 🐛 Bug Fixes
+
+* **app:** speech recognition doesn't work (#168) ([0e53fea](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e53fea63407de7e0a7c7b0b9e5936c69059c5bd)), closes [NAT-936](https://calmisland.atlassian.net/browse/NAT-936)
+* blank camera refresh (#157) ([c1f5c5e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c1f5c5e5621819259e43f6052b076680e48012bd)), closes [KLL-3645](https://calmisland.atlassian.net/browse/KLL-3645)
+* **KLL-3562:** fix canvas state in class (#142) ([0e65265](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0e652658aa080666ba187ca2586b10ed9bd3a8cb)), closes [KLL-3562](https://calmisland.atlassian.net/browse/KLL-3562)
+* show self camera only for user even when cam is globally turned off (#169) ([ff241cc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ff241cc38a513dff30838db99fdb8f03c482da95)), closes [SFU-188](https://calmisland.atlassian.net/browse/SFU-188)
+* stop sending rrweb events on study mode (#153) ([d3445ce](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d3445ce3fb4fb269841fd7f5cacf0dd3ea5b6230)), closes [KLL-2572](https://calmisland.atlassian.net/browse/KLL-2572)
+
 ## [6.17.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.16.1...v6.17.0) (2022-05-31)
 
 

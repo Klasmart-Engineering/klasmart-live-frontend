@@ -320,5 +320,6 @@
     "canvas.tool.thickness": "Ketebalan",
     "content.pdf.notAvailable": "Tidak dapat memuat PDF",
     "live.tooltip.previousPage": "Sebelumnya",
-    "live.tooltip.nextPage": "Selanjutnya"
+    "live.tooltip.nextPage": "Selanjutnya",
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
 }

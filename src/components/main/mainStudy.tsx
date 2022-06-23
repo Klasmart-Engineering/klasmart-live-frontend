@@ -1,15 +1,21 @@
 import { WBToolbarContainer } from "../classContent/WBToolbar";
 import { ClassContent } from "./classContent";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
-import { showEndStudyState } from "@/store/layoutAtoms";
+import {
+    classEndedState,
+    classLeftState,
+    hasJoinedClassroomState,
+    materialActiveIndexState,
+    showEndStudyState 
+} from "@/store/layoutAtoms";
 import {
     Box,
     Grid,
     makeStyles,
     Theme,
+    useMediaQuery,
     useTheme,
 } from "@material-ui/core";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
@@ -17,7 +23,10 @@ import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     safeArea: {
@@ -33,11 +42,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 function MainStudy () {
     const classes = useStyles();
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
+    const setClassEnded = useSetRecoilState(classEndedState);
+    const setClassLeft = useSetRecoilState(classLeftState);
+    const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
+    const setMaterialActiveIndex = useSetRecoilState(materialActiveIndexState);
     const history = useHistory();
-    const { restart } = useCordovaSystemContext();
     const { showPopup } = usePopupContext();
     const intl = useIntl();
     const theme = useTheme();
+    const isApp = process.env.IS_CORDOVA_BUILD;
+    const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
 
     const onCloseButtonClick = () => {
         showPopup({
@@ -58,11 +72,12 @@ function MainStudy () {
             }),
             showCloseIcon: true,
             onClose: () => {
-                if (restart) {
-                    restart();
-                } else {
-                    history.push(`/schedule`);
-                }
+                history.goBack();
+                setClassEnded(false);
+                setClassLeft(false);
+                setHasJoinedClassroom(false);
+                setMaterialActiveIndex(0);
+                setShowEndStudy(false);
             },
         });
     };
@@ -71,7 +86,7 @@ function MainStudy () {
         <Grid
             container
             className={clsx(classes.fullHeight, {
-                [classes.safeArea]: !process.env.IS_CORDOVA_BUILD,
+                [classes.safeArea]: !isApp,
             })}
         >
             <Grid
@@ -79,7 +94,7 @@ function MainStudy () {
                 xs
             >
                 <Box
-                    py={4}
+                    py={!isMobileWeb && 4}
                     display="flex"
                     flexDirection="column"
                     height="100%"
@@ -95,7 +110,7 @@ function MainStudy () {
                             >
                                 <WBToolbarContainer />
                             </Box>
-                            {process.env.IS_CORDOVA_BUILD && (
+                            {isApp && (
                                 <Box
                                     position="fixed"
                                     top={theme.spacing(4)}

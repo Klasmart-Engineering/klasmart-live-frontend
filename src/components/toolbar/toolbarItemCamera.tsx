@@ -1,3 +1,4 @@
+import { useCamera } from "@kl-engineering/live-state/ui";
 import {
     Badge,
     Button,
@@ -12,7 +13,6 @@ import LockIcon from "@material-ui/icons/Lock";
 import { CameraVideoFill as CameraVideoFillIcon } from "@styled-icons/bootstrap/CameraVideoFill";
 import { CameraVideoOffFill as CameraDisabledIcon } from "@styled-icons/bootstrap/CameraVideoOffFill";
 import clsx from "clsx";
-import { useCamera } from "@kl-engineering/live-state/ui";
 import React from "react";
 import { useIntl } from "react-intl";
 
@@ -99,12 +99,13 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
     const onClick = () => camera.setSending.execute(camera.isPausedLocally);
     const active = !camera.isPausedLocally;
     const tooltip = intl.formatMessage({
-        id: active ? `toggle_camera_off` :  `toggle_camera_on`,
+        id: active ? `toggle_camera_off` : `toggle_camera_on`,
     });
     return (
         <>
             <div
-                className={classes.itemRoot}>
+                className={classes.itemRoot}
+            >
                 {locked && (
                     <Badge
                         classes={{
@@ -112,7 +113,7 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
                             root: classes.badgeRoot,
                         }}
                         badgeContent={<LockIcon className={classes.badgeContent} />}
-                    ></Badge>
+                    />
                 )}
                 <Tooltip title={tooltip}>
                     <Button
@@ -122,11 +123,13 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
                         onClick={onClick}
                     >
                         {active ? <CameraVideoFillIcon className={classes.icon} /> : <CameraDisabledIcon className={classes.icon} />}
-                        {camera.setSending.loading && <CircularProgress
-                            className={classes.loadingSpinner}
-                            size={25}
-                            color="inherit"
-                        />}
+                        {camera.setSending.loading && (
+                            <CircularProgress
+                                className={classes.loadingSpinner}
+                                size={25}
+                                color="inherit"
+                            />
+                        )}
                     </Button>
                 </Tooltip>
             </div>

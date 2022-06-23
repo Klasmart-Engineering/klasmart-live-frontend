@@ -7,10 +7,16 @@ import {
 } from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
-import { useHttpEndpoint, useRegionSelect } from "@/providers/region-select-context";
+import {
+    useHttpEndpoint,
+    useRegionSelect,
+} from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
-import { classActiveUserIdState, streamIdState } from "@/store/layoutAtoms";
+import {
+    classActiveUserIdState,
+    streamIdState,
+} from "@/store/layoutAtoms";
 import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
 import WhiteboardBorder from "@/whiteboard/components/Border";
 import {
@@ -34,7 +40,10 @@ import React,
 } from "react";
 import { FormattedMessage } from "react-intl";
 import { useResizeDetector } from "react-resize-detector";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme) => createStyles({
     activityContainer: {
@@ -103,7 +112,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         height: 0,
     });
 
-    const interval = useRef<ReturnType<typeof setInterval>>()
+    const interval = useRef<ReturnType<typeof setInterval>>();
 
     const { authenticationService } = useServices();
     const { region } = useRegionSelect();
@@ -143,7 +152,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     ]);
 
     const getPDFURLTransformer = (contentHref: string, token: string | undefined, recorderEndpoint: string, encodedEndpoint: string, encodedAuthEndpoint: string) => {
-        const pdfEndpoint = !process.env.IS_CORDOVA_BUILD ? `${process.env.ENDPOINT_API}/pdf` : region?.services.pdf ?? ``;
+        const pdfEndpoint = !process.env.IS_CORDOVA_BUILD ? `${process.env.ENDPOINT_PDF}/pdf` : region?.services.pdf ?? ``;
         const pdfPath = contentHref.replace(`${recorderEndpoint}`, ``);
         const jpegTransformer = `pdfviewer.html?pdf=${pdfPath}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
         const svgTransformer = `${contentHref.replace(`${recorderEndpoint}/assets`, `pdfviewer.html?pdfSrc=/assets`)}&token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}&pdfendpoint=${pdfEndpoint}`;
@@ -161,7 +170,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
         }
         return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
-        
+
     }, [
         contentHref,
         token,
@@ -171,7 +180,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     useCustomFlashCard({
         iframeID: `recordediframe`,
-        loadStatus:  loadStatus,
+        loadStatus: loadStatus,
         openLoadingDialog: openDialog,
         setOpenLoadingDialog: setOpenDialog,
     });
@@ -186,16 +195,16 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     }, [ sessions ]);
 
     const sendIframeClassActiveUser = (userId?: string) => {
-        if(classType !== ClassType.CLASSES && !userId) return;
+        if (classType !== ClassType.CLASSES && !userId) return;
 
         iframeRef?.current?.contentWindow?.postMessage({
             type: `CLASS_ACTIVE_USER`,
             user: userId,
         }, `*`);
-    }
+    };
 
     useEffect(() => {
-        sendIframeClassActiveUser(classActiveUserId)
+        sendIframeClassActiveUser(classActiveUserId);
     }, [ classActiveUserId ]);
 
     useEffect(() => {
@@ -205,7 +214,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         interval.current = setInterval(() => {
             setSeconds(seconds => seconds - 1);
         }, 1000);
-      
+
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
@@ -216,10 +225,18 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
         if (!contentWindow || !contentDoc) { return; }
 
+        if(!contentDoc.head){
+            const head = document.createElement(`head`);
+            contentDoc.documentElement.prepend(head);
+        }
+
         // Remove styles if exists
-        document.getElementById(`kidsloop-live-frontend-styles`)?.remove();
-        document.getElementById(`kidsloop-live-frontend-image-styles`)?.remove();
-        document.getElementById(`kidsloop-live-frontend-scrollbar`)?.remove();
+        document.getElementById(`kidsloop-live-frontend-styles`)
+            ?.remove();
+        document.getElementById(`kidsloop-live-frontend-image-styles`)
+            ?.remove();
+        document.getElementById(`kidsloop-live-frontend-scrollbar`)
+            ?.remove();
 
         // Custom styles when needed (general)
         const style = document.createElement(`style`);
@@ -230,10 +247,12 @@ export default function InteractionRecorder (props: Props): JSX.Element {
             .h5p-single-choice-set { max-height: 300px !important; }
             .h5p-alternative-inner{ height: auto !important; }
             .h5p-column .h5p-dragquestion > .h5p-question-content > .h5p-inner{ width: 100% !important }
+            ::-webkit-media-controls { display: flex; justify-content: center; align-items: center; }
+            ::-webkit-media-controls-enclosure {max-width: 400px }
         `;
         contentDoc.head.appendChild(style);
 
-        if(isImageContent){
+        if (isImageContent) {
             const imageStyle = document.createElement(`style`);
             imageStyle.setAttribute(`id`, `kidsloop-live-frontend-image-styles`);
             imageStyle.innerHTML = `img { pointer-events: none }`;
@@ -246,14 +265,17 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const scrollbarStyle = document.createElement(`style`);
         scrollbarStyle.setAttribute(`id`, `kidsloop-live-frontend-scrollbar`);
 
-        if(classType === ClassType.LIVE){
+        if (classType === ClassType.LIVE) {
             scrollbarStyle.innerHTML = `
                 body { scrollbar-width: none; -ms-overflow-style: none; }
                 body::-webkit-scrollbar { width: 0; height: 0 }
 
                 ${isPdfContent && `
                     /* rrweb can not replay scroll event on iOS Safari, set 'overflow: scroll' to enable scroll position (scrollTop and scrollLeft)*/
-                    #app-pdf { overflow: scroll; }
+                    #app-pdf { 
+                        overflow: scroll;
+                        background: #e8e8e8;
+                    }
                     ::-webkit-scrollbar {
                         width: 0;
                         background: transparent;
@@ -262,9 +284,9 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         background: transparent;
                     }
                     `
-                }
+}
             `;
-        }else{
+        } else {
             scrollbarStyle.innerHTML = `
                 body::-webkit-scrollbar { -webkit-appearance: none; width: 14px; }
                 body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px; border: 3px solid #ffffff; }
@@ -276,8 +298,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const blockRightClick = (e: MouseEvent) => { e.preventDefault(); };
         contentWindow.addEventListener(`contextmenu`, (e) => blockRightClick(e), false);
 
-        if(!isPdfContent){
-            if (process.env.IS_CORDOVA_BUILD){
+        if (!isPdfContent) {
+            if (process.env.IS_CORDOVA_BUILD) {
                 injectIframeScript(iframeElement, `h5presize`);
             } else {
                 const iframeScript = document.createElement(`script`);
@@ -359,6 +381,34 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
     }
 
+    function onLoadIframe() {
+        sendIframeClassActiveUser(classActiveUserId);
+        onLoad();
+        if (classType !== ClassType.STUDY) {
+            startRecording();
+        }
+        setLoadStatus(LoadStatus.Finished);
+        clearInterval(interval.current as ReturnType<typeof setInterval>);
+        setOpenDialog(false);
+    }
+
+    useEffect(() => {
+        const iframeElement = iframeRef.current;
+        const contentDocument = iframeElement?.contentDocument;
+        const contentWindowDocument = iframeElement?.contentWindow?.document;
+
+        const documentRef = contentDocument || contentWindowDocument;
+        if(!documentRef) return;
+
+        const timer = setInterval(function () {
+            if (documentRef.readyState === `complete`) {
+                clearInterval(timer);
+                console.log(`iframe ready`);
+                onLoadIframe();
+            }
+        }, 1000);
+
+    }, [ contentHrefWithToken, iframeRef.current ]);
     return (
         <>
             <div
@@ -381,16 +431,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
-                        onLoad={() => {
-                            sendIframeClassActiveUser(classActiveUserId);
-                            onLoad();
-                            if (classType !== ClassType.STUDY) {
-                                startRecording();
-                            }
-                            setLoadStatus(LoadStatus.Finished);
-                            clearInterval(interval.current as ReturnType<typeof setInterval>);
-                            setOpenDialog(false);
-                        }}
+                        onLoad={() => { onLoadIframe(); }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
@@ -437,7 +478,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         <Typography
                             gutterBottom
                             variant="h6"
-                            align="center">
+                            align="center"
+                        >
                             {loadStatus === LoadStatus.Loading && <FormattedMessage id="loading_activity_lessonMaterial" />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_error" />}
                         </Typography>
@@ -452,7 +494,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                                 id="loading_activity_lessonMaterial_description"
                                 values={{
                                     seconds: seconds,
-                                }} />}
+                                }}
+                                                                  />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
@@ -460,7 +503,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         item
                         style={{
                             paddingTop: theme.spacing(2),
-                        }}>
+                        }}
+                    >
                         <Button
                             disabled={loadStatus === LoadStatus.Loading}
                             onClick={() => setLoadStatus(LoadStatus.Loading)}

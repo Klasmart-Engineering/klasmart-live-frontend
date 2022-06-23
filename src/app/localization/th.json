@@ -203,7 +203,7 @@
     "settings.general.language": "ภาษา",
     "settings.language.title": "เลือกภาษา",
     "scheduleDetails.description": "คำอธิบาย",
-    "scheduleDetails.startTime": "เวลาเริ่มต้น",
+    "scheduleDetails.moreTeacher": "เวลาเริ่มต้น",
     "scheduleDetails.endTime": "เวลาสิ้นสุด",
     "scheduleDetails.notApplicable": "ไม่มี",
     "scheduleDetails.dueDate": "วันครบกำหนด",
@@ -366,5 +366,14 @@
     "userSelection.title": "Choose your role",
     "userSelection.student": "Student",
     "userSelection.parent": "Parent",
-    "profileSelection.switch": "Switch Profile"
+    "profileSelection.switch": "Switch Profile",
+    "schedule.liveClass.detail": "Online Study",
+    "schedule.study.detail": "Study Anywhere",
+    "schedule.hfs.detail": "Homework",
+    "schedule.seeDetails": "See details",
+    "schedule.status.start": "Start",
+    "schedule.tab.anytime": "Anytime",
+    "scheduleDetails.teacherCount": "Teachers ({value})",
+    "scheduleDetails.empty.description": "No description available",
+    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
 }

@@ -1,5 +1,5 @@
 import Manual from "./manual";
-import { NoItemList } from "@/utils/utils";
+import { NoItemList } from "@/utils/noItemList";
 import {
     Grid,
     makeStyles,

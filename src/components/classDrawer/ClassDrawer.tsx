@@ -12,6 +12,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { ChevronLeft as ArrowBackIcon } from "@styled-icons/entypo/ChevronLeft";
+import clsx from "clsx";
 import React from "react";
 import { useSetRecoilState } from "recoil";
 
@@ -22,6 +23,7 @@ interface Props {
 	active?: boolean;
     title: string | React.ReactNode;
     titleAction?: React.ReactNode;
+    isMobileWeb?: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -29,6 +31,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         background: `transparent`,
         padding: theme.spacing(3),
         left: CLASS_SIDEBAR_WIDTH,
+        boxSizing: `border-box`,
+        boxShadow: `none`,
+        width: DRAWER_WIDTH,
+    },
+    paperMobile: {
+        background: `transparent`,
+        padding: theme.spacing(3),
+        bottom: CLASS_SIDEBAR_WIDTH,
         boxSizing: `border-box`,
         boxShadow: `none`,
         width: DRAWER_WIDTH,
@@ -41,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: THEME_COLOR_GREY_200,
         display: `flex`,
         flexDirection: `column`,
+    },
+    innerMobile: {
+        height: `70vh`,
     },
     drawerContent: {
         overflowY: `auto`,
@@ -62,22 +75,27 @@ function ClassDrawer (props: Props) {
         titleAction,
         children,
         active,
+        isMobileWeb,
     } = props;
     const setActiveClassDrawer = useSetRecoilState(ActiveClassDrawerState);
 
     return (
         <Drawer
-            anchor="left"
+            anchor={isMobileWeb ? `bottom` : `left`}
             open={active}
             classes={{
-                paper: classes.paper,
+                paper: isMobileWeb ? classes.paperMobile : classes.paper,
             }}
             style={{
                 zIndex: CLASS_DRAWER_ZINDEX - 1,
             }}
             onClose={() => setActiveClassDrawer(``)}
         >
-            <div className={classes.inner}>
+            <div
+                className={clsx(classes.inner, {
+                    [classes.innerMobile]: isMobileWeb,
+                })}
+            >
                 <Box
                     display="flex"
                     alignItems="center"
@@ -88,7 +106,7 @@ function ClassDrawer (props: Props) {
                         className={classes.iconTitle}
                         onClick={() => setActiveClassDrawer(``)}
                     >
-                        <ArrowBackIcon size="1.5em" />
+                        {!isMobileWeb && <ArrowBackIcon size="1.5em" />}
                     </Box>
                     <Typography
                         variant="h6"
