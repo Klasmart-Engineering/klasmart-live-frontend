@@ -1,4 +1,7 @@
-import { EntityStatus, Class } from "./sharedDto";
+import {
+    Class,
+    EntityStatus,
+} from "./sharedDto";
 
 export interface ReadUserDto {
     user_id: string;
@@ -19,4 +22,9 @@ export interface ReadUserDto {
 
 interface Role {
     role_name: string;
+}
+
+export enum RoleType {
+    STUDENT = `student`,
+    TEACHER = `teacher`,
 }

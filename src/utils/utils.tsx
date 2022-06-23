@@ -480,3 +480,8 @@ export const usePrevious = <T,>(value: T): T | undefined => {
     });
     return ref.current;
 };
+
+export const changeStatusBarColor = (color: string) => {
+    const StatusBar = (window as any).StatusBar;
+    StatusBar.backgroundColorByHexString(color);
+}

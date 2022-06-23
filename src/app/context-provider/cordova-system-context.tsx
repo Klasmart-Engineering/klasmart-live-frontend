@@ -8,6 +8,7 @@ import {
 import {
     dialogsState,
     isAuthenticatedStorage,
+    isSelectOrgParentDialogOpenState,
     LayoutMode,
     menuOpenState,
     OrientationType,
@@ -86,8 +87,9 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const selectedOrganization = useSelectedOrganizationValue();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
+    const [ isSelectOrgParentDialogOpen, setIsSelectOrgParentDialogOpen ] = useRecoilState(isSelectOrgParentDialogOpenState);
     const isAnyDialogOpen = Object.values(dialogs).includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
-    const isBackToPreviousScreen = selectedUser && selectedOrganization && (isAnyDialogOpen || isMenuOpen);
+    const isBackToPreviousScreen = selectedUser && selectedOrganization && (isAnyDialogOpen || isMenuOpen || isSelectOrgParentDialogOpen);
     const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
     const isAuthenticated = useRecoilValue(isAuthenticatedStorage);
 
@@ -204,6 +206,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
                 isExternalNavigationOpen: false,
             });
             setMenuOpen(false);
+            setIsSelectOrgParentDialogOpen(false);
             return;
         }
 

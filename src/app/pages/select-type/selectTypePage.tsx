@@ -1,4 +1,6 @@
 import { ConfirmSignOutDialog } from "../../dialogs/confirmSignOutDialog";
+import AppBar,
+{ AppBarStyle } from "@/app/components/layout/AppBar";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import {
     isShowOnBoardingState,
@@ -10,10 +12,8 @@ import {
     BACKGROUND_PROCESS_GREY,
     TEXT_COLOR_CONSTRAST_DEFAULT,
     THEME_BACKGROUND_SELECT_DIALOG,
-    THEME_COLOR_ORG_MENU_DRAWER,
 } from "@/config";
 import { ButtonBase } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -25,6 +25,7 @@ import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
+import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
 export enum SelectionTypes {
@@ -37,32 +38,17 @@ const SELECTIONS = [
         id: SelectionTypes.STUDENT,
         type: `userSelection.student`,
         image: StudentImage,
+        route: `/`,
     },
     {
         id: SelectionTypes.PARENT,
         type: `userSelection.parent`,
         image: ParentImage,
+        route: `/parent-dashboard`,
     },
 ];
 
 const useStyles = makeStyles((theme) => ({
-    appbar: {
-        backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
-        borderBottomLeftRadius: theme.spacing(3),
-        height: theme.spacing(8),
-        position: `sticky`,
-        [theme.breakpoints.up(`sm`)]: {
-            height: theme.spacing(12),
-        },
-    },
-    title: {
-        fontWeight: theme.typography.fontWeightMedium as number,
-        color: TEXT_COLOR_CONSTRAST_DEFAULT,
-        fontSize: theme.spacing(2.5),
-        [theme.breakpoints.up(`sm`)]: {
-            fontSize: theme.spacing(3.5),
-        },
-    },
     wrapperSelectItem: {
         flexDirection: `column`,
         backgroundColor: TEXT_COLOR_CONSTRAST_DEFAULT,
@@ -136,22 +122,23 @@ export function SelectTypePage () {
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
     const [ openConfirmationPopup, setOpenConfirmationPopup ] = useState(false);
+    const history = useHistory();
 
     return (
         <Box className={clsx(classes.container, classes.fullWidthHeight)}>
             <AppBar
-                className={clsx(classes.appbar, classes.flexCenter)}
-                elevation={0}
-            >
-                <Typography className={clsx(classes.title)}>
-                    <FormattedMessage id="userSelection.title" />
-                </Typography>
-            </AppBar>
+                style={AppBarStyle.ROUNDED}
+                title={intl.formatMessage({
+                    id: `userSelection.title`,
+                    defaultMessage: `Choose your role`,
+                })}
+            />
             <Box className={classes.selectionButtons}>
                 {SELECTIONS.map((selection) => (
                     <ButtonBase
                         key={selection.id}
                         className={clsx(classes.wrapperSelectItem, classes.flexCenter)}
+                        onClick={() => history.push(selection.route)}
                     >
                         <img
                             src={selection.image}
