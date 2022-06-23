@@ -1,13 +1,12 @@
-import AppBar,
+import AppBar, 
 { AppBarStyle } from "@/app/components/layout/AppBar";
-import { OrganizationList } from "@/app/components/organization/organizationList";
+import { ListOrientation, OrganizationList } from "@/app/components/organization/organizationList";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import BackButton from "@/assets/img/parent-dashboard/back_icon_parents.svg";
 import {
     THEME_BACKGROUND_SELECT_DIALOG,
-    THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
 import {
     Dialog,
@@ -19,23 +18,14 @@ import React,
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
-    fullWidth: {
-        width: `100%`,
+    root: {
+        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
     },
     content: {
         padding: theme.spacing(5, 2, 2),
-        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
-
         [theme.breakpoints.up(`sm`)]: {
             padding: theme.spacing(8, 4, 2),
         },
-    },
-    header: {
-        fontWeight: theme.typography.fontWeightBold as number,
-        color: THEME_COLOR_PRIMARY_SELECT_DIALOG,
-        paddingBottom: theme.spacing(4),
-        textAlign: `center`,
-        lineHeight: 1.5,
     },
 }));
 interface Props {
@@ -62,6 +52,9 @@ export function SelectOrgForParentDialog (props: Props) {
             fullScreen
             aria-labelledby="select-org-dialog"
             open={open}
+            PaperProps={{
+                className: classes.root,
+            }}
             onClose={onBackClick}
         >
             <AppBar
@@ -70,11 +63,12 @@ export function SelectOrgForParentDialog (props: Props) {
                     defaultMessage: `Parent Dashboard`,
                 })}
                 style={AppBarStyle.ROUNDED}
-                leading={<img
-                    src={BackButton}
-                    alt="back button"
-                    onClick={onBackClick}
-                         />
+                leading={
+                    <img
+                        src={BackButton}
+                        alt="back button"
+                        onClick={onBackClick}
+                    />
                 }
             />
             <DialogContent className={classes.content}>
@@ -85,6 +79,7 @@ export function SelectOrgForParentDialog (props: Props) {
                         setSelectedOrganization(org);
                         onOrgClicked();
                     }}
+                    orientation={ListOrientation.VERTICAL}
                 />
             </DialogContent>
         </Dialog>

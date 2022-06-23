@@ -10,25 +10,12 @@ import { useAuthenticationContext } from "@/app/context-provider/authentication-
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
 import { useSelectedUserValue } from "@/app/data/user/atom";
-import {
-    SelectOrgDialog,
-    useShouldSelectOrganization,
-} from "@/app/dialogs/account/selectOrgDialog";
-import {
-    SelectUserDialog,
-    useShouldSelectUser,
-} from "@/app/dialogs/account/selectUserDialog";
+import { SelectOrgDialog } from "@/app/dialogs/account/selectOrgDialog";
+import { SelectUserDialog } from "@/app/dialogs/account/selectUserDialog";
 import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
-import {
-    dialogsState,
-    selectOrgFromParentDashboardState,
-    shouldShowNoOrgProfileState,
-    shouldShowNoStudentRoleState,
-    showedUpgradeDevicePopupState,
-} from "@/app/model/appModel";
+import { showedUpgradeDevicePopupState } from "@/app/model/appModel";
 import { Auth } from "@/app/pages/account/auth";
-import { NoPageFoundDialog } from "@/app/pages/no-pages/noPageFoundDialog";
 import SchedulePage from "@/app/pages/schedule";
 import AnytimeStudyPage from "@/app/pages/schedule/anytime-study";
 import HomeFunStudyPage from "@/app/pages/schedule/home-fun-study/[scheduleId]";
@@ -36,11 +23,10 @@ import SettingsPage from "@/app/pages/settings";
 import PrivacyPage from "@/app/pages/settings/privacy";
 import SelectLanguagePage from "@/app/pages/settings/select-language";
 import { UserRoute } from "@/app/route/userRoute";
-import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
-import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import { WebApp } from "@/pages/webApp";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
 import Grid from "@material-ui/core/Grid";
+import { History } from 'history';
 import React,
 { useEffect } from "react";
 import { useIntl } from "react-intl";
@@ -49,25 +35,17 @@ import {
     Router,
     Switch,
 } from "react-router-dom";
-import {
-    useRecoilState,
-    useRecoilValue,
-} from "recoil";
+import { useRecoilState } from "recoil";
 
 export function CordovaApp ({ history }: {
-    history: any;
+    history: History<unknown>;
 }): JSX.Element {
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const {
         authenticated,
         loading,
     } = useAuthenticationContext();
-    const { shouldSelectUser } = useShouldSelectUser();
-    const { shouldSelectOrganization } = useShouldSelectOrganization();
     const { signOut } = useSignOut();
     const cmsQueryClient = useQueryClient();
-    const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
-    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
     const user = useSelectedUserValue();
     const {
         isIOS,
@@ -77,7 +55,6 @@ export function CordovaApp ({ history }: {
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
-    const isSelectOrgFromParentDashboard = useRecoilValue(selectOrgFromParentDashboardState);
 
     useEffect(() => {
         if (loading) return;
@@ -89,25 +66,7 @@ export function CordovaApp ({ history }: {
             signOut();
             return;
         }
-        if (isSelectOrgFromParentDashboard && shouldSelectUser) {
-            return;
-        }
-        setDialogs({
-            ...dialogs,
-            isSelectUserOpen: shouldSelectUser && !isSelectOrgFromParentDashboard,
-            isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization && !isSelectOrgFromParentDashboard,
-            isShowNoOrgProfile: shouldShowNoOrgProfile,
-            isShowNoStudentRole: shouldShowNoStudentRole,
-        });
-    }, [
-        authenticated,
-        loading,
-        isSelectOrgFromParentDashboard,
-        shouldSelectUser,
-        shouldSelectOrganization,
-        shouldShowNoOrgProfile,
-        shouldShowNoStudentRole,
-    ]);
+    }, [ authenticated, loading ]);
 
     useEffect(() => {
         if(!user || !shouldUpgradeDevice || showedUpgradeDevicePopup) return;
@@ -238,26 +197,8 @@ export function CordovaApp ({ history }: {
             </Router>
             {authenticated && (
                 <>
-                    <NoPageFoundDialog
-                        open={dialogs.isShowNoOrgProfile}
-                        title="signIn.noOrganization.title"
-                        body="signIn.noOrganization.body"
-                        imgSrc={NoOrgFoundLogo}
-                        onClose={() => setDialogs({
-                            ...dialogs,
-                            isShowNoOrgProfile: false,
-                        })}
-                    />
-                    <NoPageFoundDialog
-                        open={dialogs.isShowNoStudentRole}
-                        title="signIn.noStudentProfile.title"
-                        body="signIn.noStudentProfile.body"
-                        imgSrc={NoStudentRoleLogo}
-                        onClose={() => setDialogs({
-                            ...dialogs,
-                            isShowNoStudentRole: false,
-                        })}
-                    />
+                    <SelectOrgDialog history={history} />
+                    <SelectUserDialog history={history} />
                     <ExternalNavigationDialog />
                 </>
             )}

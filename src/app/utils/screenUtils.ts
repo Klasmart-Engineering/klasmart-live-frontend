@@ -1,4 +1,3 @@
-import { THEME_COLOR_BACKGROUND_ON_BOARDING, THEME_COLOR_BACKGROUND_PAPER, THEME_COLOR_ORG_MENU_DRAWER } from "@/config";
 import { OrientationType } from "../model/appModel";
 
 export function lockOrientation (orientationType: OrientationType) {
@@ -10,7 +9,7 @@ export function lockOrientation (orientationType: OrientationType) {
     }
 }
 
-export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
+export function enableFullScreen (enabled: boolean, statusBarColor: string) {
     const StatusBar = (window as any).StatusBar;
     const AndroidFullScreen = (window as any).AndroidFullScreen;
 
@@ -44,7 +43,7 @@ export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
             });
         }
         StatusBar.overlaysWebView(false);
-        StatusBar.backgroundColorByHexString(isAuthenticated ? THEME_COLOR_ORG_MENU_DRAWER : THEME_COLOR_BACKGROUND_ON_BOARDING);
+        StatusBar.backgroundColorByHexString(statusBarColor);
         StatusBar.show();
 
         setTimeout(() => {
@@ -54,7 +53,7 @@ export function enableFullScreen (enabled:boolean, isAuthenticated: boolean) {
     }
 }
 
-export function enableKeepAwake (enabled:boolean) {
+export function enableKeepAwake (enabled: boolean) {
     const plugins = (window as any).plugins;
     if (!plugins) return;
 

@@ -9,6 +9,10 @@ import {
 } from "../../model/appModel";
 import { lockOrientation } from "../../utils/screenUtils";
 import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
+import {
     Grid,
     useTheme,
 } from "@material-ui/core";
@@ -50,7 +54,10 @@ export function Auth ({ useInAppBrowser }: Props) {
     const classes = useStyles();
     const theme = useTheme();
     const frameRef = useRef<HTMLIFrameElement>(null);
-    const [ key, setKey ] = useState(Math.random().toString(BASE_36));
+    const selectedUser = useSelectedUserValue();
+    const selectedOrganization = useSelectedOrganizationValue();
+    const [ key, setKey ] = useState(Math.random()
+        .toString(BASE_36));
     const locale = useRecoilValue(localeState);
 
     const authEndpoint = useHttpEndpoint(`auth`);
@@ -120,8 +127,12 @@ export function Auth ({ useInAppBrowser }: Props) {
         return (<Redirect to="/on-boarding" />);
     }
 
-    if (authenticated) {
+    if (authenticated && (!selectedUser || !selectedOrganization)) {
         return (<Redirect to="/select-user-role" />);
+    }
+
+    if (authenticated) {
+        return (<Redirect to="/" />);
     }
 
     if (useInAppBrowser) {
@@ -139,7 +150,8 @@ export function Auth ({ useInAppBrowser }: Props) {
             >
                 <LoadingWithRetry
                     messageId="auth_waiting_for_authentication"
-                    retryCallback={() => setKey(Math.random().toString(BASE_36))}
+                    retryCallback={() => setKey(Math.random()
+                        .toString(BASE_36))}
                 />
                 {process.env.NODE_ENV === `development` && (
                     <Grid

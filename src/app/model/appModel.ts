@@ -19,7 +19,7 @@ export enum OrientationType {
 
 export enum LayoutMode {
     DEFAULT,
-    CLASSROOM,
+    PARENT,
 }
 
 export const dialogsState = atom({
@@ -76,7 +76,7 @@ export const historyState = atom({
 
 export const layoutModeState = atom<LayoutMode>({
     key: `layoutMode`,
-    default: LayoutMode.DEFAULT,
+    default: LayoutMode.PARENT,
 });
 export const useLayoutMode = () => useRecoilState(layoutModeState);
 export const useLayoutModeValue = () => useRecoilValue(layoutModeState);

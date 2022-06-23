@@ -13,6 +13,7 @@ import {
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
+import { useShouldSelectUser } from "@/app/dialogs/account/selectUserDialog";
 import { SelectOrgForParentDialog } from "@/app/dialogs/parent-dashboard/selectOrgForParentDialog";
 import {
     isSelectOrgParentDialogOpenState,
@@ -91,12 +92,13 @@ export function ParentDashboardPage () {
     const [ isInitState, setIsInitState ] = useState(true);
     const [ isLoading, setIsLoading ] = useState(false);
 
-    const [ isSelectOrgFromParentDashboard, setIsSelectOrgFromParentDashboard ] = useRecoilState(selectOrgFromParentDashboardState);
     const [ isSelectOrgParentDialogOpen, setIsSelectOrgParentDialogOpen ] = useRecoilState(isSelectOrgParentDialogOpenState);
+    const [ isSelectOrgFromParentDashboard, setIsSelectOrgFromParentDashboard ] = useRecoilState(selectOrgFromParentDashboardState);
     const { addOnBack, removeOnBack } = useContext(CordovaSystemContext);
     const [ selectedUser, setSelectedUser ] = useSelectedUser();
     const setSelectedOrganization = useSetSelectedOrganization();
 
+    const { shouldSelectUser } = useShouldSelectUser();
     const { data: myUsersData } = useMyUsersQuery();
     const { data: meData } = useMeQuery();
 
@@ -114,12 +116,16 @@ export function ParentDashboardPage () {
         } else {
             onOrgClicked(classType);
         }
-    }, [ activeOrganizations ]);
+    }, [ activeOrganizations, meData ]);
 
     useEffect(() => {
         if (selectedUser?.user_id !== meData?.me?.user_id) return;
         setIsLoading(false);
-    }, [ meData ]);
+    }, [
+        selectedUser,
+        meData?.me?.user_id,
+        shouldSelectUser,
+    ]);
 
     useEffect(() => {
         if (isInitState || isLoading) return;

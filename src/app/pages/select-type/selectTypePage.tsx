@@ -2,10 +2,19 @@ import { ConfirmSignOutDialog } from "../../dialogs/confirmSignOutDialog";
 import AppBar,
 { AppBarStyle } from "@/app/components/layout/AppBar";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
+import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { useShouldSelectOrganization } from "@/app/dialogs/account/selectOrgDialog";
+import { useShouldSelectUser } from "@/app/dialogs/account/selectUserDialog";
 import {
+    dialogsState,
     isShowOnBoardingState,
     shouldClearCookieState,
+    shouldShowNoOrgProfileState,
+    shouldShowNoStudentRoleState,
 } from "@/app/model/appModel";
+import { NoPageFoundDialog } from "@/app/pages/no-pages/noPageFoundDialog";
+import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
+import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
 import ParentImage from "@/assets/img/select-type/parent-illustration.svg";
 import StudentImage from "@/assets/img/select-type/student-illustration.svg";
 import {
@@ -20,13 +29,20 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import clsx from "clsx";
 import React,
-{ useState } from "react";
+{
+    useEffect,
+    useState,
+} from "react";
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 export enum SelectionTypes {
     STUDENT = `Student`,
@@ -119,10 +135,74 @@ export function SelectTypePage () {
     const intl = useIntl();
     const classes = useStyles();
     const { actions } = useAuthenticationContext();
+    const history = useHistory();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
     const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
+    const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
+    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
+    const { shouldSelectUser } = useShouldSelectUser();
+    const { shouldSelectOrganization } = useShouldSelectOrganization();
+    const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const [ openConfirmationPopup, setOpenConfirmationPopup ] = useState(false);
-    const history = useHistory();
+    const NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID = `noPageFoundBackButtonClickedID`;
+
+    const onNoOrgBackButtonClicked = () => {
+        actions?.signOut();
+        setShouldClearCookie(true);
+        setShowOnBoarding(true);
+    };
+
+    useEffect(() => {
+        if (shouldShowNoOrgProfile || shouldShowNoStudentRole) {
+            addOnBack?.({
+                id: NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID,
+                onBack: onNoOrgBackButtonClicked,
+            });
+        } else {
+            removeOnBack?.(NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID);
+        }
+        setDialogs({
+            ...dialogs,
+            isShowNoOrgProfile: shouldShowNoOrgProfile,
+            isShowNoStudentRole: shouldShowNoStudentRole,
+        });
+    }, [
+        shouldShowNoOrgProfile,
+        shouldShowNoStudentRole,
+        shouldSelectUser,
+        shouldSelectOrganization,
+    ]);
+
+    if(dialogs.isShowNoOrgProfile){
+        return (
+            <NoPageFoundDialog
+                open={dialogs.isShowNoOrgProfile}
+                title="signIn.noOrganization.title"
+                body="signIn.noOrganization.body"
+                imgSrc={NoOrgFoundLogo}
+                onClose={() => setDialogs({
+                    ...dialogs,
+                    isShowNoOrgProfile: false,
+                })}
+            />
+        );
+    }
+
+    if(dialogs.isShowNoStudentRole){
+        return (
+            <NoPageFoundDialog
+                open={dialogs.isShowNoStudentRole}
+                title="signIn.noStudentProfile.title"
+                body="signIn.noStudentProfile.body"
+                imgSrc={NoStudentRoleLogo}
+                onClose={() => setDialogs({
+                    ...dialogs,
+                    isShowNoStudentRole: false,
+                })}
+            />
+        );
+    }
 
     return (
         <Box className={clsx(classes.container, classes.fullWidthHeight)}>

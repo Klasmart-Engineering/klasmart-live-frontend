@@ -1,4 +1,7 @@
-import { useSelectedUserValue, useSelectedOrganizationValue } from "../data/user/atom";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "../data/user/atom";
 import useCordovaInitialize from "../platform/cordova-initialize";
 import {
     enableFullScreen,
@@ -17,6 +20,11 @@ import {
     useSetLayoutMode,
 } from "@/app/model/appModel";
 import { Device } from "@/app/types/device";
+import {
+    PARENT_ROUTES,
+    THEME_COLOR_BACKGROUND_ON_BOARDING,
+    THEME_COLOR_ORG_MENU_DRAWER,
+} from "@/config";
 import { sleep } from "@/utils/utils";
 import { History } from "history";
 import React,
@@ -30,7 +38,10 @@ import React,
     useRef,
     useState,
 } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import {
+    useRecoilState,
+    useRecoilValue,
+} from "recoil";
 import semver from "semver";
 
 const initialHref = location.href;
@@ -88,7 +99,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ isMenuOpen, setMenuOpen ] = useRecoilState(menuOpenState);
     const [ isSelectOrgParentDialogOpen, setIsSelectOrgParentDialogOpen ] = useRecoilState(isSelectOrgParentDialogOpenState);
-    const isAnyDialogOpen = Object.values(dialogs).includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
+    const isAnyDialogOpen = Object.values(dialogs)
+        .includes(true) && !dialogs.isShowNoStudentRole && !dialogs.isShowNoOrgProfile;
     const isBackToPreviousScreen = selectedUser && selectedOrganization && (isAnyDialogOpen || isMenuOpen || isSelectOrgParentDialogOpen);
     const [ shouldUpgradeDevice, setShouldUpgradeDevice ] = useState(false);
     const isAuthenticated = useRecoilValue(isAuthenticatedStorage);
@@ -103,16 +115,11 @@ export function CordovaSystemProvider ({ children, history }: Props) {
 
     useEffect(() => {
         history.listen((location) => {
-            switch (location.pathname) {
-            case `/schedule/anytime-study`:
+            const { pathname } = location;
+            if (PARENT_ROUTES.some((route) => pathname.includes(route))) {
+                setLayoutMode(LayoutMode.PARENT);
+            } else{
                 setLayoutMode(LayoutMode.DEFAULT);
-                break;
-            case `/room`:
-                setLayoutMode(LayoutMode.CLASSROOM);
-                break;
-            default:
-                setLayoutMode(LayoutMode.DEFAULT);
-                break;
             }
         });
     }, []);
@@ -120,24 +127,32 @@ export function CordovaSystemProvider ({ children, history }: Props) {
     useEffect(()=>{
         (async function () {
             try {
-                if(layoutMode === LayoutMode.CLASSROOM){
+                const statusBarColor: string = isAuthenticated && !dialogs.isShowNoOrgProfile && !dialogs.isShowNoStudentRole
+                    ? THEME_COLOR_ORG_MENU_DRAWER : THEME_COLOR_BACKGROUND_ON_BOARDING;
+                if(layoutMode === LayoutMode.DEFAULT){
                     lockOrientation(OrientationType.LANDSCAPE);
                     await sleep(1000);
-                    enableFullScreen(true, isAuthenticated);
+                    enableFullScreen(true, statusBarColor);
                     enableKeepAwake(true);
+                    await sleep(700);
                 }else{
                     // Add some time delay before locking to make sure the system fully loaded
-                    await sleep(1000);
                     lockOrientation(OrientationType.PORTRAIT);
                     await sleep(700);
-                    enableFullScreen(false, isAuthenticated);
+                    enableFullScreen(false, statusBarColor);
                     enableKeepAwake(false);
+                    await sleep(700);
                 }
             } catch (e) {
                 console.error(e);
             }
         })();
-    }, [ layoutMode, isAuthenticated ]);
+    }, [
+        layoutMode,
+        isAuthenticated,
+        dialogs.isShowNoOrgProfile,
+        dialogs.isShowNoStudentRole,
+    ]);
 
     useEffect(() => {
         if(!screen.orientation) return;
@@ -174,14 +189,23 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         isAndroid,
         deviceInfo,
     } = useCordovaInitialize(false, () => {
-        const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/`;
+        const isRootPage = window.location.hash === `#/schedule` || window.location.hash === `#/` || window.location.hash === `#/select-user-role`;
         const isRoomPage = window.location.hash.startsWith(`#/room`);
-        
+
         if (dialogs.isParentalLockOpen){
             setDialogs({
                 ...dialogs,
                 isParentalLockOpen: false,
             });
+            return;
+        }
+
+        if((!selectedUser || !selectedOrganization) && dialogs.isSelectUserOpen){
+            setDialogs({
+                ...dialogs,
+                isSelectUserOpen: false,
+            });
+            history.push(`/select-user-role`);
             return;
         }
 
@@ -210,7 +234,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             return;
         }
 
-        if (isRootPage || isRoomPage || !selectedUser || !selectedOrganization) {
+        if (isRootPage || isRoomPage || dialogs.isShowNoOrgProfile || dialogs.isShowNoStudentRole) {
             if (onBackQueue.current.length > 0) {
                 const latestOnBackItem = onBackQueue.current[onBackQueue.current.length - 1];
                 latestOnBackItem.onBack();
@@ -328,7 +352,8 @@ export function CordovaSystemProvider ({ children, history }: Props) {
             addOnBack: addOnBack,
             removeOnBack: removeOnBack,
             requestPermissions: requestPermissions,
-        }}>
+        }}
+        >
             {cordovaReady && children}
         </CordovaSystemContext.Provider>
     );

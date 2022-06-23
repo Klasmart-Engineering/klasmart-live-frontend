@@ -108,4 +108,16 @@ export const SCROLLBAR_BACKGROUND = `#FAFAFA`;
 export const SCROLLBAR_SIZE = 12;
 export const THEME_COLOR_ICON_DISABLED = `#706F6F`;
 export const THEME_COLOR_PARENT_DASHBOARD_REPORT_TEXT = `#4B82E5`;
-export const THEME_COLOR_LIGHT_BLACK_TEXT = `#333333`
+export const THEME_COLOR_LIGHT_BLACK_TEXT = `#333333`;
+export const SMALL_HEIGHT_DETECT_VALUE = 680;
+export const MAX_PROFILE_TO_DISPLAY_CENTER = 5;
+export const MAX_PROFILE_TO_BREAK_LIST = 3;
+export const PARENT_ROUTES = [
+    `auth`,
+    `report`,
+    `settings`,
+    `on-boarding`,
+    `select-user-role`,
+    `parent-dashboard`,
+];
+export const LARGE_ICON_WIDTH = 50;

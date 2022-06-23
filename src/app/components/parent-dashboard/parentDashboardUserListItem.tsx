@@ -22,7 +22,6 @@ import React,
 { useMemo } from "react";
 import {
     FormattedMessage,
-    useIntl,
 } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
@@ -67,7 +66,6 @@ interface Props {
 }
 
 export const ParentDashboardUserListItem: React.FC<Props> = ({ user, onSelectClassType }) => {
-    const intl = useIntl();
     const classes = useStyles();
 
     const displayName = useMemo(() => {

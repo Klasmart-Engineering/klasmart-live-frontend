@@ -20,7 +20,10 @@ import { ReactQueryDevtools } from "@kl-engineering/cms-api-client";
 import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { createHashHistory } from 'history';
+import {
+    createHashHistory,
+    History,
+} from 'history';
 import React,
 { useEffect } from "react";
 import {
@@ -89,7 +92,7 @@ function Entry () {
         }));
     }, []);
 
-    const history = createHashHistory();
+    const history: History<unknown> = createHashHistory();
 
     return (
         <RawIntlProvider value={language}>
