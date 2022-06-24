@@ -14,7 +14,7 @@ ANYTIME = `Anytime`
 }
 
 export const HomeFunTopBarState = atom({
-    key: `studyTopBarState`,
+    key: `homeFunTopBarState`,
     default: HomeFunAppBarItem.HOME_ACTIVITY,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],

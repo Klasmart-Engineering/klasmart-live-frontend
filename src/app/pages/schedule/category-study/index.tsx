@@ -2,6 +2,10 @@ import AnytimeStudyScheduleList from "@/app/components/Schedule/Study/AnytimeStu
 import StudyScheduleList from "@/app/components/Schedule/Study/List";
 import ScheduleTopBar from "@/app/components/Schedule/TopBar";
 import {
+    HomeFunAppBarItem,
+    useHomeFunTopBarValue,
+} from "@/app/model/HomeFunModel";
+import {
     StudyTopBarItem,
     useStudyTopBarValue,
 } from "@/app/model/StudyModel";
@@ -41,32 +45,30 @@ export default function StudyListPage () {
     const history = useHistory();
     const classes = useStyles();
     const studyTopBar = useStudyTopBarValue();
+    const hfsTopBar = useHomeFunTopBarValue();
+
     const handleBackClick = () => {
         history.goBack();
     };
 
     const SelectedStudyTab = useCallback((studyTopBar: StudyTopBarItem) => {
         switch (studyTopBar) {
-        case StudyTopBarItem.STUDY: return <StudyScheduleList classType={classType} />;
-        case StudyTopBarItem.ANYTIME: return <AnytimeStudyScheduleList classType={classType} />;
+        case StudyTopBarItem.STUDY: return (<StudyScheduleList classType={ClassType.STUDY} />);
+        case StudyTopBarItem.ANYTIME: return (<AnytimeStudyScheduleList classType={ClassType.STUDY} />);
         }
     }, [ studyTopBar ]);
 
-    const getTitle = () => {
-        return classType === ClassType.STUDY ?
-            intl.formatMessage({
-                id: `schedule_studyTab`,
-                defaultMessage: `Study`,
-            }) :
-            intl.formatMessage({
-                id: `schedule_studyHomeFunStudy`,
-                defaultMessage: `Home Fun Study`,
-            });
-    };
+    const SelectedHomeFunStudyTab = useCallback((hfsTopBar: HomeFunAppBarItem) => {
+        switch (hfsTopBar) {
+        case HomeFunAppBarItem.HOME_ACTIVITY: return (<StudyScheduleList classType={ClassType.HOME_FUN_STUDY} />);
+        case HomeFunAppBarItem.ANYTIME: return (<AnytimeStudyScheduleList classType={ClassType.HOME_FUN_STUDY} />);
+        }
+    }, [ hfsTopBar ]);
+
     return (
         <>
-            <ScheduleTopBar classType={ClassType.STUDY} />
-            {SelectedStudyTab(studyTopBar)}
+            <ScheduleTopBar classType={classType} />
+            {classType === ClassType.STUDY ? SelectedStudyTab(studyTopBar) : SelectedHomeFunStudyTab(hfsTopBar)}
             <Box flex="0" />
         </>
     );

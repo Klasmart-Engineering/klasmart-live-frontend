@@ -1,5 +1,4 @@
 import ScheduleItem from "../../ScheduleItem";
-import ScheduleItemTile from "../../ScheduleItemTile";
 import { getStudyTypes } from "../List";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
@@ -24,7 +23,6 @@ import {
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -41,7 +39,6 @@ import {
     List,
     makeStyles,
 } from "@material-ui/core";
-import clsx from "clsx";
 import {
     clamp,
     uniqBy,

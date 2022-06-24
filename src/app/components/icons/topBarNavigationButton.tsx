@@ -26,6 +26,9 @@ import React,
 { ReactElement } from "react";
 import { FormattedMessage } from "react-intl";
 
+const BUTTON_MIN_WIDTH_SMALL = 95;
+const BUTTON_MIN_WIDTH_MEDIUM = 135;
+
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
@@ -63,6 +66,12 @@ const useStyles = makeStyles((theme) => createStyles({
             marginRight: theme.spacing(2.75),
         },
     },
+    hfsButton: {
+        minWidth: BUTTON_MIN_WIDTH_SMALL,
+        [theme.breakpoints.up(`md`)]: {
+            minWidth: BUTTON_MIN_WIDTH_MEDIUM,
+        },
+    },
 }));
 
 interface Props {
@@ -71,6 +80,7 @@ interface Props {
   active: boolean;
   type: ClassType;
   isMarginRight?: boolean;
+  isButtonHFS?: boolean;
 }
 
 export function TopBarNavigationButton (props: Props) {
@@ -80,6 +90,7 @@ export function TopBarNavigationButton (props: Props) {
         active,
         type,
         isMarginRight = false,
+        isButtonHFS = false,
     } = props;
     const classes = useStyles();
     return (
@@ -87,12 +98,13 @@ export function TopBarNavigationButton (props: Props) {
             disableRipple
             className={clsx(classes.root, {
                 [classes.marginRight]: isMarginRight,
+                [classes.hfsButton]: isButtonHFS,
             })}
             onClick={onClick}
         >
             <Typography
                 className={clsx(classes.titleText, {
-                    [classes.titleHomeFunColor]: type === ClassType.LIVE && active,
+                    [classes.titleHomeFunColor]: type === ClassType.HOME_FUN_STUDY && active,
                     [classes.titleStudyColor]: type === ClassType.STUDY && active,
                 })}
                 variant="subtitle2"

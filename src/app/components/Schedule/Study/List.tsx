@@ -1,7 +1,5 @@
 import ScheduleItem from "../ScheduleItem";
-import ScheduleItemTile from "../ScheduleItemTile";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
-import ScheduleListItem from "@/app/components/Schedule/ListItem";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule from "@/app/components/Schedule/NoSchedule";
@@ -17,16 +15,13 @@ import {
 } from "@/app/utils/windowEvents";
 import {
     BG_AVT_ANYTIME_STUDY_DEFAULT,
-    COLOR_ORG_ICON_DEFAULT,
     SCHEDULE_CARD_BACKGROUND_CONTAINER,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
-    SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    THEME_COLOR_BACKGROUND_LIST,
 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -39,17 +34,12 @@ import {
 import { ScheduleStudyType } from "@kl-engineering/cms-api-client/dist/api/schedule";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
-    Avatar,
     Box,
     CircularProgress,
     createStyles,
-    Grid,
     List,
     makeStyles,
-    Typography,
 } from "@material-ui/core";
-import { ChevronRight } from "@styled-icons/material";
-import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import {
     clamp,
     groupBy,
@@ -62,10 +52,7 @@ import React,
     useState,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import {
-    FormattedMessage,
-    useIntl,
-} from "react-intl";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
 
@@ -122,7 +109,6 @@ export default function StudyScheduleList (props: Props) {
 
     const classes = useStyles();
     const intl = useIntl();
-    const history = useHistory();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedStudySchedule, setSelectedStudySchedule ] = useState<SchedulesTimeViewListItem>();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
@@ -238,16 +224,6 @@ export default function StudyScheduleList (props: Props) {
     }, [ page ]);
 
     useWindowOnFocusChange(onFocusChange);
-
-    const displayHomeFunStudyCount = () => {
-        const count = (anytimeSchedulesData?.total ?? 0);
-        if (count > SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX) return `${SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX}+`;
-        return count;
-    };
-
-    const handleAnytimeStudyClick = () => {
-        history.push(`/schedule/anytime-study/${classType}`);
-    };
 
     const setStudyDetailOpen = (studySchedule?: SchedulesTimeViewListItem) => {
         setDialogs({

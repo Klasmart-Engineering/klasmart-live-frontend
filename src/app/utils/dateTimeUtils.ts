@@ -151,3 +151,7 @@ export function getStartEndDateOfWeekReturnNumber (date: Date | number, dateType
     const dateResult: Date = getStartEndDateOfWeekReturnDate(date, dateType);
     return floor(fromDateToSeconds(dateResult));
 }
+
+export function formatDueTimeMillis (dueTimeMillis: number, intl: IntlShape) {
+    return intl.formatTime(dueTimeMillis);
+}

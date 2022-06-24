@@ -2,7 +2,11 @@
 import { SECONDS_BEFORE_CLASS_CAN_START } from "./Live/Dialog/Details";
 import ScheduleJoiningButton from "./ScheduleJoiningButton";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
-import { formatStartEndTimeMillis } from "@/app/utils/dateTimeUtils";
+import {
+    formatDueDateMillis,
+    formatDueTimeMillis,
+    formatStartEndTimeMillis,
+} from "@/app/utils/dateTimeUtils";
 import ScheduleButtonArrow from "@/assets/img/schedule-icon/schedule-button-arrow-mobile.svg";
 import SeeDetails from "@/assets/img/schedule-icon/see-details-icon.svg";
 import ThumbnailIcon from "@/assets/img/schedule-icon/thumbnail-icon.svg";
@@ -63,13 +67,13 @@ const useStyles = makeStyles((theme) => createStyles({
         height: SCHEDULE_CONTAINER_HEIGHT_SMALL,
         borderRadius: theme.spacing(2.5),
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
-        padding: theme.spacing(2, 1.375, 2, 2),
+        padding: theme.spacing(2, 1.375, 2, 1.5),
         justifyContent: `space-between`,
         marginRight: theme.spacing(2),
         [theme.breakpoints.up(`md`)]: {
             width: SCHEDULE_CONTAINER_WIDTH_MEDIUM,
             height: SCHEDULE_CONTAINER_HEIGHT_MEDIUM,
-            padding: theme.spacing(4.5, 3, 3, 3),
+            padding: theme.spacing(4.5, 2, 3, 2),
             marginRight: theme.spacing(2.8),
         },
     },
@@ -149,9 +153,14 @@ const useStyles = makeStyles((theme) => createStyles({
         marginLeft: theme.spacing(-1.75),
     },
     titleSize: {
-        fontSize: `0.75rem`,
+        fontSize: `0.8rem`,
+        overflow: `hidden`,
+        display: `-webkit-box`,
+        WebkitBoxOrient: `vertical`,
+        WebkitLineClamp: 2,
+        wordBreak: `break-all`,
         [theme.breakpoints.up(`md`)]: {
-            fontSize: `1.12rem`,
+            fontSize: `1.15rem`,
         },
     },
     titleWrapper: {
@@ -358,6 +367,23 @@ export default function ScheduleItem (props: Props) {
                                     >
                                         {formatStartEndTimeMillis(fromSecondsToMilliseconds(start_at), fromSecondsToMilliseconds(end_at), intl)}
                                     </Typography>) : null
+                        }
+                        {
+                            end_at && (classType === ClassType.STUDY || classType === ClassType.HOME_FUN_STUDY || classType === ClassType.REVIEW) ?
+                                (
+                                    <Typography
+                                        variant={`subtitle1`}
+                                        className={clsx(classes.textColorGrey, classes.fontWeightBold, classes.titleSize)}
+                                    >
+                                        <FormattedMessage
+                                            id="schedule.dueTime"
+                                            defaultMessage="Due at {time}"
+                                            values={{
+                                                time: formatDueTimeMillis(fromSecondsToMilliseconds(end_at), intl),
+                                            }}
+                                        />
+                                    </Typography>
+                                ) : null
                         }
                     </Box>
                     {teachersContainer()}

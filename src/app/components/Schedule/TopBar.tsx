@@ -1,6 +1,10 @@
 import { TopBarNavigationButton } from "../icons/topBarNavigationButton";
 import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
+    HomeFunAppBarItem,
+    useHomeFunTopBar,
+} from "@/app/model/HomeFunModel";
+import {
     StudyTopBarItem,
     useStudyTopBar,
 } from "@/app/model/StudyModel";
@@ -104,6 +108,7 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1.2rem`,
+            marginLeft: theme.spacing(-2),
         },
     },
     backButton: {
@@ -140,6 +145,7 @@ export default function ScheduleTopBar (props: Props) {
     const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
 
     const [ studySelectedItem, setStudySelectedItem ] = useStudyTopBar();
+    const [ hfsSelectedItem, setHfsSelectedItem ] = useHomeFunTopBar();
 
     const tabBarNavigation = () => {
         if(classType === ClassType.STUDY)
@@ -158,6 +164,27 @@ export default function ScheduleTopBar (props: Props) {
                         active={studySelectedItem === StudyTopBarItem.ANYTIME}
                         type={ClassType.STUDY}
                         onClick={()=> setStudySelectedItem(StudyTopBarItem.ANYTIME)}
+                    />
+                </Box>
+            );
+        }
+        else if(classType === ClassType.HOME_FUN_STUDY)
+        {
+            return (
+                <Box className={classes.tabBarWrapper}>
+                    <TopBarNavigationButton
+                        isButtonHFS
+                        title={`Home activity`}
+                        active={hfsSelectedItem === HomeFunAppBarItem.HOME_ACTIVITY}
+                        type={ClassType.HOME_FUN_STUDY}
+                        onClick={() => setHfsSelectedItem(HomeFunAppBarItem.HOME_ACTIVITY)}
+                    />
+                    <TopBarNavigationButton
+                        isButtonHFS
+                        title={`schedule.tab.anytime`}
+                        active={hfsSelectedItem === HomeFunAppBarItem.ANYTIME}
+                        type={ClassType.HOME_FUN_STUDY}
+                        onClick={() => setHfsSelectedItem(HomeFunAppBarItem.ANYTIME)}
                     />
                 </Box>
             );

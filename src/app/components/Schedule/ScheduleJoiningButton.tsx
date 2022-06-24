@@ -48,7 +48,28 @@ const useStyles = makeStyles((theme) => createStyles({
         marginRight: theme.spacing(2.5),
         marginLeft: theme.spacing(4),
     },
+    submittedHfs: {
+        marginRight: theme.spacing(2),
+        marginLeft: theme.spacing(1.5),
+    },
+    viewFeedbackHfs: {
+        marginLeft: 0,
+    },
+    startHfs: {
+        marginLeft: theme.spacing(4),
+        marginRight: theme.spacing(2.5),
+        [theme.breakpoints.up(`md`)]: {
+            marginLeft: theme.spacing(6.25),
+            marginRight: theme.spacing(3.75),
+        },
+    },
 }));
+
+enum ButtonTitle {
+    START = `Start`,
+    SUBMITTED = `Submitted`,
+    VIEW_FEEDBACK = `View Feedback`
+}
 
 interface Props {
   title: React.ReactNode;
@@ -107,6 +128,9 @@ export default function ScheduleJoiningButton (props: Props) {
                     [classes.liveButton]: variant === ClassType.LIVE && !disabled,
                     [classes.liveButtonDisabled]: variant === ClassType.LIVE && disabled,
                     [classes.studyButtonStart]: variant === ClassType.STUDY,
+                    [classes.startHfs]: variant === ClassType.HOME_FUN_STUDY && title === ButtonTitle.START,
+                    [classes.submittedHfs]: variant === ClassType.HOME_FUN_STUDY && title === ButtonTitle.SUBMITTED,
+                    [classes.viewFeedbackHfs]: variant === ClassType.HOME_FUN_STUDY && title === ButtonTitle.VIEW_FEEDBACK,
                 })}
             >
                 {title}
