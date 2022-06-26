@@ -77,7 +77,7 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
         }else{
             removeOnBack?.(SUPPORT_FILE_INFO_BACK_ID);
         }
-    }, [open]);
+    }, [ open ]);
 
     const handleCloseClick = () => {
         onClose();
@@ -92,7 +92,8 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
                 paper: classes.rounded_dialog,
             }}
             open={open}
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <DialogTitle>
                 <Grid
                     container
@@ -105,12 +106,16 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
                         item
                         style={{
                             overflowX: `hidden`,
-                        }}>
+                        }}
+                    >
                         <Typography
                             variant="subtitle1"
-                            className={classes.dialogTitleText}><FormattedMessage
+                            className={classes.dialogTitleText}
+                        >
+                            <FormattedMessage
                                 id="homeFunStudy.supportFile.info.title"
-                                defaultMessage="File Information"/>
+                                defaultMessage="File Information"
+                            />
                         </Typography>
                     </Grid>
                     <Grid
@@ -134,42 +139,46 @@ export default function SupportFileInfoDialog ({ open, onClose }: { open: boolea
                 >
                     <Grid
                         item
-                        xs>
+                        xs
+                    >
                         <Typography
-                            className={classes.supportMaxFileCaption}>
+                            className={classes.supportMaxFileCaption}
+                        >
                             <FormattedMessage
                                 id="homeFunStudy.supportFile.info.max"
-                                defaultMessage="Maximum File Size: "/></Typography>
+                                defaultMessage="Maximum File Size: "
+                            />
+                        </Typography>
                         <Typography
                             color={`textSecondary`}
-                            className={classes.supportMaxFileText}>
+                            className={classes.supportMaxFileText}
+                        >
                             <FormattedMessage
                                 id="support_file_size"
-                                defaultMessage="100MB"/></Typography>
+                                defaultMessage="100MB"
+                            />
+                        </Typography>
                     </Grid>
                     <Grid
                         item
-                        xs>
+                        xs
+                    >
                         <Typography
-                            className={classes.supportFileCaption}>
+                            className={classes.supportFileCaption}
+                        >
                             <FormattedMessage
                                 id="homeFunStudy.supportFile.info.fileType"
-                                defaultMessage="Supported Files: "/></Typography>
-                    </Grid>
-                    <Grid
-                        item
-                        xs>
-                        <Typography
-                            className={classes.supportFileCaption}>
-                            <FormattedMessage
-                                id="homeFunStudy.supportFile.info.fileType"
-                                defaultMessage="Supported Files: "/></Typography>
+                                defaultMessage="Supported Files: "
+                            />
+                        </Typography>
                         <Typography
                             color={`textSecondary`}
-                            className={classes.supportFileTypes}>
+                            className={classes.supportFileTypes}
+                        >
                             <FormattedMessage
                                 id="support_file_types"
-                                defaultMessage="avi, mov, mp4, mp3, wav, jpg, jpeg, png, gif, bmp, doc, docx, ppt, pptx, xls, xlsx, pdf"/>
+                                defaultMessage="avi, mov, mp4, mp3, wav, jpg, jpeg, png, gif, bmp, doc, docx, ppt, pptx, xls, xlsx, pdf"
+                            />
                         </Typography>
                     </Grid>
                 </Grid>
