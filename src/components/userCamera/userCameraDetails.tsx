@@ -29,17 +29,17 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `flex`,
         flexDirection: `column`,
         justifyContent: `space-between`,
-        textAlign:`left`,
+        textAlign: `left`,
         pointerEvents: `none`,
     },
-    rootTeacher:{},
-    rootSmall:{},
-    rootLarge:{
-        "& $nameContainer":{
+    rootTeacher: {},
+    rootSmall: {},
+    rootLarge: {
+        "& $nameContainer": {
             position: `static`,
             textAlign: `center`,
         },
-        "& $name":{
+        "& $name": {
             position: `relative`,
             backgroundColor: `rgba(255,255,255,0.3)`,
             fontSize: `1em`,
@@ -49,6 +49,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             display: `inline-flex`,
             alignItems: `center`,
             maxWidth: `calc(100% - 230px)`,
+            textShadow: `0px 1px 1px rgba(0,0,0,0.3)`,
 
             "& span": {
                 maxWidth: `none`,
@@ -58,12 +59,12 @@ const useStyles = makeStyles((theme: Theme) => ({
                 },
             },
 
-            "&:after":{
+            "&:after": {
                 content: `inherit`,
             },
         },
     },
-    nameContainer:{
+    nameContainer: {
         position: `absolute`,
         left: 0,
         bottom: 0,
@@ -85,7 +86,7 @@ const useStyles = makeStyles((theme: Theme) => ({
             },
         },
 
-        "&:after":{
+        "&:after": {
             content: `''`,
             position: `absolute`,
             bottom: 0,
@@ -104,28 +105,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         whiteSpace: `nowrap`,
         maxWidth: `calc(100% - 20px)`,
     },
-    roles:{
+    roles: {
         position: `absolute`,
         top: 0,
         right: 0,
         backgroundColor: `#fff`,
         borderRadius: `0 0 0 10px`,
-        padding : `0 0.5em`,
+        padding: `0 0.5em`,
     },
-    roleIcon:{
+    roleIcon: {
         color: theme.palette.text.primary,
         margin: `0.2em`,
     },
-    roleHasControlsIcon:{
+    roleHasControlsIcon: {
         color: amber[500],
     },
-    speakingActivity:{
+    speakingActivity: {
         display: `flex`,
         height: 10,
         alignItems: `center`,
         marginLeft: 5,
 
-        "& div":{
+        "& div": {
             width: 4,
             height: 0,
             minHeight: 4,

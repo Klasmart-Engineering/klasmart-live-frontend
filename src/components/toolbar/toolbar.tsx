@@ -77,13 +77,13 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.text.primary,
         position: `relative`,
         zIndex: 9,
-        wrap: `nowrap`,
+        flexWrap: `nowrap`,
         [theme.breakpoints.down(`xs`)]: {
             flex: `0 1 auto`,
         },
     },
     rootTeacherMobile: {
-        wrap: `wrap`,
+        flexWrap: `wrap`,
         justifyContent: `center`,
     },
     rootMosaic: {
