@@ -426,6 +426,7 @@ export default function ScheduleItemTile(props: Props) {
                             <Grid item>
                                 <ScheduleJoinButton
                                     title={actionTitle}
+                                    disabled={isDisable}
                                     backgroundColor={getClassTypeProperty().actionButtonBackground}
                                     endIcon={
                                         <img
