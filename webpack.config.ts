@@ -54,7 +54,7 @@ const webpackConfig: Configuration = {
                 test: /\.tsx?$/i,
                 exclude: /node_modules/,
                 use: {
-                    loader: `ts-loader`,
+                    loader: `swc-loader`,
                 },
             },
             {

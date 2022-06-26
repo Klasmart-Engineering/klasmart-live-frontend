@@ -10,7 +10,6 @@ import React,
     useState,
 } from "react";
 import styled from "styled-components";
-import { StyledIcon } from "styled-icons/types";
 
 // How to use props in styled-component: https://styled-components.com/docs/advanced
 interface BaseIconProps {

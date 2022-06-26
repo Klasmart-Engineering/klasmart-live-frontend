@@ -12,6 +12,7 @@ const config: Config.InitialOptions = {
         prefix: `<rootDir>/`,
     }),
     transform: {
+        "^.+\\.(t|j)sx?$": "@swc/jest",
         "^.+\\.svg$": `<rootDir>/tests/utils/svgTransform.ts`,
     },
 };
