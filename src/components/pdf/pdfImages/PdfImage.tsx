@@ -19,19 +19,26 @@ const useStyles = makeStyles((theme: Theme) => ({
     root: {
         position: `relative`,
         marginBottom: theme.spacing(1),
+        display: `block`,
+        textAlign: `center`,
     },
-    image: {
-        minWidth: 500,
-        minHeight: 500,
-        width: `100%`,
-        height: `auto`,
+    loadingContainer: {
+        margin: `0 auto`,
+        minHeight: `100vh`
     },
 }));
 
+interface ZoomProps {
+    height?: string | number;
+    width?: string | number;
+}
+export { ZoomProps };
 interface Props {
     pageId: number;
     image: string;
     setVisiblePages: React.Dispatch<React.SetStateAction<number[]>>;
+    zoomProps: ZoomProps;
+    imageLoaded: (value: boolean) => void;
 }
 
 function PdfImage (props: Props) {
@@ -42,6 +49,8 @@ function PdfImage (props: Props) {
         image,
         pageId,
         setVisiblePages,
+        zoomProps,
+        imageLoaded,
     } = props;
     const theme = useTheme();
 
@@ -70,27 +79,22 @@ function PdfImage (props: Props) {
             data-page-num={pageId}
             id={`pdf-page-${pageId}`}
         >
-            {loading && (
-                <Box
-                    position="absolute"
-                    width="100%"
-                    height="100%"
-                    top={0}
-                    left={0}
-                    bgcolor={theme.palette.common.white}
-                >
+            <Box
+                className={classes.loadingContainer}
+            >
+                {loading && (
+
                     <Loading messageId="loading" />
-                </Box>
-            )}
-            <LazyLoadImage
-                alt={image}
-                src={image}
-                className={classes.image}
-                afterLoad={() => setLoading(false)}
-                style={{
-                    height: loading ? `0` : `auto`,
-                }}
-            />
+
+                )}
+                <LazyLoadImage
+                    alt={image}
+                    src={image}
+                    className="pdfImage"
+                    afterLoad={() => {setLoading(false); imageLoaded(true);}}
+                    {...zoomProps}
+                />
+            </Box>
         </div>
     );
 }

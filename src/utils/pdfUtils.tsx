@@ -22,33 +22,34 @@ export interface PDFInternalOutlineRecord {
 }
 
 const MAX_RETRY = 3;
+const ERROR_STATUS = 500;
 let CURRENT_ATTEMPT_COUNT = 0;
 
-export async function getPdfMetadata (pdfPath: string, endpoint: string) {
-    return new Promise<PDFMetadataDTO>((resolve,reject) => {
-        getPdfMetadataMiddleware(pdfPath,endpoint,resolve,reject);
+export async function getPdfMetadata(pdfPath: string, endpoint: string) {
+    return new Promise<PDFMetadataDTO>((resolve, reject) => {
+        getPdfMetadataMiddleware(pdfPath, endpoint, resolve, reject);
     });
 }
 
-async function getPdfMetadataMiddleware (pdfPath: string, endpoint: string,resolve:any,reject:any) {
-    const data = await getPdfMetadataCall(pdfPath,endpoint,resolve);
+async function getPdfMetadataMiddleware(pdfPath: string, endpoint: string, resolve: any, reject: any) {
+    const data = await getPdfMetadataCall(pdfPath, endpoint, resolve);
     CURRENT_ATTEMPT_COUNT++;
-    if (data.status != undefined && data.status === `500`) {
+    if (data.status != undefined && data.status === ERROR_STATUS) {
         if (CURRENT_ATTEMPT_COUNT < MAX_RETRY) {
-            setTimeout(() => { 
-                getPdfMetadataMiddleware(pdfPath,endpoint,resolve,reject);
+            setTimeout(() => {
+                getPdfMetadataMiddleware(pdfPath, endpoint, resolve, reject);
             }, 100);
 
         } else {
             reject(data);
         }
-        
+
     } else {
         resolve(data);
     }
 }
 
-export async function getPdfMetadataCall (pdfPath: string, endpoint: string,resolve:any) {
+export async function getPdfMetadataCall(pdfPath: string, endpoint: string, resolve: any) {
     let data: any = {};
     const headers = new Headers();
     headers.append(`Accept`, `application/json`);
@@ -66,12 +67,12 @@ export async function getPdfMetadataCall (pdfPath: string, endpoint: string,reso
         data = await response.json();
     } catch (err) {
         data = {
-            status: `500`,
+            status: ERROR_STATUS,
         };
     }
-    return data; 
+    return data;
 }
 
-export function scrollToPage (pageId: number) {
+export function scrollToPage(pageId: number) {
     document.getElementById(`pdf-page-${pageId}`)?.scrollIntoView();
 }

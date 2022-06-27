@@ -364,26 +364,6 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
     return data[0];
 }
 
-interface TooltipIntlProps {
-    id: string;
-    children: ReactElement;
-}
-
-function TooltipIntl ({ id, children }: TooltipIntlProps) {
-    const intl = useIntl();
-
-    return(
-        <Tooltip title={intl.formatMessage({
-            id: id,
-        })}
-        >
-            { children }
-        </Tooltip>
-    );
-}
-
-export { TooltipIntl };
-
 export async function getClassAttendeesIds (scheduleId: string, endpoint: string) {
     let data: any = {};
 

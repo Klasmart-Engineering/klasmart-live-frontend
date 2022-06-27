@@ -242,7 +242,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const style = document.createElement(`style`);
         style.setAttribute(`id`, `kidsloop-live-frontend-styles`);
         style.innerHTML = `
-            img { max-width: 100%; height: auto; object-fit:contain }
+            img:not(.pdfImage) { max-width: 100%; height: auto; object-fit:contain }
             body > video { width: 100%; height: 100vh }
             .h5p-single-choice-set { max-height: 300px !important; }
             .h5p-alternative-inner{ height: auto !important; }
@@ -273,9 +273,10 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                 ${isPdfContent && `
                     /* rrweb can not replay scroll event on iOS Safari, set 'overflow: scroll' to enable scroll position (scrollTop and scrollLeft)*/
                     #app-pdf { 
-                        overflow: scroll;
-                        background: #e8e8e8;
+                        overflow: auto;
+                        background: #c4c4c4;
                     }
+                    #app-pdf::-webkit-scrollbar:horizontal { height: 20px; } #app-pdf::-webkit-scrollbar-track:horizontal { background: #f1f1f1; } #app-pdf::-webkit-scrollbar-thumb:horizontal { background: #888; border: 5px solid #f1f1f1;}
                     ::-webkit-scrollbar {
                         width: 0;
                         background: transparent;

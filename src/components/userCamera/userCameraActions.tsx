@@ -8,8 +8,8 @@ import { useSessionContext } from "@/providers/session-context";
 import { hasControlsState } from "@/store/layoutAtoms";
 import {
     toggleFullScreenById,
-    TooltipIntl,
 } from "@/utils/utils";
+import { TooltipIntl } from "@/components/tooltip/tooltipIntl";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { Track } from "@kl-engineering/live-state/ui";
 import {

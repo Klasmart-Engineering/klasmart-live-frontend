@@ -1,5 +1,6 @@
 
-import PdfImage from "./PdfImage";
+import PdfImage,
+{ ZoomProps } from "./PdfImage";
 import { PDF } from "@/entry-pdfviewer";
 import { Box } from "@material-ui/core";
 import React,
@@ -11,11 +12,18 @@ import React,
 interface Props {
     pdf: PDF;
     setVisiblePages: React.Dispatch<React.SetStateAction<number[]>>;
+    zoomProps: ZoomProps;
+    imageLoaded:(value:boolean)=>void
 }
 
 function PdfImages (props: Props) {
+    const {
+        pdf,
+        setVisiblePages,
+        zoomProps,
+        imageLoaded
+    } = props;
     const url = new URL(window.location.href);
-    const { pdf, setVisiblePages } = props;
     const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
     const [ images, setImages ] = useState<string[]>([]);
 
@@ -39,9 +47,11 @@ function PdfImages (props: Props) {
             {images.map((image: string, i: number) => (
                 <PdfImage
                     key={image}
+                    imageLoaded={imageLoaded}
                     setVisiblePages={setVisiblePages}
                     pageId={i+1}
                     image={image}
+                    zoomProps={zoomProps}
                 />
             ))}
         </Box>

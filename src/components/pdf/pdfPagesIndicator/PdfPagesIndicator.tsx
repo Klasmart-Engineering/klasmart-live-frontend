@@ -81,20 +81,8 @@ function PdfPagesIndicator (props: Props) {
     );
 
     return (
-        <Box
-            position="fixed"
-            zIndex="9"
-            width="100%"
-            textAlign="center"
-        >
-            <Box
-                display="inline-block"
-                mt={2}
-            >
-                <Typography
-                    className={classes.pageIndicator}
-                    component="div"
-                >
+            <Box display="inline-block">
+                <Typography className={classes.pageIndicator} component="div" >
                     <FormattedMessage
                         id="content.pdf.page"
                         values={{
@@ -104,7 +92,6 @@ function PdfPagesIndicator (props: Props) {
                     />
                 </Typography>
             </Box>
-        </Box>
     );
 }
 
