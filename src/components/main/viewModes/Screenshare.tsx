@@ -1,4 +1,5 @@
 /* eslint-disable react/no-multi-comp */
+import notificationSound from "@/assets/audio/notification.mp3";
 import { StyledVideo } from "@/components/interactiveContent/styledVideo";
 import { InteractiveMode } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
@@ -50,6 +51,13 @@ const Screenshare: VoidFunctionComponent<{
     sessionId: string;
 }> = ({ sessionId }) => {
     const { sessionId: mySessionId } = useSessionContext();
+    const { stream } = useStream(sessionId, `screenshare`);
+
+    useEffect(() => {
+        if (!stream) return;
+        new Audio(notificationSound)
+            .play();
+    }, []);
     return(
         <Box
             height="100%"
@@ -62,7 +70,7 @@ const Screenshare: VoidFunctionComponent<{
         >
             {sessionId === mySessionId
                 ? <ScreensharePresent />
-                : <ScreenshareView sessionId={sessionId} />
+                : <ScreenshareView stream={stream} />
             }
         </Box>
     );
@@ -145,10 +153,10 @@ const ScreensharePresent: VoidFunctionComponent = () => {
 };
 
 const ScreenshareView: VoidFunctionComponent<{
-    sessionId: string;
-}> = ({ sessionId }) => {
+    stream: MediaStream;
+}> = ({ stream }) => {
     const classes = useStyles();
-    const { stream } = useStream(sessionId, `screenshare`);
+
     return (
         <StyledVideo
             stream={stream}

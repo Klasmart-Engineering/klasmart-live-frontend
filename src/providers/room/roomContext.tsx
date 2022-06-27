@@ -1,4 +1,5 @@
 import { useSessionContext } from "../session-context";
+import notificationSound from "@/assets/audio/notification.mp3";
 import Loading from "@/components/loading";
 import { ReadTrophyDto } from "@/data/live/dto/readRoomDto";
 import { useSendStudentUsageRecordMutation } from "@/data/live/mutations/useSendStudentUsageRecordMutation";
@@ -40,6 +41,7 @@ import {
     useIntl,
 } from "react-intl";
 import { useRecoilState } from "recoil";
+import useSound from "use-sound";
 
 interface Props {
     enableConferencing: boolean;
@@ -83,6 +85,7 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     const [ isChatOpen ] = useRecoilState(isChatOpenState);
     const [ , setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const { enqueueSnackbar } = useSnackbar();
+    const [ play ] = useSound(notificationSound);
 
     const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ streamId ] = useRecoilState(streamIdState);
@@ -247,12 +250,15 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
         const newSession = !sessions.has(join.id);
         setSessions(prev => new Map(prev.set(join.id, join)));
 
-        if(newSession && isTeacher && sessionId !== join.id && now <= join.joinedAt){
-            enqueueSnackbar(intl.formatMessage({
-                id: `notification_user_joined`,
-            }, {
-                user: join.name,
-            }));
+        if(newSession && sessionId !== join.id && now <= join.joinedAt){
+            play();
+            if (isTeacher) {
+                enqueueSnackbar(intl.formatMessage({
+                    id: `notification_user_joined`,
+                }, {
+                    user: join.name,
+                }));
+            }
         }
     };
 
