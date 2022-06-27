@@ -91,7 +91,7 @@
     "dotenv-webpack": "7.1.0",
     "eslint": "8.13.0",
     "file-loader": "^6.2.0",
-    "html-webpack-plugin": "5.3.2",
+    "html-webpack-plugin": "5.5.0",
     "husky": "^7.0.0",
     "jest": "^27.5.1",
     "newrelic-cordova-plugin": "github:newrelic/newrelic-cordova-plugin",
