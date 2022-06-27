@@ -8,8 +8,8 @@ import {
 } from "@/store/layoutAtoms";
 import { whiteboard } from "@/utils/layerValues";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
-import { WhiteboardCanvas } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/WhiteboardCanvas";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/dist/components/toolbar/toolbar-context-provider";
+import { WhiteboardCanvas } from "@kl-engineering/kidsloop-canvas/dist/domain/whiteboard/WhiteboardCanvas";
 import {
     makeStyles,
     Theme,

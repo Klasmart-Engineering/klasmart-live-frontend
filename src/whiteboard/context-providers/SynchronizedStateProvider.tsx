@@ -12,8 +12,8 @@ import {
     createPermissions,
     Permissions,
 } from "@/whiteboard/types/Permissions";
-import { PainterEvent } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/event-serializer/PainterEvent";
-import { useSharedEventSerializer } from "@kl-engineering/kidsloop-canvas/lib/domain/whiteboard/SharedEventSerializerProvider";
+import { PainterEvent } from "@kl-engineering/kidsloop-canvas/dist/domain/whiteboard/event-serializer/PainterEvent";
+import { useSharedEventSerializer } from "@kl-engineering/kidsloop-canvas/dist/domain/whiteboard/SharedEventSerializerProvider";
 import React, {
     createContext,
     FunctionComponent,

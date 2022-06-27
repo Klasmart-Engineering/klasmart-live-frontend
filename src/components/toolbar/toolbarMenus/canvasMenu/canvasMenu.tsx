@@ -13,7 +13,7 @@ import {
 } from "@/store/layoutAtoms";
 import { StyledPopper } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/dist/components/toolbar/toolbar-context-provider";
 import {
     Grid,
     makeStyles,

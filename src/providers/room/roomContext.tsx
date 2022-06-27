@@ -27,7 +27,7 @@ import {
     defineContentId,
     defineContentType,
 } from "@/utils/utils";
-import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/dist/components/toolbar/toolbar-context-provider";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import Typography from "@material-ui/core/Typography";
 import React,

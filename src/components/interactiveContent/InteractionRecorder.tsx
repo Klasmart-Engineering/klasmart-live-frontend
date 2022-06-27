@@ -1,6 +1,7 @@
 import { useServices } from "@/app/context-provider/services-provider";
 import { useCustomFlashCard } from "@/app/utils/customFlashCard";
 import { injectIframeScript } from "@/app/utils/injectIframeScript";
+import useScrollCanvasWithContent from "@/components/interactiveContent/useScrollCanvasWithContent";
 import {
     CANVAS_RESOLUTION_MAX,
     THEME_COLOR_PRIMARY_DEFAULT,
@@ -19,6 +20,7 @@ import {
 } from "@/store/layoutAtoms";
 import { BaseWhiteboard } from "@/whiteboard/components/BaseWhiteboard";
 import WhiteboardBorder from "@/whiteboard/components/Border";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/dist/components/toolbar/toolbar-context-provider";
 import {
     Button,
     CircularProgress,
@@ -111,7 +113,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         width: 0,
         height: 0,
     });
-
+    const [ iframeLoaded, setIframeLoaded ] = useState(false);
     const interval = useRef<ReturnType<typeof setInterval>>();
 
     const { authenticationService } = useServices();
@@ -122,6 +124,11 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     const urlParameterClassActiveUser = classActiveUserId ? `&userId=${classActiveUserId}` : ``;
 
+    //Fetch the canvas toolbar context
+    const {
+        state: { tools },
+        actions: { panCanvas },
+    } = useToolbarContext();
     const {
         width: activityWidth = 0,
         height: activityHeight = 0,
@@ -218,6 +225,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
+    useScrollCanvasWithContent(iframeRef, isPdfContent, iframeLoaded, panCanvas);
     function onLoad () {
         const iframeElement = iframeRef.current;
         const contentWindow = iframeElement?.contentWindow;
@@ -382,7 +390,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         }
     }
 
-    function onLoadIframe() {
+    function onLoadIframe () {
         sendIframeClassActiveUser(classActiveUserId);
         onLoad();
         if (classType !== ClassType.STUDY) {
@@ -432,7 +440,11 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
-                        onLoad={() => { onLoadIframe(); }}
+                        onLoad={() => {
+                            onLoadIframe();
+                            // Sets Iframe loaded to true so the scroll hook can run again
+                            setIframeLoaded(true);
+                        }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
@@ -496,7 +508,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                                 values={{
                                     seconds: seconds,
                                 }}
-                                                                  />}
+                            />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>

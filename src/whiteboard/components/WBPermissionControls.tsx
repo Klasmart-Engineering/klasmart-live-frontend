@@ -1,7 +1,7 @@
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_SECONDARY_DEFAULT } from "@/config";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
-import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/lib/components/toolbar/toolbar-context-provider";
+import { useToolbarContext } from "@kl-engineering/kidsloop-canvas/dist/components/toolbar/toolbar-context-provider";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import MenuItem from "@material-ui/core/MenuItem";
