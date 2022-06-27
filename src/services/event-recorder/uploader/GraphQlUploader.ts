@@ -23,7 +23,7 @@ export interface PageEvent {
 // EventRecorderService stores event data. So there's some overlap.
 // The DynamoDB implementation will need a sequence which always
 // increase for each stream, or at least until the MAX_SAFE_INTEGER.
-function mapEventData (x: SequencedEventData): PageEventIn {
+export function mapEventData (x: SequencedEventData): PageEventIn {
     const domain: PageEvent = JSON.parse(x.data);
 
     return {
