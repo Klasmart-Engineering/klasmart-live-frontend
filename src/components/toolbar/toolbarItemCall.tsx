@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:hover": {
             transform: `scale(1.1)`,
         },
-        "& svg" : {
+        "& svg": {
             width: `1.25em`,
             height: `1.25em`,
         },
@@ -119,6 +119,7 @@ function ToolbarItemCall (props: ToolbarItemCallProps) {
                 >
                     {locked && (
                         <Badge
+                            overlap="rectangular"
                             classes={{
                                 badge: classes.badge,
                                 root: classes.badgeRoot,

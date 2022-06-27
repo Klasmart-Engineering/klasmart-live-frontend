@@ -108,6 +108,7 @@ function ToolbarItemCamera (props: ToolbarItemCameraProps) {
             >
                 {locked && (
                     <Badge
+                        overlap="rectangular"
                         classes={{
                             badge: classes.badge,
                             root: classes.badgeRoot,

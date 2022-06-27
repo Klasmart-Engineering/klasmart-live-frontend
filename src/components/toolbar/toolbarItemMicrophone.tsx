@@ -111,6 +111,7 @@ function ToolbarItemMicrophone (props: ToolbarItemMicrophoneProps) {
             >
                 {locked && (
                     <Badge
+                        overlap="rectangular"
                         classes={{
                             badge: classes.badge,
                             root: classes.badgeRoot,

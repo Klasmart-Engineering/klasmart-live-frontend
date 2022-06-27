@@ -90,6 +90,7 @@ export function FileIcon (props: Props): JSX.Element {
 
     return (
         <Badge
+            overlap="rectangular"
             anchorOrigin={{
                 vertical: `bottom`,
                 horizontal: `right`,

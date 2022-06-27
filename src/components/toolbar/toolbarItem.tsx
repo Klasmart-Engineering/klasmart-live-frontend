@@ -130,6 +130,7 @@ function ToolbarItem (props: Props) {
             <div className={classes.itemRoot}>
                 {Boolean(badge) && (
                     <Badge
+                        overlap="rectangular"
                         classes={{
                             badge: classes.badge,
                             root: classes.badgeRoot,
