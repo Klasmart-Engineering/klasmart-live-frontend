@@ -1,4 +1,6 @@
 import ListUserCamera from "@/components/sidebar/listUserCamera/listUserCamera";
+import SidebarPagination from "@/components/sidebar/sidebarPagination";
+import UserAudio from "@/components/sidebar/UserAudio";
 import { GlobaActionsMenuItem } from "@/components/toolbar/toolbarMenus/globalActionsMenu/globalAction";
 import {
     pauseAllCamerasState,
@@ -10,7 +12,9 @@ import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { hasControlsState } from "@/store/layoutAtoms";
 import { NoItemList } from "@/utils/noItemList";
+import { useTrackStates } from '@kl-engineering/live-state/ui';
 import {
+    Box,
     ButtonBase,
     Fade,
     Grid,
@@ -29,7 +33,10 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { Person as UserIcon } from "@styled-icons/fluentui-system-regular/Person";
 import clsx from "clsx";
 import React,
-{ useMemo } from "react";
+{
+    useMemo,
+    useState,
+} from "react";
 import {
     FormattedMessage,
     useIntl,
@@ -39,10 +46,25 @@ import {
     useRecoilValue,
 } from "recoil";
 
+export type ProducerId = string;
+
+export type TrackState = {
+    producerId?: ProducerId | undefined;
+    kind?: "audio" | "video" | undefined;
+    isMine?: boolean | undefined;
+    isConsumable?: boolean | undefined;
+    isPausedLocally?: boolean | undefined;
+    isPausedGlobally?: boolean | undefined;
+    isPausedAtSource?: boolean | undefined;
+    sessionId?: string | undefined;
+}
+
+interface SessionWithTrackState extends Session, TrackState {}
+
 const useStyles = makeStyles((theme) => ({
-    rootSm:{
+    rootSm: {
         padding: `0 10px`,
-        "& $cameraGridSingleTeacher":{
+        "& $cameraGridSingleTeacher": {
             padding: `0`,
             minHeight: `auto`,
         },
@@ -62,12 +84,12 @@ const useStyles = makeStyles((theme) => ({
             gridTemplateColumns: `1fr`,
         },
     },
-    cameraGridSingleTeacher:{
+    cameraGridSingleTeacher: {
         gridTemplateColumns: `1fr`,
         minHeight: `150px`,
         padding: `0 52px`,
     },
-    gridContainerTeachers:{
+    gridContainerTeachers: {
         marginBottom: `15px`,
     },
     gridContainerStudents: {
@@ -88,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
         marginBottom: theme.spacing(1),
         flexWrap: `wrap`,
     },
-    globalMuteActionIcon:{
+    globalMuteActionIcon: {
         color: theme.palette.text.primary,
         backgroundColor: THEME_COLOR_GREY_200,
         padding: theme.spacing(1),
@@ -117,8 +139,12 @@ function TabParticipants () {
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
-    const { isTeacher } = useSessionContext();
     const hasControls = useRecoilValue(hasControlsState);
+    const { isTeacher } = useSessionContext();
+    const trackStates = useTrackStates();
+    const [ currentPage, setCurrentPage ] = useState(1);
+
+    const STREAMS_PER_PAGE = 3;
 
     const studentsSessions = useMemo(() => [ ...sessions.values() ]
         .filter(s => !s.isTeacher)
@@ -127,6 +153,43 @@ function TabParticipants () {
     const teachersSessions = useMemo(() => [ ...sessions.values() ]
         .filter(s => s.isTeacher)
         .sort(sessionComparator), [ sessions ]);
+
+    const hostSession = useMemo(() => [ ...sessions.values() ]
+        .filter(s => s.isHost), [ sessions ]);
+
+    const nonHostSessions = useMemo(() => [ ...sessions.values() ]
+        .filter(s => !s.isHost)
+        .sort(sessionWithTrackComparator), [ sessions ]);
+
+    const pagesTotal = useMemo(() => Math.ceil(nonHostSessions.length / STREAMS_PER_PAGE), [ nonHostSessions ]);
+
+    const videoTracks = trackStates.filter((track: TrackState) => track.kind === `video`);
+
+    const sessionsWithTrackState = useMemo(() => {
+        if (!videoTracks) {return nonHostSessions;}
+        const combinedSessionAndTracks = nonHostSessions.map(session => ({
+            ...session,
+            ...videoTracks.find((track: TrackState) => track.sessionId === session.id),
+            name: session.name,
+        }));
+
+        return combinedSessionAndTracks.sort(sessionWithTrackComparator);
+    }, [ nonHostSessions, videoTracks ]);
+
+    const slicedSessions = useMemo(() => sessionsWithTrackState.slice(((currentPage - 1) * STREAMS_PER_PAGE), (currentPage * STREAMS_PER_PAGE)), [ sessionsWithTrackState, currentPage ]);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, direction: string) => {
+        switch (direction) {
+        case `next`:
+            setCurrentPage(currentPage + 1);
+            break;
+        case `prev`:
+            setCurrentPage(currentPage - 1);
+            break;
+        default:
+            console.log(`No direction provided.`);
+        }
+    };
 
     const [ allMicrophonesPaused, setAllMicrophonesPaused ] = useRecoilState(pauseAllMicrophonesState);
     const [ allCamerasPause, setAllCamerasPause ] = useRecoilState(pauseAllCamerasState);
@@ -162,7 +225,7 @@ function TabParticipants () {
                 container
                 direction="column"
                 className={clsx(classes.fullheight, {
-                    [classes.rootSm] : isSmDown,
+                    [classes.rootSm]: isSmDown,
                 })}
             >
                 <Grid
@@ -205,56 +268,121 @@ function TabParticipants () {
                     item
                     className={classes.gridContainerAll}
                 >
-                    <Grid
-                        item
-                        className={classes.gridContainerTeachers}
-                    >
-                        {teachersSessions.length ? (
-                            <div className={clsx(classes.cameraGrid, {
-                                [classes.cameraGridTwoColumns] : isTeacher,
-                                [classes.cameraGridSingleTeacher] : isTeacher && teachersSessions.length === 1 && !isXsDown,
-                            })}
+                    {isTeacher ? (
+                        <>
+                            <Grid
+                                item
+                                className={classes.gridContainerTeachers}
                             >
-                                <ListUserCamera
-                                    users={teachersSessions}
-                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
-                                />
-                            </div>
-                        ) : (
-                            <NoItemList
-                                icon={<UserIcon />}
-                                text={intl.formatMessage({
-                                    id: `no_teachers_connected`,
+                                {teachersSessions.length ? (
+                                    <div className={clsx(classes.cameraGrid, {
+                                        [classes.cameraGridTwoColumns]: isTeacher,
+                                        [classes.cameraGridSingleTeacher]: isTeacher && teachersSessions.length === 1 && !isXsDown,
+                                    })}
+                                    >
+                                        <ListUserCamera
+                                            users={teachersSessions}
+                                        />
+                                    </div>
+                                ) : (
+                                    <NoItemList
+                                        icon={<UserIcon />}
+                                        text={intl.formatMessage({
+                                            id: `no_teachers_connected`,
+                                        })}
+                                    />
+                                )}
+                            </Grid>
+                            <Grid
+                                item
+                                xs
+                                className={clsx({
+                                    [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
                                 })}
-                            />
-                        )}
-                    </Grid>
-                    <Grid
-                        item
-                        xs
-                        className={clsx({
-                            [classes.gridContainerStudents]: studentsSessions.length && !isSmDown,
-                        })}
-                    >
-                        {studentsSessions.length ? (
-                            <div className={clsx(classes.cameraGrid, {
-                                [classes.cameraGridTwoColumns] : isTeacher,
-                            })}
                             >
-                                <ListUserCamera
-                                    users={studentsSessions}
-                                    minHeight={isXsDown && !isTeacher ? 192 : undefined}
-                                />
-                            </div>
-                        ) : (
-                            <NoItemList
-                                icon={<UserIcon />}
-                                text={intl.formatMessage({
-                                    id: `no_students_connected`,
+                                {studentsSessions.length ? (
+                                    <div className={clsx(classes.cameraGrid, {
+                                        [classes.cameraGridTwoColumns]: isTeacher,
+                                    })}
+                                    >
+                                        <ListUserCamera users={studentsSessions} />
+                                    </div>
+                                ) : (
+                                    <NoItemList
+                                        icon={<UserIcon />}
+                                        text={intl.formatMessage({
+                                            id: `no_students_connected`,
+                                        })}
+                                    />
+                                )}
+                            </Grid>
+                        </>
+                    ) : (
+                        <>
+                            <Grid
+                                item
+                                className={classes.gridContainerTeachers}
+                            >
+                                {hostSession.length ? (
+                                    <div className={classes.cameraGrid}>
+                                        <ListUserCamera
+                                            users={hostSession}
+                                            minHeight={isXsDown ? 192 : undefined}
+                                        />
+                                    </div>
+                                ) : (
+                                    <NoItemList
+                                        icon={<UserIcon />}
+                                        text={intl.formatMessage({
+                                            id: `no_teachers_connected`,
+                                        })}
+                                    />
+                                )}
+                            </Grid>
+                            <Grid
+                                item
+                                xs
+                                className={clsx({
+                                    [classes.gridContainerStudents]: slicedSessions.length && !isSmDown,
                                 })}
-                            />
-                        )}
-                    </Grid>
+                            >
+                                {slicedSessions.length ? (
+                                    <div className={classes.cameraGrid}>
+                                        <ListUserCamera
+                                            users={slicedSessions}
+                                            minHeight={isXsDown ? 192 : undefined}
+                                        />
+                                    </div>
+                                ) : (
+                                    <NoItemList
+                                        icon={<UserIcon />}
+                                        text={intl.formatMessage({
+                                            id: `no_students_connected`,
+                                        })}
+                                    />
+                                )}
+                            </Grid>
+                            <Box
+                                display="flex"
+                                justifyContent="center"
+                                alignItems="center"
+                                margin={1}
+                                marginTop={2}
+                            >
+                                <SidebarPagination
+                                    currentPage={currentPage}
+                                    pagesTotal={pagesTotal}
+                                    handlePageChange={handlePageChange}
+                                />
+                            </Box>
+                            {nonHostSessions.map(session => (
+                                <UserAudio
+                                    key={session.id}
+                                    user={session}
+                                />
+                            ))}
+                        </>
+                    )}
                 </Grid>
             </Grid>
         </Fade>
@@ -263,7 +391,23 @@ function TabParticipants () {
 
 const sessionComparator = (a: Session, b: Session) => {
     if (Boolean(a.isHost) !== Boolean(b.isHost)) {
-        return a.isHost ? 1 : -1;
+        return Number(b.isHost) - Number(a.isHost);
+    }
+
+    return a.name.localeCompare(b.name);
+};
+
+const sessionWithTrackComparator = (a: SessionWithTrackState, b: SessionWithTrackState) => {
+    if (Boolean(a.isTeacher) !== Boolean(b.isTeacher)) {
+        return Number(b.isTeacher) - Number(a.isTeacher);
+    }
+
+    if (Boolean(a.isMine) !== Boolean(b.isMine)) {
+        return Number(b.isMine) - Number(a.isMine);
+    }
+
+    if (Boolean(a.isTeacher) === Boolean(b.isTeacher)) {
+        return Number(b.isConsumable) - Number(a.isConsumable);
     }
 
     return a.name.localeCompare(b.name);
