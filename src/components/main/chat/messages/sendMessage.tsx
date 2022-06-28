@@ -2,9 +2,9 @@ import { THEME_COLOR_BACKGROUND_DEFAULT } from "@/config";
 import { useSendMessageMutation } from "@/data/live/mutations/useSendMessageMutation";
 import {
     IconButton,
-    InputBase,
     makeStyles,
     Paper,
+    TextareaAutosize,
     Theme,
     Tooltip,
 } from "@material-ui/core";
@@ -17,30 +17,45 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 
+const isApp = process.env.IS_CORDOVA_BUILD;
+
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         padding: `4px`,
         display: `flex`,
         alignItems: `center`,
-        borderRadius: 10,
         background: theme.palette.grey[200],
         border: `2px solid transparent`,
+        borderRadius: 10,
     },
-    rootFocused:{
+    textArea: {
+        display: `flex`,
+        alignItems: `center`,
+        background: `none`,
+        border: `none`,
+        flex: 1,
+        resize: `none`,
+        fontFamily: theme.typography.fontFamily,
+        '&:focus': {
+            outline: `none`,
+        },
+    },
+    rootFocused: {
         borderColor: THEME_COLOR_BACKGROUND_DEFAULT,
     },
-    rootInput:{
+    rootInput: {
         flex: 1,
     },
-    input:{
+    input: {
         padding: `0 6px`,
     },
-    iconButton:{
+    iconButton: {
+        alignSelf: `end`,
         padding: 10,
         borderRadius: 12,
         color: `#fff`,
         backgroundColor: theme.palette.text.primary,
-        "&:hover":{
+        "&:hover": {
             backgroundColor: theme.palette.text.primary,
             opacity: 0.8,
         },
@@ -61,13 +76,21 @@ function SendMessage () {
         setMessage(``);
     };
 
-    const inputRef = React.useRef<HTMLInputElement>();
+    const inputRef = React.useRef<HTMLTextAreaElement>(null);
 
     const eventHandlers = useMemo(() => ({
         onFocus: () => setFormFocus(true),
         onBlur: () => setFormFocus(false),
         onClick: () => inputRef.current?.focus(),
     }), []);
+
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (!isApp && e.key === `Enter` && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage(message);
+            setMessage(``);
+        }
+    };
 
     return (
         <Paper
@@ -79,19 +102,15 @@ function SendMessage () {
             {...eventHandlers}
             onSubmit={submitMessage}
         >
-            <InputBase
-                inputRef={inputRef}
+            <TextareaAutosize
+                ref={inputRef}
                 placeholder={intl.formatMessage({
                     id: `chat_messages_write_placeholder`,
                 })}
                 value={message}
-                classes={{
-                    root: classes.rootInput,
-                    input: classes.input,
-                }}
-                inputProps={{
-                    maxLength: 500,
-                }}
+                className={classes.textArea}
+                maxRows={4}
+                onKeyDown={handleKeyDown}
                 onChange={(e) => setMessage(e.target.value)}
             />
             <Tooltip
@@ -106,7 +125,7 @@ function SendMessage () {
                     className={classes.iconButton}
                     type="submit"
                 >
-                    <SendIcon size="1.2rem"/>
+                    <SendIcon size="1.2rem" />
                 </IconButton>
             </Tooltip>
         </Paper>

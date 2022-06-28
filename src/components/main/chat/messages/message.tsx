@@ -1,3 +1,4 @@
+import RelativeTimeTooltip from "./relativeTimeTooltip";
 import { dialogsState } from "@/app/model/appModel";
 import { ChatMessage } from "@/data/live/state/useMessages";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
@@ -5,53 +6,47 @@ import {
     Grid,
     makeStyles,
     Theme,
-    Tooltip,
     Typography,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
-import { TimeFive as TimestampIcon } from "@styled-icons/boxicons-regular/TimeFive";
 import { HatGraduation as TeacherIcon } from "@styled-icons/fluentui-system-filled/HatGraduation";
 import clsx from "clsx";
 import Linkify from 'linkify-react';
 import React,
 { FC } from "react";
-import {
-    FormattedDate,
-    FormattedTime,
-} from "react-intl";
 import { useRecoilState } from "recoil";
 
 const LINK_LENGTH_LIMIT = 80;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    root:{
+    root: {
         flexDirection: `row-reverse`,
         padding: `12px 0`,
     },
-    rootTeacher:{
+    rootTeacher: {
         flexDirection: `row`,
-        "& $messageGrid":{
+        "& $messageGrid": {
             paddingLeft: 10,
             paddingRight: 0,
             textAlign: `left`,
         },
-        "& $message":{
+        "& $message": {
             backgroundColor: amber[500],
-            "&:after":{
+            "&:after": {
                 color: amber[500],
                 left: -6,
                 transform: `scale(-1)`,
             },
         },
-        "& $author":{
+        "& $author": {
             textAlign: `left`,
         },
     },
-    messageGrid:{
+    messageGrid: {
         paddingRight: 10,
         textAlign: `right`,
     },
-    message:{
+    message: {
         backgroundColor: theme.palette.background.default,
         padding: 10,
         borderRadius: 12,
@@ -60,7 +55,8 @@ const useStyles = makeStyles((theme: Theme) => ({
         display: `inline-block`,
         maxWidth: 200,
         wordBreak: `break-word`,
-        "&:after":{
+        whiteSpace: `pre-line`,
+        "&:after": {
             content: `''`,
             position: `absolute`,
             top: 10,
@@ -72,16 +68,12 @@ const useStyles = makeStyles((theme: Theme) => ({
             color: theme.palette.background.default,
         },
     },
-    author:{
+    author: {
         color: theme.palette.grey[600],
         textAlign: `right`,
     },
-    teacherIcon:{
-        margin : `2px 6px`,
-    },
-    timeIcon:{
-        marginLeft: 5,
-        color: theme.palette.grey[500],
+    teacherIcon: {
+        margin: `2px 6px`,
     },
 }));
 
@@ -134,7 +126,7 @@ const Message: FC<MessageProps> = ({
         rel: `noopener noreferrer`,
         format: (value: string, type: string) => {
             if (type === `url` && value.length > LINK_LENGTH_LIMIT) {
-                value = value.slice(0, LINK_LENGTH_LIMIT) + `…`;
+                value = `${value.slice(0, LINK_LENGTH_LIMIT)}…`;
             }
             return value;
         },
@@ -170,19 +162,9 @@ const Message: FC<MessageProps> = ({
                             className={classes.teacherIcon}
                         />
                     )}
-                    <Tooltip
-                        placement="top"
-                        title={
-                            <>
-                                <FormattedDate value={date} /> - <FormattedTime value={date} />
-                            </>
-                        }
-                    >
-                        <TimestampIcon
-                            size="0.85rem"
-                            className={classes.timeIcon}
-                        />
-                    </Tooltip>
+                    <RelativeTimeTooltip
+                        date={date}
+                    />
                 </Typography>
                 <div className={classes.message}>
                     <Linkify

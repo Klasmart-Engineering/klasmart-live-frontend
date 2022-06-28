@@ -71,7 +71,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
 
     const palette: PaletteOptions = {
         background: {
-            default:  THEME_COLOR_BACKGROUND_DEFAULT,
+            default: THEME_COLOR_BACKGROUND_DEFAULT,
             paper: THEME_COLOR_BACKGROUND_PAPER,
         },
         primary: {
@@ -87,7 +87,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
             primary: TEXT_COLOR_PRIMARY_DEFAULT,
             secondary: TEXT_COLOR_SECONDARY_DEFAULT,
         },
-        grey:{
+        grey: {
             200: THEME_COLOR_GREY_200,
         },
     };
@@ -121,8 +121,8 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 },
             },
         },
-        MuiButton:{
-            root:{
+        MuiButton: {
+            root: {
                 borderRadius: 8,
             },
         },
@@ -163,13 +163,13 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 },
             },
         },
-        MuiStepIcon:{
-            root:{
+        MuiStepIcon: {
+            root: {
                 fontSize: `1.65rem`,
             },
         },
-        MuiAccordionSummary:{
-            expandIcon:{
+        MuiAccordionSummary: {
+            expandIcon: {
                 color: palette.text?.primary,
             },
         },
@@ -179,16 +179,21 @@ export function themeProvider (languageCode: string, themeMode: string) {
                 backgroundColor: `#ffffff`,
             },
         },
-        MuiListItemText:{
+        MuiListItemText: {
             secondary: {
                 fontSize: `0.68rem`,
             },
         },
-        MuiListSubheader:{
-            root:{
+        MuiListSubheader: {
+            root: {
                 fontWeight: localeTypography.localeWeightBold,
                 color: palette.text?.secondary,
                 lineHeight: `28px`,
+            },
+        },
+        MuiTooltip: {
+            tooltip: {
+                fontSize: `0.7rem`,
             },
         },
     };
