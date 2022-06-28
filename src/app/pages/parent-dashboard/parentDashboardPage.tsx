@@ -190,7 +190,6 @@ export function ParentDashboardPage () {
     const handleSettingsClick = () => {
         setIsSelectOrgFromParentDashboard(false);
         history.push(`/settings`);
-        changeStatusBarColor(THEME_COLOR_BACKGROUND_PAPER);
     };
 
     return (

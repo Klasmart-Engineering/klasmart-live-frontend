@@ -121,3 +121,4 @@ export const PARENT_ROUTES = [
     `parent-dashboard`,
 ];
 export const LARGE_ICON_WIDTH = 50;
+export const SCHEDULE_BLACK_TEXT = `#444444`;

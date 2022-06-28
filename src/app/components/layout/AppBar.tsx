@@ -42,7 +42,12 @@ const useStyles = makeStyles((theme) => createStyles({
         left: `0`,
     },
     toolbar: {
-        padding: theme.spacing(0, 1),
+        margin: theme.spacing(0, 0.5, 1, 0.5),
+        flex: `1`,
+        alignItems: `flex-end`,
+        [theme.breakpoints.up(`md`)]: {
+            margin: theme.spacing(0, 0.5, 1.5, 0.5),
+        },
     },
     title: {
         paddingTop: theme.spacing(2),
