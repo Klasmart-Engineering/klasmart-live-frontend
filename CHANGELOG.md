@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.22.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.3...v6.22.0) (2022-06-28)
+
+
+### ✨ Features
+
+* **KLL-3594:** add the canvas scroll feature (#173) ([d5bd3ae](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d5bd3aec3e5bf59cc7308fbdeb745903626e5fec)), closes [KLL-3594](https://calmisland.atlassian.net/browse/KLL-3594) [KLL-3594](https://calmisland.atlassian.net/browse/KLL-3594)
+* **KLL-3599:** add size control functionality (#187) ([913471c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/913471cd8fa4eddd8be0f5972bf9bf4a9f8dcdb0)), closes [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [kll-3599](https://calmisland.atlassian.net/browse/kll-3599) [kll-3599](https://calmisland.atlassian.net/browse/kll-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599) [KLL-3599](https://calmisland.atlassian.net/browse/KLL-3599)
+* **KLL-3695:** add notification sound for user joining and screenshare (#228) ([f6ca75c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f6ca75c76b9552111bc9db4e6a7437c648dd3d89)), closes [KLL-3695](https://calmisland.atlassian.net/browse/KLL-3695) [KLL-3695](https://calmisland.atlassian.net/browse/KLL-3695)
+* **localization:** add new translations (#229) ([1e1e782](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1e1e78278c8c32fb741c4a83e932aadc519999a9))
+* **SFU-155:** paginate student cameras (#151) ([4eb4e64](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/4eb4e6405f48965b8f09af94291f5a3bebb229ad)), closes [SFU-155](https://calmisland.atlassian.net/browse/SFU-155) [SFU-155](https://calmisland.atlassian.net/browse/SFU-155)
+
+
+### 🧪 Tests
+
+* **KLL-3642:** Add unit tests covering GraphQlUploader (#221) ([63290a3](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/63290a3e0a5bc9803f7fbf333ac023a7fada34dc)), closes [KLL-3642](https://calmisland.atlassian.net/browse/KLL-3642) [KLL-3642](https://calmisland.atlassian.net/browse/KLL-3642) [KLL-3642](https://calmisland.atlassian.net/browse/KLL-3642) [KLL-3642](https://calmisland.atlassian.net/browse/KLL-3642) [KLL-3642](https://calmisland.atlassian.net/browse/KLL-3642)
+
+
+### 🔨 Build
+
+* **deps-dev:** bump @testing-library/react-hooks from 7.0.1 to 8.0.1 (#236) ([8c1223d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8c1223d2a50011cd0d5d6545e4acbd074f0a5d5c))
+* **deps-dev:** bump dotenv-webpack from 7.0.3 to 7.1.0 (#235) ([5efef47](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5efef47f1366d90baae0dca680afcb747234d7d4))
+* **deps-dev:** bump html-webpack-plugin from 5.3.2 to 5.5.0 (#239) ([70f0a54](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/70f0a5479da4add40fb48bcf1ccd37ba9079a99d))
+* **deps-dev:** bump style-loader from 2.0.0 to 3.3.1 (#238) ([f88028c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f88028ca75b0b408b9b42ac9bef52da4b2b6c499))
+* **deps-dev:** bump webpack from 5.51.1 to 5.73.0 (#237) ([f248095](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f24809561d4df3e3dc9fadb003926a0f423d5101))
+* with SWC compiler 3x to 5x faster builds (#208) ([21e25bf](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/21e25bf6dbb0491daf9faacdb00745a354265127))
+
+
+### ♻️ Chores
+
+* **KLL-3657:** add dependabot config file (#174) ([e039540](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e039540e4f4dcf2c1f068ff1230bac7bab2a9ff3)), closes [KLL-3657](https://calmisland.atlassian.net/browse/KLL-3657) [KLL-3657](https://calmisland.atlassian.net/browse/KLL-3657)
+* **translation:** update translations (#241) ([d12f095](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/d12f095cce49e6e4a9463e50ce7768a13856a48e))
+* update deprecated prop on Badge component (#240) ([3e658c7](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3e658c752355bbc460e4ed82e7a039b9c2f9d275))
+
+
+### 🐛 Bug Fixes
+
+* **KLL-3681:** add drag to scroll functionality (#244) ([b0302eb](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b0302eb21e4e3778cc2340a08268e16995d3d609)), closes [KLL-3681](https://calmisland.atlassian.net/browse/KLL-3681) [KLL-3681](https://calmisland.atlassian.net/browse/KLL-3681)
+* **KLL-3692:** fix portrait mode toolbar and adjust name text shadow (#215) ([b4f6bd3](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b4f6bd3f86af13197e4617463cfe71430e917aff)), closes [KLL-3692](https://calmisland.atlassian.net/browse/KLL-3692)
+* remove duplicated text study info popup (#222) ([32da196](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/32da196d29da77991308a146e0595f14e1323d8b))
+* the join now button is still enabled on future live schedule (#234) ([680fbb4](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/680fbb43aac309aaf38f541794300f197eaff21d)), closes [NAT-1016](https://calmisland.atlassian.net/browse/NAT-1016)
+
 ### [6.21.3](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.2...v6.21.3) (2022-06-22)
 
 
