@@ -8,12 +8,13 @@ import React,
     useEffect,
     useState,
 } from "react";
+import ScrollContainer from 'react-indiana-drag-scroll';
 
 interface Props {
     pdf: PDF;
     setVisiblePages: React.Dispatch<React.SetStateAction<number[]>>;
     zoomProps: ZoomProps;
-    imageLoaded:(value:boolean)=>void
+    imageLoaded: (value: boolean) => void;
 }
 
 function PdfImages (props: Props) {
@@ -21,7 +22,7 @@ function PdfImages (props: Props) {
         pdf,
         setVisiblePages,
         zoomProps,
-        imageLoaded
+        imageLoaded,
     } = props;
     const url = new URL(window.location.href);
     const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
@@ -40,21 +41,30 @@ function PdfImages (props: Props) {
     }, []);
 
     return (
-        <Box
-            p={1}
-            id="pdf-pages"
-        >
-            {images.map((image: string, i: number) => (
-                <PdfImage
-                    key={image}
-                    imageLoaded={imageLoaded}
-                    setVisiblePages={setVisiblePages}
-                    pageId={i+1}
-                    image={image}
-                    zoomProps={zoomProps}
-                />
-            ))}
-        </Box>
+        <ScrollContainer hideScrollbars={false}>
+
+            <Box
+                p={1}
+                id="pdf-pages"
+                style={{
+                    height: `100vh`,
+                }}
+            >
+
+                {images.map((image: string, i: number) => (
+                    <PdfImage
+                        key={image}
+                        imageLoaded={imageLoaded}
+                        setVisiblePages={setVisiblePages}
+                        pageId={i+1}
+                        image={image}
+                        zoomProps={zoomProps}
+                    />
+                ))}
+
+            </Box>
+        </ScrollContainer>
+
     );
 }
 
