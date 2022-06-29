@@ -1,121 +1,93 @@
-import NoScheduleStudy from "@/assets/img/icon_no_homework.svg";
-import NoScheduleStudyTip from "@/assets/img/icon_no_homework_tip.svg";
-import NoScheduleLive from "@/assets/img/icon_no_schedule.svg";
-import NoScheduleLiveTip from "@/assets/img/icon_no_schedule_tip.svg";
+import NoScheDule from "@/assets/img/schedule-icon/no-schedule-mobile.svg";
 import {
-    BG_BUTTON_STUDY_COLOR,
-    TEXT_COLOR_LIVE_PRIMARY,
-    TEXT_COLOR_STUDY_PRIMARY,
-    THEME_COLOR_BACKGROUND_BLUE,
+    SCHEDULE_CARD_BACKGROUND_CONTAINER,
+    SCHEDULE_NO_LIVE_CLASSES,
 } from "@/config";
+import { ClassType } from "@/store/actions";
 import {
+    Box,
     createStyles,
-    Grid,
     makeStyles,
     Typography,
+    useMediaQuery,
     useTheme,
 } from "@material-ui/core";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
+const NO_SCHEDULE_ICON_WIDTH_MEDIUM = 92;
+const NO_SCHEDULE_ICON_HEIGHT_MEDIUM = 71;
+
 const useStyles = makeStyles((theme) => createStyles({
     root: {
-        position: `relative`,
-    },
-    text: {
         display: `flex`,
+        flexDirection: `column`,
         alignItems: `center`,
         justifyContent: `center`,
-        width: `30%`,
-        borderRadius: 25,
-        bottom: 10,
-        position: `relative`,
-        padding: `10px 20px`,
-        [theme.breakpoints.down(`xs`)]: {
-            width: `60%`,
+        backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
+        height: `100%`,
+    },
+    text: {
+        color: SCHEDULE_NO_LIVE_CLASSES,
+        fontWeight: theme.typography.fontWeightBold as number,
+        fontSize: `1.2rem`,
+        paddingTop: theme.spacing(2.2),
+        [theme.breakpoints.up(`md`)]: {
+            fontSize: `1.5rem`,
+            paddingTop: theme.spacing(4.7),
         },
     },
-    textTip:{
-        content: `''`,
-        position: `absolute`,
-        width: 30,
-        height: 30,
-        backgroundRepeat: `no-repeat`,
-        bottom: -25,
-        marginLeft: theme.spacing(3),
-    },
-    image: {
-        width: `70%`,
-        [theme.breakpoints.down(`xs`)]: {
-            width: `100%`,
+    noScheduleIcon: {
+        [theme.breakpoints.up(`md`)]: {
+            width: NO_SCHEDULE_ICON_WIDTH_MEDIUM,
+            height: NO_SCHEDULE_ICON_HEIGHT_MEDIUM,
         },
     },
 }));
 
-export enum NoScheduleVariant {
-    LIVE,
-    STUDY,
-}
-
 interface Props {
-    variant?: NoScheduleVariant;
+    variant?: ClassType;
 }
 
 export default function NoSchedule (props: Props) {
     const classes = useStyles();
     const { variant } = props;
     const theme = useTheme();
+    const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
 
-    let image = NoScheduleLive;
-    let text = `schedule_liveNoSchedule`;
-    let textTip = NoScheduleLiveTip;
-    let textBackground = THEME_COLOR_BACKGROUND_BLUE;
-    let textColor = TEXT_COLOR_LIVE_PRIMARY;
-
-    if(variant === NoScheduleVariant.STUDY){
-        image = NoScheduleStudy;
-        text = `schedule_studyNoSchedule`;
-        textTip = NoScheduleStudyTip;
-        textBackground = BG_BUTTON_STUDY_COLOR;
-        textColor = TEXT_COLOR_STUDY_PRIMARY;
-    }
+    const noScheduleMessage = () => {
+        switch (variant) {
+        case ClassType.LIVE:
+            return {
+                defaultMessage: `No Live classes scheduled`,
+                id: `schedule_liveNoSchedule`,
+            };
+        case ClassType.STUDY:
+            return {
+                defaultMessage: `No Study content scheduled`,
+                id: `schedule_studyNoSchedule`,
+            };
+        default:
+            return {
+                defaultMessage: `No Live classes scheduled`,
+                id: `schedule_liveNoSchedule`,
+            };
+        }
+    };
 
     return (
-        <Grid
-            container
-            className={classes.root}
-            alignItems="center"
-            justifyContent="center"
-            direction="column">
-            <Grid
-                item
-                className={classes.text}
-                style={{
-                    backgroundColor: textBackground,
-                    color: textColor,
-                }}>
-                <Typography
-                    style={{
-                        fontWeight: theme.typography.fontWeightBold,
-                    }}
-                    variant="h5"
-                    align="center">
-                    <FormattedMessage id={text} />
-                </Typography>
-                <div
-                    className={classes.textTip}
-                    style={{
-                        backgroundImage: `url(${textTip})`,
-                    }}></div>
-            </Grid>
-            <Grid
-                item
-                className={classes.image}>
-                <img
-                    alt="No Schedule"
-                    src={image}
+        <Box className={classes.root}>
+            <img
+                alt="no schedule"
+                src={NoScheDule}
+                className={classes.noScheduleIcon}
+            />
+            <Typography className={classes.text}>
+                <FormattedMessage
+                    defaultMessage={noScheduleMessage().defaultMessage}
+                    id={noScheduleMessage().id}
                 />
-            </Grid>
-        </Grid>
+            </Typography>
+        </Box>
     );
 }

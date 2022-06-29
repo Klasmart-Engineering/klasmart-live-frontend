@@ -35,7 +35,6 @@ const useStyles = makeStyles((theme) => createStyles({
         },
     },
     centeredLogo: {
-        position: `absolute`,
         textAlign: `center`,
         zIndex: -1,
         width: `100%`,

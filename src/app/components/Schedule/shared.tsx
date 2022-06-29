@@ -87,7 +87,7 @@ export const getIdStudyType = (schedule?: SchedulesTimeViewListItem) => {
 
     if (schedule?.is_home_fun && schedule?.assessment_status === AssessmentStatusType.COMPLETE) return `scheduleDetails.viewFeedback`;
 
-    return `study.enter.startStudying`;
+    return `schedule.status.start`;
 };
 
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {
