@@ -197,13 +197,13 @@ export function InteractionPlayer (props: Props) {
         };
         window.addEventListener(`message`, onIframeEvents);
         return () => window.removeEventListener(`message`, onIframeEvents);
-    }, [  ]);
+    }, [ ]);
 
     if (loadingStreamId) return (
-        <Loading messageId="Waiting for a stream" />
+        <Loading messageId="stream.waiting" />
     );
     if (loading) return (
-        <Loading messageId="Page loading" />
+        <Loading messageId="page.loading" />
     );
     if (error) return (
         <Typography>
@@ -213,7 +213,7 @@ export function InteractionPlayer (props: Props) {
 
     return (
         <>
-            {sizeLoading && <Loading messageId="Loading stream" />}
+            {sizeLoading && <Loading messageId="stream.loading" />}
             <div
                 style={{
                     transform: `scale(${containerScale * initialActivityScale})`,
@@ -229,7 +229,7 @@ export function InteractionPlayer (props: Props) {
                     ref={iframeRef}
                     id={`preview:${streamId}`}
                     className={classes.activityIframe}
-                    src={`${process.env.IS_CORDOVA_BUILD ? `${liveEndPoint}/`  : ``}player.html?streamId=${streamId}`}
+                    src={`${process.env.IS_CORDOVA_BUILD ? `${liveEndPoint}/` : ``}player.html?streamId=${streamId}`}
                     onLoad={() => onLoad()}
                     {...frameProps}
                 />

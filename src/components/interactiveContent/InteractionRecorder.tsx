@@ -86,7 +86,6 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     } = props;
     const MAX_LOADING_COUNT = 60;
     const classes = useStyles();
-    const iframeRef = useRef<HTMLIFrameElement>(null);
     const theme = useTheme();
     const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
@@ -113,6 +112,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         width: 0,
         height: 0,
     });
+    const [ iframeReady, setIframeReady ] = useState(false);
     const [ iframeLoaded, setIframeLoaded ] = useState(false);
     const interval = useRef<ReturnType<typeof setInterval>>();
 
@@ -121,6 +121,12 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     const recorderEndpoint = useHttpEndpoint(`live`);
     const authEndpoint = useHttpEndpoint(`auth`);
+
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const iframeElement = iframeRef.current;
+    const contentWindow = iframeElement?.contentWindow;
+    const contentDoc = iframeElement?.contentDocument;
+    const contentWindowDocument = iframeElement?.contentWindow?.document;
 
     const urlParameterClassActiveUser = classActiveUserId ? `&userId=${classActiveUserId}` : ``;
 
@@ -222,6 +228,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     }, [ classActiveUserId ]);
 
     useEffect(() => {
+        setIframeReady(false);
         setLoadStatus(LoadStatus.Loading);
         setSeconds(MAX_LOADING_COUNT);
         setOpenDialog(true);
@@ -234,13 +241,9 @@ export default function InteractionRecorder (props: Props): JSX.Element {
 
     useScrollCanvasWithContent(iframeRef, isPdfContent, iframeLoaded, panCanvas);
     function onLoad () {
-        const iframeElement = iframeRef.current;
-        const contentWindow = iframeElement?.contentWindow;
-        const contentDoc = iframeElement?.contentDocument;
-
         if (!contentWindow || !contentDoc) { return; }
 
-        if(!contentDoc.head){
+        if(!contentDoc.head && contentDoc.documentElement){
             const head = document.createElement(`head`);
             contentDoc.documentElement.prepend(head);
         }
@@ -399,6 +402,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     }
 
     function onLoadIframe () {
+        console.log(`iframe ready - injecting scripts`);
         sendIframeClassActiveUser(classActiveUserId);
         onLoad();
         if (classType !== ClassType.STUDY) {
@@ -407,25 +411,25 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         setLoadStatus(LoadStatus.Finished);
         clearInterval(interval.current as ReturnType<typeof setInterval>);
         setOpenDialog(false);
+        setIframeLoaded(true);
     }
 
     useEffect(() => {
-        const iframeElement = iframeRef.current;
-        const contentDocument = iframeElement?.contentDocument;
-        const contentWindowDocument = iframeElement?.contentWindow?.document;
-
-        const documentRef = contentDocument || contentWindowDocument;
+        const documentRef = contentDoc || contentWindowDocument;
         if(!documentRef) return;
-
         const timer = setInterval(function () {
             if (documentRef.readyState === `complete`) {
                 clearInterval(timer);
-                console.log(`iframe ready`);
-                onLoadIframe();
+                setIframeReady(true);
             }
         }, 1000);
+    }, [ contentHrefWithToken ]);
 
-    }, [ contentHrefWithToken, iframeRef.current ]);
+    useEffect(() => {
+        if(!iframeReady) return;
+        onLoadIframe();
+    }, [ iframeReady ]);
+
     return (
         <>
             <div
@@ -448,11 +452,6 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
-                        onLoad={() => {
-                            onLoadIframe();
-                            // Sets Iframe loaded to true so the scroll hook can run again
-                            setIframeLoaded(true);
-                        }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
@@ -511,12 +510,14 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                             variant="caption"
                             align="center"
                         >
-                            {loadStatus === LoadStatus.Loading && <FormattedMessage
-                                id="loading_activity_lessonMaterial_description"
-                                values={{
-                                    seconds: seconds,
-                                }}
-                                                                  />}
+                            {loadStatus === LoadStatus.Loading && (
+                                <FormattedMessage
+                                    id="loading_activity_lessonMaterial_description"
+                                    values={{
+                                        seconds: seconds,
+                                    }}
+                                />
+                            )}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
