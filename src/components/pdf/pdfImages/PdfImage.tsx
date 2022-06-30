@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     loadingContainer: {
         margin: `0 auto`,
-        minHeight: `100vh`
+        minHeight: `100vh`,
     },
 }));
 
@@ -92,7 +92,7 @@ function PdfImage (props: Props) {
                     src={image}
                     className="pdfImage"
                     afterLoad={() => {setLoading(false); imageLoaded(true);}}
-                    {...zoomProps}
+                    style={zoomProps}
                 />
             </Box>
         </div>

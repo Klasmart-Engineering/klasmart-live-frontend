@@ -257,7 +257,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const style = document.createElement(`style`);
         style.setAttribute(`id`, `kidsloop-live-frontend-styles`);
         style.innerHTML = `
-            img:not(.pdfImage) { max-width: 100%; height: auto; object-fit:contain }
+            img { max-width: 100%; height: auto; object-fit:contain }
+            img.pdfImage { max-width: none; }
             body > video { width: 100%; height: 100vh }
             .h5p-single-choice-set { max-height: 300px !important; }
             .h5p-alternative-inner{ height: auto !important; }
@@ -515,7 +516,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                                 values={{
                                     seconds: seconds,
                                 }}
-                            />}
+                                                                  />}
                             {loadStatus === LoadStatus.Error && <FormattedMessage id="loading_activity_lessonMaterial_clickReload" />}
                         </Typography>
                     </Grid>
