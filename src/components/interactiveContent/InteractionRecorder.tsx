@@ -176,13 +176,20 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         if (contentHref.endsWith(`.pdf`)) {
             return getPDFURLTransformer(contentHref, token, recorderEndpoint, encodedEndpoint, encodedAuthEndpoint);
         }
-        return `${contentHref}?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
+        const queryParams = `?token=${token}&endpoint=${encodedEndpoint}&auth=${encodedAuthEndpoint}${urlParameterClassActiveUser}`;
 
+        //Temporary fix for Vietnam environment, the cdn url doesn't work in iframe due to CORS Origin issue.
+        //https://calmisland.atlassian.net/wiki/spaces/KLVN/pages/2654699547/Material+URLs+in+Live+class
+        if(region?.services.cdn && contentHref.startsWith(region.services.cdn)) {
+            return `${recorderEndpoint}${contentHref.replace(region.services.cdn, ``)}${queryParams}`;
+        }
+        return `${contentHref}${queryParams}`;
     }, [
         contentHref,
         token,
         recorderEndpoint,
         authEndpoint,
+        region
     ]);
 
     useCustomFlashCard({
