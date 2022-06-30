@@ -375,5 +375,6 @@
     "schedule.tab.anytime": "Kapanpun",
     "scheduleDetails.teacherCount": "Guru ({value})",
     "scheduleDetails.empty.description": "Tidak ada deskripsi",
-    "schedule.moreTeacher": "+ {value} lebih {value, plural, one {guru} other {guru}}"
+    "schedule.moreTeacher": "+ {value} lebih {value, plural, one {guru} other {guru}}",
+    "schedule.dueTime": "Due at {time}"
 }

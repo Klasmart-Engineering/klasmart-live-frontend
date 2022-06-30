@@ -375,5 +375,6 @@
     "schedule.tab.anytime": "Bất cứ lúc nào",
     "scheduleDetails.teacherCount": "Teachers ({value})",
     "scheduleDetails.empty.description": "No description available",
-    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}"
+    "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}",
+    "schedule.dueTime": "Due at {time}"
 }
