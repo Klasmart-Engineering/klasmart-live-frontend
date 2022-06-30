@@ -1,6 +1,9 @@
 import Loading from './components/loading';
 import PdfPagesIndicator from './components/pdf/pdfPagesIndicator/PdfPagesIndicator';
-import { THEME_COLOR_BACKGROUND_PAPER } from './config';
+import {
+    SCROLLBAR_SIZE,
+    THEME_COLOR_BACKGROUND_PAPER,
+} from './config';
 import {
     getDefaultLanguageCode,
     getLanguage,
@@ -39,13 +42,17 @@ enum ZoomTypes {
 }
 export { ZoomTypes };
 
-const SCROLLBAR_WIDTH = 10;
+const DOCUMENT_PADDING = 16 + SCROLLBAR_SIZE;
 const MAX_SCALE = 4; // 4 === 400%
 const INITIAL_MAX_SCALE = 2000;
 const ZOOM_VALUE = 60;
 const INITIAL_MIN_SCALE = 300;
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        left: `50%`,
+        transform: `translateX(-50%)`,
+    },
     pdfActionsContainer: {
         marginTop: theme.spacing(2),
     },
@@ -101,7 +108,7 @@ function PdfViewer () {
         if (currentZoomType === ZoomTypes.HEIGHT_FIT && containerRef?.offsetHeight) {
             const elm = document.querySelector<HTMLElement>(`.pdfImage:first-child`)!;
             let newWidth = elm.offsetWidth;
-            newWidth = newWidth - SCROLLBAR_WIDTH;
+            newWidth = newWidth - DOCUMENT_PADDING;
             setScale(newWidth);
             setMinScale(newWidth);
             handleZoom(ZoomTypes.HEIGHT_FIT);
@@ -111,7 +118,7 @@ function PdfViewer () {
             }));
         } else if (currentZoomType === ZoomTypes.WIDTH_FIT && containerRef?.offsetWidth) {
             let newWidth: number = containerRef?.offsetWidth || 0;
-            newWidth = newWidth - SCROLLBAR_WIDTH;
+            newWidth = newWidth - DOCUMENT_PADDING;
             if(maxScale === INITIAL_MAX_SCALE)
             {
                 setMaxScale(newWidth * MAX_SCALE);
@@ -196,20 +203,18 @@ function PdfViewer () {
             <Box
                 position="fixed"
                 zIndex="9"
-                width="100%"
                 textAlign="center"
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
                 gridGap={10}
                 height={!pdfError ? `auto` : `100vh`}
+                className={classes.root}
             >
                 {pdfError ?
                     <NoItemList
                         icon={<FilePdfIcon />}
-                        text={<FormattedMessage
-                            id="content.pdf.notAvailable"
-                        />}
+                        text={<FormattedMessage id="content.pdf.notAvailable" />}
                     />
                     : (
                         <Grid
@@ -245,12 +250,14 @@ function PdfViewer () {
                     )}
 
             </Box>
-            {!pdfError && <PdfImages
-                imageLoaded={imageLoaded}
-                zoomProps={zoomProps}
-                pdf={pdf}
-                setVisiblePages={setVisiblePages}
-            />}
+            {!pdfError && (
+                <PdfImages
+                    imageLoaded={imageLoaded}
+                    zoomProps={zoomProps}
+                    pdf={pdf}
+                    setVisiblePages={setVisiblePages}
+                />
+            )}
 
         </RawIntlProvider>
     );

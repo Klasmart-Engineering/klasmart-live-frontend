@@ -4,7 +4,9 @@ import { injectIframeScript } from "@/app/utils/injectIframeScript";
 import useScrollCanvasWithContent from "@/components/interactiveContent/useScrollCanvasWithContent";
 import {
     CANVAS_RESOLUTION_MAX,
-    THEME_COLOR_PRIMARY_DEFAULT,
+    SCROLLBAR_BACKGROUND,
+    SCROLLBAR_SIZE,
+    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { useSetStreamIdMutation } from "@/data/live/mutations/useSetStreamIdMutation";
 import { useSessions } from "@/data/live/state/useSessions";
@@ -284,34 +286,18 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         const scrollbarStyle = document.createElement(`style`);
         scrollbarStyle.setAttribute(`id`, `kidsloop-live-frontend-scrollbar`);
 
-        if (classType === ClassType.LIVE) {
-            scrollbarStyle.innerHTML = `
-                body { scrollbar-width: none; -ms-overflow-style: none; }
-                body::-webkit-scrollbar { width: 0; height: 0 }
+        scrollbarStyle.innerHTML = `
+        body { scrollbar-width: none; -ms-overflow-style: none; }
+        body::-webkit-scrollbar { width: 0; height: 0 }
+            .h5p-content {max-height: 100vh; overflow: auto; }
+            .indiana-scroll-container::-webkit-scrollbar,
+            .h5p-content::-webkit-scrollbar { width: ${SCROLLBAR_SIZE}px; height: ${SCROLLBAR_SIZE}px; } 
+            .indiana-scroll-container::-webkit-scrollbar-thumb,
+            .h5p-content::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_SECONDARY_DEFAULT}; border-radius: 10px;  }
+            .indiana-scroll-container::-webkit-scrollbar-track { background-color: transparent }
+            .h5p-content::-webkit-scrollbar-track { background-color: ${SCROLLBAR_BACKGROUND}  }
+            `;
 
-                ${isPdfContent && `
-                    /* rrweb can not replay scroll event on iOS Safari, set 'overflow: scroll' to enable scroll position (scrollTop and scrollLeft)*/
-                    #app-pdf { 
-                        overflow: auto;
-                        background: #c4c4c4;
-                    }
-                    #app-pdf::-webkit-scrollbar:horizontal { height: 20px; } #app-pdf::-webkit-scrollbar-track:horizontal { background: #f1f1f1; } #app-pdf::-webkit-scrollbar-thumb:horizontal { background: #888; border: 5px solid #f1f1f1;}
-                    ::-webkit-scrollbar {
-                        width: 0;
-                        background: transparent;
-                    }
-                    ::-webkit-scrollbar-thumb {
-                        background: transparent;
-                    }
-                    `
-}
-            `;
-        } else {
-            scrollbarStyle.innerHTML = `
-                body::-webkit-scrollbar { -webkit-appearance: none; width: 14px; }
-                body::-webkit-scrollbar-thumb { background-color: ${THEME_COLOR_PRIMARY_DEFAULT}; border-radius: 10px; border: 3px solid #ffffff; }
-            `;
-        }
         contentDoc.head.appendChild(scrollbarStyle);
 
         // IP Protection: Contents should not be able to be downloaded by right-clicking.

@@ -1,14 +1,25 @@
 
 import PdfImage,
 { ZoomProps } from "./PdfImage";
+import { SCROLLBAR_SIZE } from "@/config";
 import { PDF } from "@/entry-pdfviewer";
-import { Box } from "@material-ui/core";
+import {
+    Box,
+    makeStyles,
+} from "@material-ui/core";
 import React,
 {
     useEffect,
     useState,
 } from "react";
 import ScrollContainer from 'react-indiana-drag-scroll';
+
+const useStyles = makeStyles(() => ({
+    root: {
+        height: `calc(100vh - ${SCROLLBAR_SIZE}px)`,
+        boxSizing: `border-box`,
+    },
+}));
 
 interface Props {
     pdf: PDF;
@@ -27,7 +38,7 @@ function PdfImages (props: Props) {
     const url = new URL(window.location.href);
     const pdfEndpoint = url.searchParams.get(`pdfendpoint`) || ``;
     const [ images, setImages ] = useState<string[]>([]);
-
+    const classes = useStyles();
     const handleImagesFromApi = () => {
         const imagesArr = [];
         for (let i = 1; i < pdf.metadata.totalPages + 1; i++) {
@@ -46,9 +57,7 @@ function PdfImages (props: Props) {
             <Box
                 p={1}
                 id="pdf-pages"
-                style={{
-                    height: `100vh`,
-                }}
+                className={classes.root}
             >
 
                 {images.map((image: string, i: number) => (
