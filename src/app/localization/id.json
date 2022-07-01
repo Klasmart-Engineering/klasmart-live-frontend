@@ -376,5 +376,9 @@
     "scheduleDetails.teacherCount": "Guru ({value})",
     "scheduleDetails.empty.description": "Tidak ada deskripsi",
     "schedule.moreTeacher": "+ {value} lebih {value, plural, one {guru} other {guru}}",
-    "schedule.dueTime": "Due at {time}"
+    "schedule.dueTime": "Due at {time}",
+    "settings.deleteAccount": "Delete KidsLoop account",
+    "settings.deleteAccount.title": "Sorry to see you go",
+    "settings.deleteAccount.detail": "We hope to see you back again soon to continue your KidsLoop education journey.",
+    "settings.deleteAccount.exit": "Exit"
 }
