@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.22.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.22.0...v6.22.1) (2022-07-01)
+
 ## [6.22.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.3...v6.22.0) (2022-06-28)
 
 
