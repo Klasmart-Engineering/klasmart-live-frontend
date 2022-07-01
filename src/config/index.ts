@@ -119,6 +119,7 @@ export const PARENT_ROUTES = [
     `on-boarding`,
     `select-user-role`,
     `parent-dashboard`,
+    `home-fun-study`,
 ];
 export const LARGE_ICON_WIDTH = 50;
 export const SCHEDULE_BLACK_TEXT = `#444444`;

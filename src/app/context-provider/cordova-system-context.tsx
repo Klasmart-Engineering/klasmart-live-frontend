@@ -23,7 +23,7 @@ import { Device } from "@/app/types/device";
 import {
     PARENT_ROUTES,
     THEME_COLOR_BACKGROUND_ON_BOARDING,
-    THEME_COLOR_ORG_MENU_DRAWER,
+    THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
 import { sleep } from "@/utils/utils";
 import { History } from "history";
@@ -128,7 +128,7 @@ export function CordovaSystemProvider ({ children, history }: Props) {
         (async function () {
             try {
                 const statusBarColor: string = isAuthenticated && !dialogs.isShowNoOrgProfile && !dialogs.isShowNoStudentRole
-                    ? THEME_COLOR_ORG_MENU_DRAWER : THEME_COLOR_BACKGROUND_ON_BOARDING;
+                    ? THEME_COLOR_BACKGROUND_PAPER : THEME_COLOR_BACKGROUND_ON_BOARDING;
                 if(layoutMode === LayoutMode.DEFAULT){
                     lockOrientation(OrientationType.LANDSCAPE);
                     await sleep(1000);
