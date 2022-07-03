@@ -376,5 +376,21 @@
     "scheduleDetails.teacherCount": "Teachers ({value})",
     "scheduleDetails.empty.description": "No description available",
     "schedule.moreTeacher": "+ {value} more {value, plural, one {teacher} other {teachers}}",
-    "schedule.dueTime": "Due at {time}"
+    "schedule.dueTime": "Due at {time}",
+    "settings.deleteAccount": "Delete KidsLoop account",
+    "settings.deleteAccount.title": "Sorry to see you go",
+    "settings.deleteAccount.detail": "We hope to see you back again soon to continue your KidsLoop education journey.",
+    "settings.deleteAccount.exit": "Exit",
+    "live.waitingRoom.title": "Hello, {name}!",
+    "live.waitingRoom.detail": "Please wait for the teacher to arrive",
+    "live.classDetails": "รายละเอียดคลาส",
+    "live.classDetails.className": "ชื่อคลาส",
+    "live.classDetails.program": "โปรแกรม",
+    "live.classDetails.subject": "เรื่อง",
+    "live.classDetails.lessonMaterials": "สื่อการสอน",
+    "live.participants": "รายชื่อคลาส",
+    "live.participants.studentCount": "นักเรียน",
+    "live.participants.teacherCount": "Teachers ({value})",
+    "live.messages.title": "ข้อความ",
+    "live.messages.noResult": "ไม่มีข้อความ"
 }
