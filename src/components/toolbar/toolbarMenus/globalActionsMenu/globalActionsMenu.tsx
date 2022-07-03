@@ -1,5 +1,7 @@
+import StarIcon from "../../../../assets/stickers/star.svg";
 import GlobalActionsMenuItem,
 { GlobaActionsMenuItem } from "./globalAction";
+import StyledIcon from "@/components/styled/icon";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { isGlobalActionsOpenState } from "@/store/layoutAtoms";
@@ -11,7 +13,6 @@ import {
     useTheme,
 } from "@material-ui/core";
 import { HandThumbsUpFill as HandThumbsUpFillIcon } from "@styled-icons/bootstrap/HandThumbsUpFill";
-import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyFillIcon } from "@styled-icons/bootstrap/TrophyFill";
 import React from "react";
 import { useIntl } from "react-intl";
@@ -67,7 +68,10 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             title: intl.formatMessage({
                 id: `give_trophy`,
             }),
-            icon: <TrophyFillIcon size="1.4rem" />,
+            icon:
+                <TrophyFillIcon
+                    size="1.4rem"
+                />,
             onClick: () => rewardTrophy(sessionId, `trophy`),
         },
         {
@@ -75,7 +79,10 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             title: intl.formatMessage({
                 id: `encourage`,
             }),
-            icon: <HandThumbsUpFillIcon size="1.4rem" />,
+            icon:
+                <HandThumbsUpFillIcon
+                    size="1.4rem"
+                />,
             onClick: () => rewardTrophy(sessionId, `great_job`),
         },
         {
@@ -83,7 +90,17 @@ function GlobalActionsMenu (props: GlobaActionsMenuProps) {
             title: intl.formatMessage({
                 id: `give_star`,
             }),
-            icon: <StarFillIcon size="1.4rem" />,
+            icon:
+                <StyledIcon
+                    size={`1.4rem`}
+                    icon={
+                        <img
+                            alt={`Star Icon`}
+                            src={StarIcon}
+                            width="100%"
+                        />
+                    }
+                />,
             onClick: () => rewardTrophy(sessionId, `star`),
         },
     ];

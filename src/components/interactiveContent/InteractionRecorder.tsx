@@ -418,6 +418,8 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     useEffect(() => {
         if(!iframeReady) return;
         onLoadIframe();
+        setIframeLoaded(true);
+        return setIframeLoaded(false);
     }, [ iframeReady ]);
 
     return (

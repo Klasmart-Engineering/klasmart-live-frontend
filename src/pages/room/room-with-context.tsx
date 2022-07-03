@@ -2,6 +2,7 @@
 import { Room } from "./room";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import Loading from "@/components/loading";
+import { StickerAnimation } from "@/components/trophies/StickerAnimation";
 import { Trophy } from "@/components/trophies/trophy";
 import {
     LiveServiceApolloClient,
@@ -61,7 +62,8 @@ export const LiveRoom: React.FC = () => {
         <LiveClassProvider>
             <LiveLoading>
                 <Room />
-                <Trophy />
+                <StickerAnimation />
+                {/* <Trophy /> */}
             </LiveLoading>
         </LiveClassProvider>
     );

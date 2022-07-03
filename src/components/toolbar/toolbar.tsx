@@ -1,3 +1,4 @@
+import StickersActionsIconPath from "../../assets/stickers/star-sticker-icon.svg";
 import {
     DialogEndClass,
     DialogLeaveClass,
@@ -47,7 +48,6 @@ import { CaretUpFill as CaretUpFill } from "@styled-icons/bootstrap/CaretUpFill"
 import { ChatSquareDotsFill as ChatIcon } from "@styled-icons/bootstrap/ChatSquareDotsFill";
 import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteFill";
 import { PencilFill as CanvasIcon } from "@styled-icons/bootstrap/PencilFill";
-import { StarFill as StickersActionsIcon } from "@styled-icons/bootstrap/StarFill";
 import { UserVoice as OnStageIcon } from "@styled-icons/boxicons-solid/UserVoice";
 import { Info as InfoIcon } from "@styled-icons/evaicons-solid/Info";
 import { Eye as ObserveIcon } from "@styled-icons/fa-regular/Eye";
@@ -332,7 +332,18 @@ function Toolbar () {
                     <div ref={globalActionsRef}>
                         <ToolbarItem
                             display={hasControls}
-                            icon={<StickersActionsIcon />}
+                            icon={
+                                <StyledIcon
+                                    size={`1.5rem`}
+                                    icon={
+                                        <img
+                                            alt={`Star Icon`}
+                                            src={StickersActionsIconPath}
+                                            width="100%"
+                                        />
+                                    }
+                                />
+                            }
                             label={intl.formatMessage({
                                 id: `live.class.stickers`,
                             })}

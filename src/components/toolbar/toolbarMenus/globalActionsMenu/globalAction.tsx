@@ -10,7 +10,6 @@ import clsx from "clsx";
 import React from "react";
 import { StyledIconProps } from "styled-icons/types";
 
-type GlobaActionType = `divider`;
 export interface GlobaActionsMenuItem {
     id?: string;
 	icon?: StyledIconProps;
@@ -44,11 +43,11 @@ const useStyles = makeStyles((theme: Theme) => ({
             backgroundColor: theme.palette.text.primary,
         },
     },
-    variantBlue:{
+    variantBlue: {
         color: theme.palette.text.primary,
         filter: `drop-shadow( 1px 3px 2px rgba(82, 128, 191, .2))`,
     },
-    variantRed:{
+    variantRed: {
         color: red[500],
         filter: `drop-shadow( 1px 3px 2px rgba(255, 116, 106, .2))`,
     },

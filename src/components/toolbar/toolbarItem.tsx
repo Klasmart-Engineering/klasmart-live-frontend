@@ -12,6 +12,7 @@ import {
     useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
+import { StyledIconProps } from "@styled-icons/styled-icon";
 import clsx from "clsx";
 import React from "react";
 import { useRecoilValue } from "recoil";
@@ -95,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
 	display?: boolean;
 	ref?: React.MutableRefObject<HTMLDivElement>;
-	icon?: any;
+	icon: StyledIconProps;
 	label?: string;
 	onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 	disabled?: boolean;

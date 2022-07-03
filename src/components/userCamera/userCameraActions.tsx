@@ -1,15 +1,15 @@
 /* eslint-disable react/no-multi-comp */
+import StarIcon from "../../assets/stickers/star.svg";
 import PencilIconOff from "@/assets/img/canvas/pencil_icon_off.svg";
 import PencilIconOn from "@/assets/img/canvas/pencil_icon_on.svg";
+import StyledIcon from "@/components/styled/icon";
+import { TooltipIntl } from "@/components/tooltip/tooltipIntl";
 import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSetHostMutation } from "@/data/live/mutations/useSetHostMutation";
 import { Session } from "@/pages/utils";
 import { useSessionContext } from "@/providers/session-context";
 import { hasControlsState } from "@/store/layoutAtoms";
-import {
-    toggleFullScreenById,
-} from "@/utils/utils";
-import { TooltipIntl } from "@/components/tooltip/tooltipIntl";
+import { toggleFullScreenById } from "@/utils/utils";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import { Track } from "@kl-engineering/live-state/ui";
 import {
@@ -20,7 +20,6 @@ import {
     MenuItem,
     Theme,
     Tooltip,
-    useTheme,
 } from "@material-ui/core";
 import amber from "@material-ui/core/colors/amber";
 import { ArrowsAngleExpand as ExpandIcon } from "@styled-icons/bootstrap/ArrowsAngleExpand";
@@ -32,6 +31,7 @@ import { MicMuteFill as MicDisabledIcon } from "@styled-icons/bootstrap/MicMuteF
 import { StarFill as StarFillIcon } from "@styled-icons/bootstrap/StarFill";
 import { TrophyFill as TrophyIcon } from "@styled-icons/bootstrap/TrophyFill";
 import { Crown as HasControlsIcon } from "@styled-icons/fa-solid/Crown";
+import { StyledIconProps } from "@styled-icons/styled-icon";
 import clsx from "clsx";
 import React,
 {
@@ -41,7 +41,6 @@ import React,
 } from "react";
 import { useIntl } from "react-intl";
 import { useRecoilValue } from "recoil";
-import { StyledIconProps } from "styled-icons/types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -90,7 +89,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: theme.spacing(0, 0.75),
     },
 }));
-
 interface UserCameraActionsProps {
     user: Session;
     expanded: boolean;
@@ -217,7 +215,18 @@ const UserCameraActions = ({
                 />
                 <ToolTipMenuItem
                     id="give_star"
-                    icon={<StarFillIcon size="1.2rem" />}
+                    icon={
+                        <StyledIcon
+                            size={`1.2rem`}
+                            icon={
+                                <img
+                                    alt={`Star Icon`}
+                                    src={StarIcon}
+                                    width="100%"
+                                />
+                            }
+                        />
+                    }
                     onClick={() => rewardTrophy(user.id, `star`)}
                 />
             </Menu>
