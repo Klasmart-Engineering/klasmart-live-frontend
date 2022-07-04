@@ -1,8 +1,5 @@
 import useScrollCanvasWithContent from "./useScrollCanvasWithContent";
-import {
-    act,
-    renderHook,
-} from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { RefObject } from "react";
 
 let reference: RefObject<HTMLIFrameElement>;
@@ -17,17 +14,17 @@ describe(`useScrollCanvasWithContent`, () => {
                 get: jest.fn(() => null),
                 set: jest.fn(() => null),
             });
-            mockedPan = jest.fn(() => { });
+            mockedPan = jest.fn();
         });
         test(`default props`, () => {
             const { result } = renderHook(() =>
-                useScrollCanvasWithContent(reference, false, true, mockedPan));
+                useScrollCanvasWithContent(reference, false, 1, mockedPan));
             expect(result.current.lastScrollVal)
                 .toBe(0.0);
         });
         test(`scroll callback`, () => {
             const { result } = renderHook(() =>
-                useScrollCanvasWithContent(reference, false, true, mockedPan));
+                useScrollCanvasWithContent(reference, false, 1, mockedPan));
             const doc = document.createElement(`div`);
             doc.scrollTop = 120;
             document.body.appendChild(doc);
