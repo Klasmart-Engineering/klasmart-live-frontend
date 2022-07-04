@@ -9,11 +9,11 @@ import {
  * React hook to scroll the canvas along with the content
  * @param iframeRef {HTMLIFrameElement} The iframe which holds the content
  * @param isPdfContent {boolean} boolean to indicate if the content type is pdf
- * @param iframeLoaded {boolean} boolean to indicate if the iframe was loaded
+ * @param iframeLoaded {number} number to indicate if the iframe was loaded. 0 is the initial value.
  */
 function useScrollCanvasWithContent (iframeRef: RefObject<HTMLIFrameElement>,
     isPdfContent: boolean,
-    iframeLoaded: boolean,
+    iframeLoaded: number,
     panCanvas: Function) {
     // This value is not consumed atm but can be used later on if needed.
     const [ lastScrollVal, setLastScrollVal ] = useState<number>(0.0);

@@ -115,7 +115,12 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         height: 0,
     });
     const [ iframeReady, setIframeReady ] = useState(false);
-    const [ iframeLoaded, setIframeLoaded ] = useState(false);
+
+    /*
+    Each time this is changed, it means that the onLoad function
+    of the iframe was called.
+    */
+    const [ iframeLoaded, setIframeLoaded ] = useState(0);
     const interval = useRef<ReturnType<typeof setInterval>>();
 
     const { authenticationService } = useServices();
@@ -197,7 +202,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         token,
         recorderEndpoint,
         authEndpoint,
-        region
+        region,
     ]);
 
     useCustomFlashCard({
@@ -397,7 +402,6 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         setLoadStatus(LoadStatus.Finished);
         clearInterval(interval.current as ReturnType<typeof setInterval>);
         setOpenDialog(false);
-        setIframeLoaded(true);
     }
 
     useEffect(() => {
@@ -438,6 +442,14 @@ export default function InteractionRecorder (props: Props): JSX.Element {
                         src={contentHrefWithToken}
                         allow="microphone"
                         className={classes.activity}
+                        onLoad={() => {
+                            /* Added this here because calling it from
+                            the onLoadIframe function did not have the same effect
+                            for subsequent content loads.The inner document
+                            was not accessible in the hook.
+                            */
+                            setIframeLoaded(Date.now());
+                        }}
                         onError={() => {
                             setLoadStatus(LoadStatus.Error);
                             clearInterval(interval.current as ReturnType<typeof setInterval>);
