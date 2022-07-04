@@ -26,7 +26,7 @@
     "@kl-engineering/cordova-plugin-fullscreen": "1.3.0",
     "@kl-engineering/cordova-plugin-screen-orientation": "3.0.2",
     "@kl-engineering/cordova-plugin-speechrecognition": "1.3.1",
-    "@kl-engineering/cordova-plugin-splashscreen": "6.0.0",
+    "@kl-engineering/cordova-plugin-splashscreen": "6.1.0",
     "@kl-engineering/eslint-config": "2.1.1",
     "@rushstack/eslint-patch": "1.1.1",
     "@swc/core": "^1.2.203",
