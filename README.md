@@ -369,3 +369,38 @@ The KidsLoop distribution certificate with private key have to be in the `Key Ch
 **Archive the iOS binary**
 
 Now it's possible to archive the binary and then distribute and upload to App Store as usual.
+
+## Pull Request Process
+
+### General : WHat to know when opening a PR
+
+1. Point your PR to `main` branch
+2. Respect the PR title format : e.g. `fix(TICKET): Short but meaningful description`. You can refer to [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/). And double check the title of your PR, this title will be included in the release note of our product. It has to be understood by non-technical people.
+3. Make sure your PR is ready for review before creating a PR. Or open a `draft` PR if necessary.
+4. Give your PR a description if necessary.
+5. Give your PR a label if necessary : e.g. `Do Not Merge` if the PR is not supposed to be included in the next version.
+6. A PR can be `squashed and merged` if it passes the pipeline checks but most important check is being reviewed by 2 or more CODEOWNERS.
+7. If your PR stay pending for a while, make sure to solve any conflicts and rebase with `main` branch if necessary.
+
+The Pull Request Process can change slightly depending on the current priorities. In average you can expect your PR to be merge within 72 hours.
+
+### External teams
+
+KidsLoop CODEOWNERS have a time slot for reviewing carefuly the work from external teams but feel free to ask questions before opening a PR if it makes the process easier or you're not sure if you're work will match KidsLoop codebase. Make sure you review your code with your internal team or supervisor (draft PR) before opening the PR for KidsLoop team.
+
+As KidsLoop CODEOWNERS might not be aware of the current goals for external teams, please reach out if some PR are in a urgent state or a specific PR needs to be reviewed in priority. Do it only after confirmation with KidsLoop product and delivery team.
+
+For any technical questions please contact the CODEOWNERS.
+
+## Code review
+
+### Best practices 
+
+To respect the KidsLoop codebase, here's a few key points to follow when creating code in the `kidsloop-live-frontend` repository:
+1. Re-use components or refactor existent if what you want to achieve is slightly different.
+2. Re-use color variables instead of creating new ones. See `/config/index.ts`.
+3. Make components as small and dumb as possible.
+4. Create easy and understandable function names and variable names.
+5. Don’t use inline styles. Prefer to css `class` instead.
+6. Use `theme.spacing(X)` instead of `px` for font sizes, margins and padding.
+7. Respect the naming convention from folders and file names.
