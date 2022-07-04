@@ -105,10 +105,10 @@ const useStyles = makeStyles((theme) => createStyles({
     tabBarWrapper: {
         display: `flex`,
         justifyContent: `space-around`,
+        marginLeft: theme.spacing(-2.5),
         backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1.2rem`,
-            marginLeft: theme.spacing(-2),
         },
     },
     backButton: {
@@ -128,6 +128,9 @@ const useStyles = makeStyles((theme) => createStyles({
             width: PARENTS_DASHBOARD_WIDTH_MEDIUM,
             height: PARENTS_DASHBOARD_WIDTH_MEDIUM,
         },
+    },
+    noMarginLeft: {
+        marginLeft: 0,
     },
 }));
 
@@ -151,7 +154,7 @@ export default function ScheduleTopBar (props: Props) {
         if(classType === ClassType.STUDY)
         {
             return (
-                <Box className={classes.tabBarWrapper}>
+                <Box className={clsx(classes.tabBarWrapper, classes.noMarginLeft)}>
                     <TopBarNavigationButton
                         isMarginRight
                         title={`schedule.study.title`}
@@ -174,13 +177,15 @@ export default function ScheduleTopBar (props: Props) {
                 <Box className={classes.tabBarWrapper}>
                     <TopBarNavigationButton
                         isButtonHFS
-                        title={`Home activity`}
+                        isMarginRight
+                        title={`schedule.hfs.title`}
                         active={hfsSelectedItem === HomeFunAppBarItem.HOME_ACTIVITY}
                         type={ClassType.HOME_FUN_STUDY}
                         onClick={() => setHfsSelectedItem(HomeFunAppBarItem.HOME_ACTIVITY)}
                     />
                     <TopBarNavigationButton
                         isButtonHFS
+                        isRightButtonHFS
                         title={`schedule.tab.anytime`}
                         active={hfsSelectedItem === HomeFunAppBarItem.ANYTIME}
                         type={ClassType.HOME_FUN_STUDY}
@@ -213,8 +218,8 @@ export default function ScheduleTopBar (props: Props) {
             return {
                 centerIcon: HomeFunIcon,
                 title: intl.formatMessage({
-                    id: `schedule_studyTabc`,
-                    defaultMessage: `Home Activity`,
+                    id: `schedule.hfs.title`,
+                    defaultMessage: `Home Fun Study`,
                 }),
             };
         default:

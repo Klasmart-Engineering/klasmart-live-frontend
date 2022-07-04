@@ -26,15 +26,15 @@ import React,
 { ReactElement } from "react";
 import { FormattedMessage } from "react-intl";
 
-const BUTTON_MIN_WIDTH_SMALL = 95;
-const BUTTON_MIN_WIDTH_MEDIUM = 135;
-
+const BUTTON_MIN_WIDTH_SMALL = 115;
+const BUTTON_MIN_WIDTH_MEDIUM = 161;
+const BUTTON_RIGHT_WIDTH_MEDIUM = 80;
 const useStyles = makeStyles((theme) => createStyles({
     root: {
         backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
         display: `flex`,
         alignItems: `center`,
-        justifyContent: `center`,
+        justifyContent: `flex-start`,
         width: `100%`,
 
     },
@@ -61,15 +61,20 @@ const useStyles = makeStyles((theme) => createStyles({
         borderBottom: `2px solid ${SCHEDULE_STUDY_TOP_BAR}`,
     },
     marginRight: {
-        marginRight: theme.spacing(2),
+        marginRight: theme.spacing(1),
         [theme.breakpoints.up(`md`)]: {
-            marginRight: theme.spacing(2.75),
+            marginRight: theme.spacing(1.75),
         },
     },
     hfsButton: {
         minWidth: BUTTON_MIN_WIDTH_SMALL,
         [theme.breakpoints.up(`md`)]: {
             minWidth: BUTTON_MIN_WIDTH_MEDIUM,
+        },
+    },
+    isRightButtonHFS: {
+        [theme.breakpoints.up(`md`)]: {
+            minWidth: BUTTON_RIGHT_WIDTH_MEDIUM,
         },
     },
 }));
@@ -81,6 +86,7 @@ interface Props {
   type: ClassType;
   isMarginRight?: boolean;
   isButtonHFS?: boolean;
+  isRightButtonHFS?: boolean;
 }
 
 export function TopBarNavigationButton (props: Props) {
@@ -91,6 +97,7 @@ export function TopBarNavigationButton (props: Props) {
         type,
         isMarginRight = false,
         isButtonHFS = false,
+        isRightButtonHFS = false,
     } = props;
     const classes = useStyles();
     return (
@@ -99,6 +106,7 @@ export function TopBarNavigationButton (props: Props) {
             className={clsx(classes.root, {
                 [classes.marginRight]: isMarginRight,
                 [classes.hfsButton]: isButtonHFS,
+                [classes.isRightButtonHFS]: isRightButtonHFS,
             })}
             onClick={onClick}
         >
