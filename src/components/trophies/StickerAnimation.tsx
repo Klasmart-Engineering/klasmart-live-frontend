@@ -1,8 +1,7 @@
 import starAnimation from "../../assets/stickers/star.json";
-import thumbsUpAnimation from "../../assets/stickers/thumbs-up.json";
+import greatJobAnimation from "../../assets/stickers/thumbs-up.json";
 import trophyAnimation from "../../assets/stickers/trophy.json";
-import TrophyKinds,
-{ TrophyKind } from './trophyKind';
+import TrophyKinds from './trophyKind';
 import { useTrophy } from '@/data/live/state/useTrophy';
 import { makeStyles } from "@material-ui/core";
 import Lottie from "lottie-react";
@@ -26,32 +25,47 @@ const useStyles = makeStyles(() => ({
 
 export function StickerAnimation () {
     const [ animationAsset, setAnimationAsset ] = useState<unknown>();
-    const [ trophyKind, setTrophyKind ] = useState<TrophyKind>(TrophyKinds.trophy);
 
     const classes = useStyles();
     const trophy = useTrophy();
-    // const animationContainerRef = useRef(null);
 
-    // const handleTrophy = (trophy: Trophy) => {
-    //     if (TrophyKinds[trophy.kind]) {
-    //         setTrophyKind(TrophyKinds[trophy.kind]);
-    //     }
-    //     setDisplay(true);
-    // };
+    const handleTrophy = (trophy: Trophy) => {
+        console.log(trophy);
+        if (TrophyKinds[trophy.kind]) {
+            switch(trophy.kind){
+            case `star`:
+                setAnimationAsset(starAnimation);
+                break;
+            case `trophy`:
+                setAnimationAsset(trophyAnimation);
+                break;
+            case `great_job`:
+                setAnimationAsset(greatJobAnimation);
+                break;
+            case `awesome`:
+                setAnimationAsset(greatJobAnimation);
+                break;
+            default:
+                break;
+            }
+        }
+    };
 
     useEffect(() => {
         if (trophy) {
-            setAnimationAsset(starAnimation);
+            handleTrophy(trophy);
         }
-    }, [ trophy, setAnimationAsset ]);
+    }, [ trophy ]);
+
+    console.log(animationAsset);
 
     return (
-        animationAsset && (
+        animationAsset ? (
             <Lottie
                 animationData={animationAsset}
                 loop={false}
                 className={classes.root}
             />
-        )
+        ) : <></>
     );
 }
