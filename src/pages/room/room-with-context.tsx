@@ -3,7 +3,6 @@ import { Room } from "./room";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import Loading from "@/components/loading";
 import { StickerAnimation } from "@/components/trophies/StickerAnimation";
-import { Trophy } from "@/components/trophies/trophy";
 import {
     LiveServiceApolloClient,
     useLiveServiceApolloClient,
@@ -120,7 +119,7 @@ export const StudyRoom: React.FC = () => {
         <StudyClassProvider>
             <StudyLoading>
                 <Room />
-                <Trophy />
+                <StickerAnimation />
             </StudyLoading>
         </StudyClassProvider>
     );
