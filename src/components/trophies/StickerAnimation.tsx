@@ -15,22 +15,23 @@ export type Trophy = { from: string; user: string; kind: string };
 
 const useStyles = makeStyles(() => ({
     root: {
-        position: `absolute`,
-        top: `50%`,
-        left: `50%`,
-        transform: `translate(-50%, -50%)`,
+        position: `fixed`,
+        left: 0,
+        top: 0,
         width: `100%`,
+        height: `100%`,
+        zIndex: 2000,
     },
 }));
 
 export function StickerAnimation () {
     const [ animationAsset, setAnimationAsset ] = useState<unknown>();
+    const [ display, setDisplay ] = useState(false);
 
     const classes = useStyles();
     const trophy = useTrophy();
 
     const handleTrophy = (trophy: Trophy) => {
-        console.log(trophy);
         if (TrophyKinds[trophy.kind]) {
             switch(trophy.kind){
             case `star`:
@@ -48,6 +49,7 @@ export function StickerAnimation () {
             default:
                 break;
             }
+            setDisplay(true);
         }
     };
 
@@ -57,14 +59,13 @@ export function StickerAnimation () {
         }
     }, [ trophy ]);
 
-    console.log(animationAsset);
-
     return (
-        animationAsset ? (
+        display ? (
             <Lottie
-                animationData={animationAsset}
                 loop={false}
+                animationData={animationAsset}
                 className={classes.root}
+                onComplete={() => setDisplay(false)}
             />
         ) : <></>
     );

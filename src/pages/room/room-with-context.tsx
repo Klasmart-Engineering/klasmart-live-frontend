@@ -63,7 +63,6 @@ export const LiveRoom: React.FC = () => {
             <LiveLoading>
                 <Room />
                 <StickerAnimation />
-                {/* <Trophy /> */}
             </LiveLoading>
         </LiveClassProvider>
     );
