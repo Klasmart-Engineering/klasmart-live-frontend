@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 export function StickerAnimation () {
-    const [ animationAsset, setAnimationAsset ] = useState<unknown>();
+    const [ animationData, setAnimationData ] = useState<unknown>();
     const [ display, setDisplay ] = useState(false);
 
     const classes = useStyles();
@@ -35,16 +35,16 @@ export function StickerAnimation () {
         if (TrophyKinds[trophy.kind]) {
             switch(trophy.kind){
             case `star`:
-                setAnimationAsset(starAnimation);
+                setAnimationData(starAnimation);
                 break;
             case `trophy`:
-                setAnimationAsset(trophyAnimation);
+                setAnimationData(trophyAnimation);
                 break;
             case `great_job`:
-                setAnimationAsset(greatJobAnimation);
+                setAnimationData(greatJobAnimation);
                 break;
             case `awesome`:
-                setAnimationAsset(greatJobAnimation);
+                setAnimationData(greatJobAnimation);
                 break;
             default:
                 break;
@@ -63,7 +63,7 @@ export function StickerAnimation () {
         display ? (
             <Lottie
                 loop={false}
-                animationData={animationAsset}
+                animationData={animationData}
                 className={classes.root}
                 onComplete={() => setDisplay(false)}
             />
