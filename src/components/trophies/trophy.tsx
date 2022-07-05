@@ -108,7 +108,6 @@ export function Trophy (props: Props): JSX.Element {
         if(!isTeacher) {
             setWithAudio(true);
         }
-        console.log(TrophyKinds);
         setAppearAt(locationOfElement(`participant:${trophy.from}`));
         setDisappearAt(locationOfElement(trophy.from !== trophy.user ? `participant:${trophy.user}` : undefined));
         if (TrophyKinds[trophy.kind]) {
@@ -185,8 +184,6 @@ export function Trophy (props: Props): JSX.Element {
         setShowReward,
         trophyKind,
     ]);
-
-    console.log(trophyKind);
 
     return (
         <div style={{
