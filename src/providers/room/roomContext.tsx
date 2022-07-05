@@ -5,6 +5,7 @@ import { ReadTrophyDto } from "@/data/live/dto/readRoomDto";
 import { useSendStudentUsageRecordMutation } from "@/data/live/mutations/useSendStudentUsageRecordMutation";
 import { useShowContentMutation } from "@/data/live/mutations/useShowContentMutation";
 import { useRoomSubscription } from "@/data/live/subscriptions/useRoomSubscription";
+import useRefreshToken from "@/hooks/useRefreshToken";
 import {
     Content,
     ContentType,
@@ -64,7 +65,7 @@ const defaultRoomContext = {
 };
 
 export const RoomContext = createContext<RoomContextInterface>(defaultRoomContext);
-export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) => {
+export const RoomProvider: React.FC<Props> = ({ children }) => {
     const intl = useIntl();
     const {
         roomId,
@@ -86,6 +87,8 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
     const [ , setIsShowContentLoading ] = useRecoilState(isShowContentLoadingState);
     const { enqueueSnackbar } = useSnackbar();
     const [ play ] = useSound(notificationSound);
+
+    const { refreshToken } =useRefreshToken();
 
     const [ materialActiveIndex ] = useRecoilState(materialActiveIndexState);
     const [ streamId ] = useRecoilState(streamIdState);
@@ -226,6 +229,14 @@ export const RoomProvider: React.FC<Props> = ({ children, enableConferencing }) 
             name,
         },
     });
+
+    useEffect(() => {
+
+        if(error) {
+            refreshToken();
+        }
+
+    }, [ error, refreshToken ]);
 
     const addMessage = (newMessage: Message) => {
         if(!isChatOpen){
