@@ -243,6 +243,7 @@ export default function ScheduleItem (props: Props) {
     const organization = useSelectedOrganizationValue();
     const organizationId = organization?.organization_id ?? ``;
     const remainingTeachers = names.length - 1;
+    const isStudyType = (classType === ClassType.STUDY || classType === ClassType.HOME_FUN_STUDY || classType === ClassType.REVIEW);
     const { data: scheduleData, isFetching: isFetchingSchedule } = useGetScheduleById({
         schedule_id: scheduleId,
         org_id: organizationId,
@@ -369,7 +370,7 @@ export default function ScheduleItem (props: Props) {
                                     </Typography>) : null
                         }
                         {
-                            end_at && (classType === ClassType.STUDY || classType === ClassType.HOME_FUN_STUDY || classType === ClassType.REVIEW) ?
+                            end_at && isStudyType ?
                                 (
                                     <Typography
                                         variant={`subtitle1`}
