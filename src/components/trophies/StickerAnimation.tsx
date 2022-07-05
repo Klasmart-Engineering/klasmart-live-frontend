@@ -11,7 +11,17 @@ import React,
     useState,
 } from 'react';
 
-export type Trophy = { from: string; user: string; kind: string };
+enum TrophyKind {
+    STAR = `star`,
+    TROPHY = `trophy`,
+    GREAT_JOB = `great_job`,
+    AWESOME = `awesome`,
+}
+interface Trophy {
+    from: string;
+    user: string;
+    kind: TrophyKind;
+}
 
 const useStyles = makeStyles(() => ({
     root: {
@@ -34,16 +44,16 @@ export function StickerAnimation () {
     const handleTrophy = (trophy: Trophy) => {
         if (TrophyKinds[trophy.kind]) {
             switch(trophy.kind){
-            case `star`:
+            case TrophyKind.STAR:
                 setAnimationData(starAnimation);
                 break;
-            case `trophy`:
+            case TrophyKind.TROPHY:
                 setAnimationData(trophyAnimation);
                 break;
-            case `great_job`:
+            case TrophyKind.GREAT_JOB:
                 setAnimationData(greatJobAnimation);
                 break;
-            case `awesome`:
+            case TrophyKind.AWESOME:
                 setAnimationData(greatJobAnimation);
                 break;
             default:
@@ -55,7 +65,7 @@ export function StickerAnimation () {
 
     useEffect(() => {
         if (trophy) {
-            handleTrophy(trophy);
+            handleTrophy(trophy as Trophy);
         }
     }, [ trophy ]);
 
