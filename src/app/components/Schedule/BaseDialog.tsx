@@ -1,53 +1,53 @@
-/* eslint-disable react/no-multi-comp */
 import AttachmentDownloadButton from "./Attachment/DownloadButton";
 import AttachmentNameLink from "./Attachment/NameLink";
 import ScheduleJoinButton from "./ScheduleJoinButton";
-import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg";
-import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
-import LiveJoinArrow from "@/assets/img/schedule-icon/live_join_arrow.svg";
-import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
-import StudyJoinArrow from "@/assets/img/schedule-icon/study_join_arrow.svg";
-import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
+import { TeachersList } from "./TeachersList";
+import CloseIcon from "@/assets/img/schedule-icon/pop_up_close_icon.svg";
 import Loading from "@/components/loading";
-import StyledIcon from "@/components/styled/icon";
 import {
-    TEXT_COLOR_VERSION_APP,
+    TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE,
+    THEME_BACKGROUND_SIGN_OUT_BUTTON,
     THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-    THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
-    THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-    THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
+    THEME_COLOR_GREY_BORDER_BOX,
+    THEME_COLOR_GREY_TITLE,
+    THEME_COLOR_ORG_MENU_DRAWER,
 } from "@/config";
-import { ClassType } from "@/store/actions";
 import { ForeignIdName } from "@kl-engineering/cms-api-client/dist/api/shared";
-import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
-    Chip,
     createStyles,
     Dialog,
+    DialogActions,
     DialogContent,
     DialogTitle,
-    Divider,
     Grid,
     makeStyles,
     Typography,
 } from "@material-ui/core";
-import { Close as CloseIcon } from "@styled-icons/material/Close";
-import React from "react";
+import clsx from "clsx";
+import React,
+{ useState } from "react";
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
+import {
+    ChevronLeft,
+    ChevronRight,
+} from "styled-icons/material";
 
 const useStyles = makeStyles((theme) => createStyles({
     dialog: {
         borderRadius: 20,
-        [theme.breakpoints.up(`sm`)]: {
-            maxWidth: `50%`,
+        height: `90%`,
+        [theme.breakpoints.up(`md`)]: {
+            height: `50%`,
         },
+        "-webkit-text-size-adjust": `none`,
     },
     dialogTitle: {
         backgroundColor: theme.palette.background.paper,
         paddingBottom: 0,
+        paddingTop: theme.spacing(1.75),
     },
     dialogClassType: {
         height: theme.spacing(2.5),
@@ -60,44 +60,48 @@ const useStyles = makeStyles((theme) => createStyles({
         textOverflow: `ellipsis`,
         overflow: `hidden`,
         marginRight: theme.spacing(1),
-        paddingTop: theme.spacing(0.5),
+        paddingTop: theme.spacing(1.25),
         display: `-webkit-box`,
         WebkitBoxOrient: `vertical`,
         WebkitLineClamp: 2,
+        fontSize: `0.875rem`,
+        wordBreak: `break-all`,
+        fontWeight: theme.typography.fontWeightBold as number,
+        color: TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE,
     },
     dialogContent: {
-        position: `relative`,
-        paddingTop: theme.spacing(3),
+        paddingTop: 0,
     },
-    dialogTeacher: {
-        padding: theme.spacing(0, 0.5),
-        display: `-webkit-box`,
-        overflow: `hidden`,
-        WebkitBoxOrient: `vertical`,
-        WebkitLineClamp: 1,
-        maxWidth: `40%`,
-    },
-    dialogDivider: {
-        padding: theme.spacing(1, 0),
+    dialogContentContainer: {
+        height: `100%`,
     },
     dialogDateTime: {
-        whiteSpace: `pre-line`,
+        paddingTop: theme.spacing(0.5),
+        color: TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE,
     },
     dialogDescription: {
         maxHeight: 70,
-        marginTop: theme.spacing(3),
-        marginBottom: theme.spacing(5),
+        overflow: `auto`,
+        color: THEME_COLOR_GREY_TITLE,
+    },
+    dialogDescriptionLabel: {
+        margin: theme.spacing(0.5, 0),
+        color: TEXT_COLOR_SUB_HEADER_SETTINGS_PAGE,
+        fontWeight: theme.typography.fontWeightBold as number,
         wordBreak: `break-all`,
     },
     dialogAttachment: {
         border: `solid 1px`,
         borderRadius: 10,
-        borderColor: TEXT_COLOR_VERSION_APP,
+        borderColor: THEME_COLOR_GREY_BORDER_BOX,
+        backgroundColor: THEME_BACKGROUND_SIGN_OUT_BUTTON,
         padding: theme.spacing(0.5, 1),
+        marginTop: theme.spacing(1),
+        justifyContent: `space-between`,
+        alignItems: `center`,
     },
     dialogButton: {
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(3),
+        paddingBottom: theme.spacing(2),
     },
     dialogLoadingContent: {
         position: `absolute`,
@@ -110,16 +114,16 @@ const useStyles = makeStyles((theme) => createStyles({
         backgroundColor: theme.palette.background.paper,
         display: `flex`,
     },
-    dialogEndIcon: {
-        position: `absolute`,
-        right: theme.spacing(0.5),
-        top: theme.spacing(0.75),
-    },
     dialogChipClassType: {
         filter: `brightness(0) invert(1)`,
     },
-    hideOverflowX: {
-        overflowX: `hidden`,
+    dialogJoinButton: {
+        paddingLeft: theme.spacing(3.5),
+        paddingRight: theme.spacing(1.5),
+    },
+    dialogBackButton: {
+        paddingLeft: theme.spacing(3.5),
+        paddingRight: theme.spacing(3.5),
     },
 }));
 
@@ -138,66 +142,6 @@ export interface Props {
     onClose: () => void;
 }
 
-interface DialogHeaderProps {
-    className?: string;
-    maxDisplay?: number;
-    teachers: ForeignIdName[];
-}
-
-export const DialogHeader: React.FC<DialogHeaderProps> = ({
-    teachers, className, maxDisplay = 2,
-}) => {
-    const classes = useStyles();
-
-    return (
-        <Grid
-            container
-            className={className}
-            direction="row"
-        >
-            {teachers.slice(0, maxDisplay)
-                .map((teacher) => (
-                    <>
-                        <Grid
-                            key={teacher.id}
-                            item
-                        >
-                            <UserAvatar
-                                maxInitialsLength={2}
-                                name={teacher.name}
-                                size={`small`}
-                            />
-                        </Grid>
-                        <Grid
-                            item
-                            className={classes.dialogTeacher}
-                        >
-                            <Typography
-                                variant={`subtitle1`}
-                            >
-                                {teacher.name}
-                            </Typography>
-                        </Grid>
-                    </>
-                ))}
-            {teachers.length > maxDisplay ? (
-                <Grid item>
-                    <Typography
-                        color={`textSecondary`}
-                        variant={`subtitle1`}
-                    >
-                        <FormattedMessage
-                            id="live.enter.teacherCount"
-                            values={{
-                                value: teachers.length - maxDisplay,
-                            }}
-                        />
-                    </Typography>
-                </Grid>) : null}
-        </Grid>
-    );
-};
-
 export default function BaseScheduleDialog (props: Props) {
     const {
         classType,
@@ -214,210 +158,191 @@ export default function BaseScheduleDialog (props: Props) {
         onClose,
     } = props;
     const classes = useStyles();
-    const intl = useIntl();
 
-    const getClassTypeProperty = () => {
-        switch (classType) {
-        case ClassType.LIVE:
-            return {
-                title: intl.formatMessage({
-                    id: `schedule_liveTab`,
-                    defaultMessage: `Live`,
-                }),
-                icon: LiveIconDialog,
-                backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                actionButtonEndIcon: LiveJoinArrow,
-            };
-        case ClassType.STUDY:
-            return {
-                title: intl.formatMessage({
-                    id: `schedule_studyTab`,
-                    defaultMessage: `Study`,
-                }),
-                icon: StudyIconDialog,
-                backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                actionButtonEndIcon: StudyJoinArrow,
-            };
-        case ClassType.REVIEW:
-            return {
-                title: intl.formatMessage({
-                    id: `review.title`,
-                    defaultMessage: `Review`,
-                }),
-                icon: StudyIconDialog,
-                backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                actionButtonEndIcon: StudyJoinArrow,
-            };
-        case ClassType.HOME_FUN_STUDY:
-            return {
-                title: intl.formatMessage({
-                    id: `schedule.homeFun`,
-                    defaultMessage: `Home Fun`,
-                }),
-                icon: HomeFunIconDialog,
-                backgroundClassType: THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
-                actionButtonBackground: THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
-                actionButtonEndIcon: HomeFunJoinArrow,
-            };
-        default:
-            return {
-                title: intl.formatMessage({
-                    id: `schedule_liveTab`,
-                    defaultMessage: `Live`,
-                }),
-                icon: LiveIconDialog,
-                backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                actionButtonEndIcon: LiveJoinArrow,
-            };
-        }
-    };
+    const [ isClickedMoreTeacher, setIsClickedMoreTeacher ] = useState(false);
+    const intl = useIntl();
 
     return (
         <Dialog
             fullWidth
-            maxWidth={`sm`}
             scroll={`paper`}
             open={open}
             PaperProps={{
                 className: classes.dialog,
             }}
-            onClose={onClose}
+            onClose={() => {
+                setIsClickedMoreTeacher(false);
+                onClose();
+            }}
         >
             {!isLoading && (
                 <DialogTitle className={classes.dialogTitle}>
-                    <Grid
-                        container
-                        justifyContent="space-between"
-                        wrap="nowrap"
-                    >
+                    {(
                         <Grid
                             container
+                            justifyContent="space-between"
+                            wrap="nowrap"
                             direction="column"
-                            className={classes.hideOverflowX}
                         >
-                            <Grid item>
-                                <Chip
-                                    className={classes.dialogClassType}
-                                    style={{
-                                        backgroundColor: getClassTypeProperty().backgroundClassType,
-                                    }}
-                                    label={getClassTypeProperty().title}
-                                    icon={
-                                        <img
-                                            className={classes.dialogChipClassType}
-                                            alt={getClassTypeProperty().title}
-                                            src={getClassTypeProperty().icon}
-                                        />
-                                    }
-                                />
-                            </Grid>
-
-                            <Grid item>
-                                <Typography
-                                    variant="h4"
-                                    className={classes.dialogTitleText}
-                                >
-                                    {title}
-                                </Typography>
-                            </Grid>
-
-                        </Grid>
-                        <Grid
-                            item
-                            onClick={onClose}
-                        >
-                            <StyledIcon
-                                icon={<CloseIcon />}
-                                size={`large`}
-                            />
-                        </Grid>
-                    </Grid>
-                </DialogTitle>
-            )}
-            <div className={classes.dialogContent}>
-                <DialogContent>
-                    <Grid
-                        container
-                        direction="column"
-                    >
-                        <DialogHeader teachers={teachers} />
-                        <Grid
-                            item
-                            className={classes.dialogDivider}
-                        >
-                            <Divider />
-                        </Grid>
-                        {dateTime !== `` && (
-                            <Grid item>
-                                <Typography
-                                    variant={`subtitle1`}
-                                    className={classes.dialogDateTime}
-                                >
-                                    {dateTime}
-                                </Typography>
-                            </Grid>
-                        )}
-                        {description && (
-                            <Grid
-                                item
-                                className={classes.dialogDescription}
-                            >
-                                <Typography variant={`subtitle1`}>
-                                    {description}
-                                </Typography>
-                            </Grid>
-                        )}
-                        {attachment?.name && (
                             <Grid
                                 container
                                 justifyContent="space-between"
-                                alignItems="center"
-                                className={classes.dialogAttachment}
+                                wrap="nowrap"
                             >
-                                <AttachmentNameLink
-                                    attachmentId={attachment.id}
-                                    attachmentName={attachment.name}
-                                />
-                                <AttachmentDownloadButton
-                                    attachmentId={attachment.id}
-                                    attachmentName={attachment.name}
-                                />
+                                <Grid item>
+                                    <Typography
+                                        variant="h4"
+                                        className={classes.dialogTitleText}
+                                    >
+                                        {!isClickedMoreTeacher ? title : (
+                                            <FormattedMessage
+                                                id={`scheduleDetails.teacherCount`}
+                                                defaultMessage={`Teachers ({value})`}
+                                                values={{
+                                                    value: teachers.length,
+                                                }}
+                                            />
+                                        )}
+                                    </Typography>
+                                </Grid>
+                                <Grid
+                                    item
+                                    onClick={() => {
+                                        setIsClickedMoreTeacher(false);
+                                        onClose();
+                                    }}
+                                >
+                                    <img
+                                        src={CloseIcon}
+                                        alt="close icon"
+                                        height={16}
+                                    />
+                                </Grid>
                             </Grid>
-                        )}
+
+                            {dateTime && !isClickedMoreTeacher && (
+                                <Grid item>
+                                    <Typography
+                                        variant={`subtitle2`}
+                                        className={classes.dialogDateTime}
+                                    >
+                                        {dateTime}
+                                    </Typography>
+                                </Grid>
+                            )}
+                        </Grid>
+                    )}
+                </DialogTitle>
+            )}
+            <DialogContent className={classes.dialogContent}>
+                <Grid
+                    container
+                    className={classes.dialogContentContainer}
+                    direction="column"
+                    justifyContent="space-between"
+                >
+                    {!isClickedMoreTeacher ? (
                         <Grid
                             container
-                            className={classes.dialogButton}
-                            alignItems="center"
-                            justifyContent="center"
+                            direction="column"
                         >
-                            <ScheduleJoinButton
-                                title={actionButtonTitle}
-                                backgroundColor={getClassTypeProperty().actionButtonBackground}
-                                endIcon={
-                                    <img
-                                        alt={getClassTypeProperty().title}
-                                        src={getClassTypeProperty().actionButtonEndIcon}
-                                        height={32}
-                                        className={classes.dialogEndIcon}
+                            {teachers.length && (
+                                <TeachersList
+                                    isBoldText
+                                    teachers={teachers}
+                                    onClickMore={() => setIsClickedMoreTeacher(true)}
+                                />
+                            )
+                            }
+                            <Grid item>
+                                <Typography
+                                    className={classes.dialogDescriptionLabel}
+                                    variant={`subtitle2`}
+                                >
+                                    <FormattedMessage
+                                        id={`scheduleDetails.description`}
+                                        defaultMessage={`Description`}
                                     />
-                                }
-                                disabled={disabled}
-                                width={classType === ClassType.LIVE ? 150 : 170}
-                                onClick={onClick}
-                            />
+                                </Typography>
+                                <Typography
+                                    className={classes.dialogDescription}
+                                    variant={`subtitle2`}
+                                >
+                                    {description || (
+                                        <FormattedMessage
+                                            id={`scheduleDetails.empty.description`}
+                                            defaultMessage={`No description available`}
+                                        />
+                                    )}
+                                </Typography>
+                            </Grid>
+                            {attachment?.name && (
+                                <Grid
+                                    container
+                                    className={classes.dialogAttachment}
+                                >
+                                    <AttachmentNameLink
+                                        attachmentId={attachment.id}
+                                        attachmentName={attachment.name}
+                                    />
+                                    <AttachmentDownloadButton
+                                        attachmentId={attachment.id}
+                                        attachmentName={attachment.name}
+                                    />
+                                </Grid>
+                            )}
                         </Grid>
-                    </Grid>
-                </DialogContent>
-                {isLoading && (
-                    <div className={classes.dialogLoadingContent}>
-                        <Loading />
-                    </div>
-                )}
-            </div>
+                    ) : (
+                        <TeachersList
+                            isShowFullName
+                            teachers={teachers}
+                            maxDisplay={teachers.length}
+                            onClickMore={() => setIsClickedMoreTeacher(true)}
+                        />
+                    )}
+                </Grid>
+            </DialogContent>
+            <DialogActions>
+                <Grid
+                    container
+                    className={classes.dialogButton}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    {isClickedMoreTeacher ? (
+                        <ScheduleJoinButton
+                            className={classes.dialogBackButton}
+                            title={intl.formatMessage({
+                                id: `common.goBack`,
+                                defaultMessage: `Go Back`,
+                            })}
+                            spacing={0}
+                            backgroundColor={THEME_COLOR_ORG_MENU_DRAWER}
+                            startIcon={<ChevronLeft size={20} />}
+                            minHeight={32}
+                            minWidth={140}
+                            onClick={() => setIsClickedMoreTeacher(false)}
+                        />
+                    ) : (
+                        <ScheduleJoinButton
+                            className={!disabled ? classes.dialogJoinButton : undefined}
+                            title={actionButtonTitle}
+                            spacing={0}
+                            backgroundColor={THEME_COLOR_ORG_MENU_DRAWER}
+                            endIcon={<ChevronRight size={20} />}
+                            disabled={disabled && !isClickedMoreTeacher}
+                            minHeight={32}
+                            minWidth={140}
+                            onClick={onClick}
+                        />
+                    )}
+                </Grid>
+            </DialogActions>
+            {isLoading && (
+                <div className={classes.dialogLoadingContent}>
+                    <Loading />
+                </div>
+            )}
         </Dialog>
     );
 }

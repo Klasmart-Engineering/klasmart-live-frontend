@@ -10,8 +10,8 @@ import {
     BODY_TEXT,
     SCHEDULE_CARD_BACKGROUND_THUMBNAIL,
     SCHEDULE_CARD_SEE_DETAILS,
-    SCHEDULE_CARD_TITLE,
     THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_GREY_TITLE,
 } from "@/config";
 import { ClassType } from "@/store/actions";
 import { isMoreThanTwoWords } from "@/utils/StringUtils";
@@ -131,7 +131,7 @@ const useStyles = makeStyles((theme) => createStyles({
     teacherName: {
         marginLeft: theme.spacing(0.5),
         fontSize: `0.675rem`,
-        color: SCHEDULE_CARD_TITLE,
+        color: THEME_COLOR_GREY_TITLE,
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1.02rem`,
             marginLeft: theme.spacing(0.75),
@@ -140,7 +140,7 @@ const useStyles = makeStyles((theme) => createStyles({
     moreThanTwoTeachersText: {
         marginLeft: theme.spacing(0.25),
         fontSize: `0.6875rem`,
-        color: SCHEDULE_CARD_TITLE,
+        color: THEME_COLOR_GREY_TITLE,
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1rem`,
         },

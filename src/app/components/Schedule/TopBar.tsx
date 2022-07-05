@@ -10,10 +10,10 @@ import ParentsDashboard from "@/assets/img/schedule-icon/parents-dashboard-mobil
 import ScheduleBackButton from "@/assets/img/schedule-icon/schedule-back-button-mobile.svg";
 import StudyIcon from "@/assets/img/schedule-icon/study-icon-mobile.svg";
 import {
+    SCHEDULE_BLACK_TEXT,
     SCHEDULE_CARD_BACKGROUND_CONTAINER,
-    SCHEDULE_TOPBAR_CURRENT_USER,
-    SCHEDULE_TOPBAR_TITLE,
     THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_LIGHT_BLACK_TEXT,
 } from "@/config";
 import { ClassType } from "@/store/actions";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => createStyles({
         paddingLeft: theme.spacing(0.5),
         fontSize: `0.9rem`,
         fontWeight: theme.typography.fontWeightBold as number,
-        color: SCHEDULE_TOPBAR_CURRENT_USER,
+        color: THEME_COLOR_LIGHT_BLACK_TEXT,
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1.2rem`,
             paddingLeft: theme.spacing(0.8),
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => createStyles({
     title: {
         fontSize: `1.3rem`,
         fontWeight: theme.typography.fontWeightBold as number,
-        color: SCHEDULE_TOPBAR_TITLE,
+        color: SCHEDULE_BLACK_TEXT,
         marginLeft: theme.spacing(0.8),
         [theme.breakpoints.up(`md`)]: {
             fontSize: `1.75rem`,

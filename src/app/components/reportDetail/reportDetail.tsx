@@ -1,23 +1,55 @@
 
-import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
-import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
-import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
-import { useSelectedOrganizationValue, useSelectedUserValue } from "@/app/data/user/atom";
-import { GetLearningOutComesResponse, useGetAssessmentById, useGetLearningOutcomes, useGetScheduleById } from "@kl-engineering/cms-api-client";
-import { Box, Chip, createStyles, Divider, Grid, List, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import { COLOR_CONTENT_TEXT, LEARNING_COLOR_TEXT, THEME_COLOR_BACKGROUND_LIST, THEME_COLOR_BACKGROUND_PAPER, THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG, THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG, THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG } from "@/config";
-import TeacherComment from "@/assets/img/teacher_comment.svg";
-import Loading from "@/components/loading";
-import clsx from "clsx";
+/* eslint-disable react/no-multi-comp */
 import LearningOutcomeListItem from "../report/learning-outcomes/ListItem";
 import ScheduleListSectionHeader from "../Schedule/ListSectionHeader";
-import { formatDueDateMillis, formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
-import { fromSecondsToMilliseconds } from "@/utils/utils";
-import { useRecoilValue } from "recoil";
+import { TeachersList } from "../Schedule/TeachersList";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import { reportDetailState } from "@/app/model/appModel";
-import { DialogHeader } from "../Schedule/BaseDialog";
+import {
+    formatDueDateMillis,
+    formatStartEndDateTimeMillis,
+} from "@/app/utils/dateTimeUtils";
+import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
+import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
+import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
+import TeacherComment from "@/assets/img/teacher_comment.svg";
+import Loading from "@/components/loading";
+import {
+    COLOR_CONTENT_TEXT,
+    LEARNING_COLOR_TEXT,
+    THEME_COLOR_BACKGROUND_LIST,
+    THEME_COLOR_BACKGROUND_PAPER,
+    THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+    THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+    THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
+} from "@/config";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
+import {
+    GetLearningOutComesResponse,
+    useGetAssessmentById,
+    useGetLearningOutcomes,
+    useGetScheduleById,
+} from "@kl-engineering/cms-api-client";
+import {
+    Box,
+    Chip,
+    createStyles,
+    Divider,
+    Grid,
+    List,
+    makeStyles,
+    Typography,
+} from "@material-ui/core";
+import clsx from "clsx";
+import React from "react";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
+import { useRecoilValue } from "recoil";
 
 export enum AssessmentType {
     LIVE = `OnlineClass`,
@@ -59,7 +91,7 @@ const useStyles = makeStyles((theme) => createStyles({
         WebkitLineClamp: 2,
     },
     teacherListContainer: {
-      paddingBottom: theme.spacing(1.5),
+        paddingBottom: theme.spacing(1.5),
     },
     dateTime: {
         paddingTop: theme.spacing(1),
@@ -69,7 +101,7 @@ const useStyles = makeStyles((theme) => createStyles({
         fontSize: `0.875rem`,
     },
     subjectText: {
-      fontSize: `0.875rem`,
+        fontSize: `0.875rem`,
     },
     teacherFeedbackBox: {
         display: `flex`,
@@ -88,12 +120,12 @@ const useStyles = makeStyles((theme) => createStyles({
         height: theme.spacing(2),
         paddingLeft: theme.spacing(0.75),
         [theme.breakpoints.up(`sm`)]: {
-          height: theme.spacing(2.5),
-        }
+            height: theme.spacing(2.5),
+        },
     },
     teacherFeedbackText: {
-      fontSize: `1rem`,
-      color: LEARNING_COLOR_TEXT,
+        fontSize: `1rem`,
+        color: LEARNING_COLOR_TEXT,
     },
     contentTextColor: {
         color: COLOR_CONTENT_TEXT,
@@ -110,54 +142,63 @@ export interface ReportDetailData {
   start_at: number;
 }
 
-function TeacherFeedbackSection(): JSX.Element {
+function TeacherFeedbackSection (): JSX.Element {
     const classes = useStyles();
     const intl = useIntl();
     const reportDetail = useRecoilValue(reportDetailState);
 
     return (
         <>
-            <Grid 
+            <Grid
                 container
                 className={classes.sectionHeaderContainer}
                 alignItems="flex-end"
             >
-                <Grid 
+                <Grid
                     item
                 >
-                    <ScheduleListSectionHeader 
-                      title={intl.formatMessage({
-                        id: `report.report.teacherFeedback`,
-                        defaultMessage: `Teacher's Comments`,
-                      })} 
-                      disablePadding
+                    <ScheduleListSectionHeader
+                        disablePadding
+                        title={intl.formatMessage({
+                            id: `report.report.teacherFeedback`,
+                            defaultMessage: `Teacher's Comments`,
+                        })}
                     />
                 </Grid>
-                <Grid 
+                <Grid
                     item
                 >
                     <img
                         className={classes.teacherFeedbackIcon}
+                        alt="teacher comment"
                         src={TeacherComment}
                     />
                 </Grid>
             </Grid>
-            <Box 
-              className={classes.teacherFeedbackBox}
+            <Box
+                className={classes.teacherFeedbackBox}
             >
-                {reportDetail.teacher_feedback !== `` ? <Typography 
-                    className={classes.teacherFeedbackText}
-                    variant="subtitle1"
-                >
-                    {reportDetail.teacher_feedback}
-                </Typography> : <Grid container justifyContent="center" alignItems="center">
-                    <Typography 
-                        className={clsx(classes.teacherFeedbackText, classes.contentTextColor)}
-                        variant="subtitle1" 
+                {reportDetail.teacher_feedback !== `` ? (
+                    <Typography
+                        className={classes.teacherFeedbackText}
+                        variant="subtitle1"
                     >
-                        <FormattedMessage id="report.report.teacherFeedback.empty" />
+                        {reportDetail.teacher_feedback}
                     </Typography>
-                  </Grid>}
+                ) : (
+                    <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <Typography
+                            className={clsx(classes.teacherFeedbackText, classes.contentTextColor)}
+                            variant="subtitle1"
+                        >
+                            <FormattedMessage id="report.report.teacherFeedback.empty" />
+                        </Typography>
+                    </Grid>
+                )}
             </Box>
         </>
     );
@@ -167,52 +208,54 @@ interface LearningOutcomesSectionProps {
     learningOutcomes: GetLearningOutComesResponse[];
 }
 
-function LearningOutcomesSection(props: LearningOutcomesSectionProps): JSX.Element {
+function LearningOutcomesSection (props: LearningOutcomesSectionProps): JSX.Element {
     const classes = useStyles();
     const intl = useIntl();
     const { learningOutcomes } = props;
 
     return (
         <>
-          <div 
-            className={clsx(classes.sectionHeaderContainer, {
-              [classes.sectionHeaderContainerNoPaddingBottom]: learningOutcomes.length,
-            })}
-          >
-            <ScheduleListSectionHeader 
-              title={intl.formatMessage({
-                id: `report.report.learningOutcomes`,
-                defaultMessage: `Learning Outcomes`,
-              })}
-              disablePadding
-            />
-          </div>
-            
+            <div
+                className={clsx(classes.sectionHeaderContainer, {
+                    [classes.sectionHeaderContainerNoPaddingBottom]: learningOutcomes.length,
+                })}
+            >
+                <ScheduleListSectionHeader
+                    disablePadding
+                    title={intl.formatMessage({
+                        id: `report.report.learningOutcomes`,
+                        defaultMessage: `Learning Outcomes`,
+                    })}
+                />
+            </div>
+
             {
-              learningOutcomes.length ? <List disablePadding>
-                  {learningOutcomes.map((learningOutcome) => {
-                      return (
-                          <LearningOutcomeListItem 
-                              key={learningOutcome.id} 
-                              title={learningOutcome.name} 
-                              status={learningOutcome.status} 
-                          />
-                      );
-                  })}
-              </List> : (
-                <Box
-                  className={classes.teacherFeedbackBox}
-                  justifyContent="center" 
-                  alignItems="center"
-                >
-                  <Typography 
-                    className={clsx(classes.teacherFeedbackText, classes.contentTextColor)}
-                    variant="subtitle1" 
-                  >
-                    <FormattedMessage id="report.report.learningOutcomes.empty" />
-                  </Typography>
-                </Box>
-              )
+                learningOutcomes.length ? (
+                    <List disablePadding>
+                        {learningOutcomes.map((learningOutcome) => {
+                            return (
+                                <LearningOutcomeListItem
+                                    key={learningOutcome.id}
+                                    title={learningOutcome.name}
+                                    status={learningOutcome.status}
+                                />
+                            );
+                        })}
+                    </List>
+                ) : (
+                    <Box
+                        className={classes.teacherFeedbackBox}
+                        justifyContent="center"
+                        alignItems="center"
+                    >
+                        <Typography
+                            className={clsx(classes.teacherFeedbackText, classes.contentTextColor)}
+                            variant="subtitle1"
+                        >
+                            <FormattedMessage id="report.report.learningOutcomes.empty" />
+                        </Typography>
+                    </Box>
+                )
             }
         </>
     );
@@ -239,7 +282,7 @@ export function ReportDetail () {
     const { data: learningOutcomes } = useGetLearningOutcomes({
         assessment_id: reportDetail.assessment_id,
         student_id: selectedUser?.user_id ?? ``,
-        org_id: organizationId
+        org_id: organizationId,
     });
     const { data: scheduleData } = useGetScheduleById({
         schedule_id: scheduleId,
@@ -275,7 +318,7 @@ export function ReportDetail () {
             icon: HomeFunIconDialog,
             backgroundClassType: THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
         },
-    }
+    };
 
     const studyDueAt = formatDueDateMillis(fromSecondsToMilliseconds(assessmentData?.schedule_due_at ?? 0), intl);
 
@@ -289,74 +332,97 @@ export function ReportDetail () {
 
     return (
         <Box
-            className={classes.root} 
+            className={classes.root}
         >
             <Box className={classes.infoBox}>
-              <Grid container direction="column">
-                  <Grid item>
-                    <Chip
-                        className={classes.reportType}
-                        style={{
-                            backgroundColor: formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].backgroundClassType,
-                        }}
-                        label={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].title}
-                        icon={<img
-                                className={classes.chipReportType}
-                                alt={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].title}
-                                src={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].icon}
-                            />
-                        }
-                    />
-                  </Grid>
-                  <Grid item>
-                      <Typography 
-                            className={classes.title} 
+                <Grid
+                    container
+                    direction="column"
+                >
+                    <Grid item>
+                        <Chip
+                            className={classes.reportType}
+                            style={{
+                                backgroundColor: formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].backgroundClassType,
+                            }}
+                            label={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].title}
+                            icon={(
+                                <img
+                                    className={classes.chipReportType}
+                                    alt={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].title}
+                                    src={formatData[assessmentData?.assessment_type ?? AssessmentType.LIVE].icon}
+                                />
+                            )
+                            }
+                        />
+                    </Grid>
+                    <Grid item>
+                        <Typography
+                            className={classes.title}
                             variant={`h4`}
                         >
-                          {assessmentData?.assessment_type === AssessmentType.LIVE ? assessmentData?.schedule_title : assessmentData?.title}
-                      </Typography>
-                  </Grid>
-                  <DialogHeader className={classes.teacherListContainer} teachers={scheduleData?.teachers ?? []}/>
-                  <Divider />
-                  {
-                    assessmentData?.assessment_type !== AssessmentType.LIVE && (
-                      <Grid 
-                        className={classes.dateTime} 
+                            {assessmentData?.assessment_type === AssessmentType.LIVE ? assessmentData?.schedule_title : assessmentData?.title}
+                        </Typography>
+                    </Grid>
+                    <TeachersList
+                        className={classes.teacherListContainer}
+                        teachers={scheduleData?.teachers ?? []}
+                    />
+                    <Divider />
+                    {
+                        assessmentData?.assessment_type !== AssessmentType.LIVE && (
+                            <Grid
+                                item
+                                className={classes.dateTime}
+                            >
+                                <Typography variant="subtitle1">
+                                    {
+                                        studyDueAt
+                                    }
+                                </Typography>
+                            </Grid>
+                        )
+                    }
+                    {
+                        assessmentData?.assessment_type === AssessmentType.LIVE && (
+                            <Grid
+                                item
+                                className={clsx(classes.dateTime, classes.textBreakSpace)}
+                            >
+                                <Typography variant="subtitle1">
+                                    {
+                                        liveClassDateTime
+                                    }
+                                </Typography>
+                            </Grid>
+                        )
+                    }
+                    <Grid
                         item
-                      >
+                        className={classes.classText}
+                    >
                         <Typography variant="subtitle1">
-                              {
-                                studyDueAt
-                              }
-                          </Typography>
-                      </Grid>
-                    )
-                  }
-                  {
-                    assessmentData?.assessment_type === AssessmentType.LIVE && (
-                      <Grid 
-                        className={clsx(classes.dateTime, classes.textBreakSpace)} 
-                        item
-                      >
-                        <Typography variant="subtitle1">
-                              {
-                                liveClassDateTime
-                              }
+                            {`${intl.formatMessage({
+                                id: `report.report.class`,
+                                defaultMessage: `Class`,
+                            })}: ${assessmentData?.class.name}`}
                         </Typography>
-                      </Grid>
-                    )
-                  }
-                  <Grid item className={classes.classText}>
-                        <Typography variant="subtitle1">
-                            {`${intl.formatMessage({id: "report.report.class", defaultMessage: "Class"})}: ${assessmentData?.class.name}`}
-                        </Typography>
-                  </Grid>
-                  {assessmentData?.subjects && <Grid item className={classes.subjectText}>
-                        <Typography variant="subtitle1">
-                            {`${intl.formatMessage({id: "report.report.subject", defaultMessage: "Subject"})}: ${assessmentData.subjects.map((item) => item.name).join(`, `)}`}
-                        </Typography>
-                  </Grid>}
-              </Grid>
+                    </Grid>
+                    {assessmentData?.subjects && (
+                        <Grid
+                            item
+                            className={classes.subjectText}
+                        >
+                            <Typography variant="subtitle1">
+                                {`${intl.formatMessage({
+                                    id: `report.report.subject`,
+                                    defaultMessage: `Subject`,
+                                })}: ${assessmentData.subjects.map((item) => item.name)
+                                    .join(`, `)}`}
+                            </Typography>
+                        </Grid>
+                    )}
+                </Grid>
             </Box>
 
             <TeacherFeedbackSection />

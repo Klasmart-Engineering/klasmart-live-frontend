@@ -3,7 +3,7 @@ import HomeFunImg from "@/assets/img/home/home-fun.svg";
 import LiveImg from "@/assets/img/home/live.svg";
 import StudyImg from "@/assets/img/home/study.svg";
 import {
-    SCHEDULE_HOME_FUN_BACKGROUND_COLOR,
+    SCHEDULE_HOMEFUN_TOP_BAR,
     SCHEDULE_LIVE_BACKGROUND_COLOR,
     SCHEDULE_STUDY_BACKGROUND_COLOR,
 } from "@/config";
@@ -83,7 +83,7 @@ export default function CategoryList () {
             }),
             image: HomeFunImg,
             classType: ClassType.HOME_FUN_STUDY,
-            backgroundColor: SCHEDULE_HOME_FUN_BACKGROUND_COLOR,
+            backgroundColor: SCHEDULE_HOMEFUN_TOP_BAR,
         },
     ];
 

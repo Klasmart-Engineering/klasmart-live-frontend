@@ -1,13 +1,14 @@
-import AppBar, 
+import AppBar,
 { AppBarStyle } from "@/app/components/layout/AppBar";
-import { ListOrientation, OrganizationList } from "@/app/components/organization/organizationList";
+import {
+    ListOrientation,
+    OrganizationList,
+} from "@/app/components/organization/organizationList";
 import { useSelectedOrganization } from "@/app/data/user/atom";
 import { EntityStatus } from "@/app/data/user/dto/sharedDto";
 import { useMeQuery } from "@/app/data/user/queries/meQuery";
 import BackButton from "@/assets/img/parent-dashboard/back_icon_parents.svg";
-import {
-    THEME_BACKGROUND_SELECT_DIALOG,
-} from "@/config";
+import { THEME_BACKGROUND_SELECT_DIALOG } from "@/config";
 import {
     Dialog,
     DialogContent,
@@ -75,11 +76,11 @@ export function SelectOrgForParentDialog (props: Props) {
                 <OrganizationList
                     organizations={activeOrganizations}
                     selectedOrganization={selectedOrganization}
+                    orientation={ListOrientation.VERTICAL}
                     onClick={org => {
                         setSelectedOrganization(org);
                         onOrgClicked();
                     }}
-                    orientation={ListOrientation.VERTICAL}
                 />
             </DialogContent>
         </Dialog>

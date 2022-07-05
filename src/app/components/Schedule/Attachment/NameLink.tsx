@@ -6,10 +6,11 @@ import {
     saveDataBlobToFile,
 } from "@/app/utils/fileUtils";
 import { checkNetworkToConfirmDownload } from "@/app/utils/networkUtils";
-import { TEXT_COLOR_SIGN_OUT } from "@/config";
+import { THEME_COLOR_LIGHT_BLUE_LINK } from "@/config";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
+    Box,
     CircularProgress,
     createStyles,
     Grid,
@@ -18,19 +19,28 @@ import {
     Typography,
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
+import { Attachment } from "@styled-icons/icomoon/Attachment";
 import React,
 { useState } from "react";
 import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => createStyles({
+    container: {
+        alignContent: `flex-start`,
+    },
     attachmentName: {
-        color: TEXT_COLOR_SIGN_OUT,
         fontWeight: theme.typography.fontWeightBold as number,
         textOverflow: `ellipsis`,
         overflow: `hidden`,
+        paddingLeft: theme.spacing(0.5),
+    },
+    attachmentLink: {
+        color: THEME_COLOR_LIGHT_BLUE_LINK,
     },
     wrapper: {
-        position: `relative`,
+        display: `flex`,
+        flexDirection: `row`,
+        alignItems: `center`,
     },
     progress: {
         color: blue[500],
@@ -104,22 +114,26 @@ export default function AttachmentNameLink (props: Props) {
         <Grid
             item
             xs={10}
-            alignContent={`flex-start`}
         >
-            <div className={classes.wrapper}>
+            <Box
+                className={classes.wrapper}
+            >
+                <Attachment
+                    color={THEME_COLOR_LIGHT_BLUE_LINK}
+                    size={16}
+                />
                 <Typography
                     noWrap
                     variant="body1"
                     className={classes.attachmentName}
                 >
                     <Link
+                        className={classes.attachmentLink}
                         variant="body1"
-                        href={`#`}
-                        color={downloadingPreview ? `textSecondary` : `primary`}
                         aria-disabled={downloadingPreview}
                         onClick={() => confirmOpenAttachmentLink()}
                     >
-                        {attachmentName}
+                        {attachmentName.length > 40 ? `${attachmentName.slice(0, 40)}...` : attachmentName}
                     </Link>
                 </Typography>
                 {downloadingPreview && (
@@ -128,7 +142,7 @@ export default function AttachmentNameLink (props: Props) {
                         className={classes.progress}
                     />
                 )}
-            </div>
+            </Box>
         </Grid>
     );
 }
