@@ -1,7 +1,6 @@
 import { useSessionContext } from "@/providers/session-context";
-import {
-    classInfoState,
-} from "@/store/layoutAtoms";
+import { classInfoState } from "@/store/layoutAtoms";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Accordion,
     AccordionDetails,
@@ -12,11 +11,10 @@ import {
     Typography,
 } from "@material-ui/core";
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { UserAvatar } from "@kl-engineering/kidsloop-px";
+import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
-import { useRecoilState, selector } from "recoil";
-import clsx from "clsx";
+import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -36,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         "&:after": {
             content: `''`,
             display: `block`,
-            width : `100%`,
+            width: `100%`,
             height: 1,
             margin: `10px 0`,
             backgroundColor: theme.palette.grey[300],
@@ -86,9 +84,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     userItem: {
         width: `calc(50% - 15px)`,
         margin: `5px 15px 5px 0`,
-        display:`flex`,
-        flexDirection:`row`,
-        alignItems:`center`,
+        display: `flex`,
+        flexDirection: `row`,
+        alignItems: `center`,
 
         "&:nth-of-type(2n)": {
             marginRight: 0,
@@ -125,7 +123,8 @@ function ClassRoster () {
                 defaultExpanded
                 elevation={0}
                 className={classes.accordion}
-                onChange={resetPosition}>
+                onChange={resetPosition}
+            >
                 <AccordionSummary
                     className={classes.accordionSummary}
                     expandIcon={<ExpandMoreIcon />}
@@ -145,6 +144,7 @@ function ClassRoster () {
                             className={classes.userItem}
                         >
                             <UserAvatar
+                                maxInitialsLength={2}
                                 name={user.name}
                                 className={classes.avatar}
                                 size="small"
@@ -159,7 +159,8 @@ function ClassRoster () {
                     <Accordion
                         elevation={0}
                         className={classes.accordion}
-                        onChange={resetPosition}>
+                        onChange={resetPosition}
+                    >
                         <AccordionSummary
                             className={classes.accordionSummary}
                             expandIcon={<ExpandMoreIcon />}
@@ -182,6 +183,7 @@ function ClassRoster () {
                                         })}
                                     >
                                         <UserAvatar
+                                            maxInitialsLength={2}
                                             name={user.name}
                                             className={classes.avatar}
                                             size="small"

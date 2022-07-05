@@ -280,6 +280,7 @@ export default function ScheduleItem (props: Props) {
     const UserAvatarComponent = (name: string, isSecondAvatar = false): JSX.Element => {
         return (
             <UserAvatar
+                maxInitialsLength={2}
                 name={name}
                 size="small"
                 className={clsx(classes.avatar, {

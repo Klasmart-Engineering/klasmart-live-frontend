@@ -220,6 +220,7 @@ export default function ScheduleTopBar (props: Props) {
                     />
                     <Box className={classes.currentUser}>
                         <UserAvatar
+                            maxInitialsLength={2}
                             name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
                             size={isMdUp ? `medium` : `small`}
                         />

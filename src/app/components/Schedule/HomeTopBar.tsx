@@ -90,6 +90,7 @@ export default function HomeTopBar (props: Props) {
                         onClick={onProfileClick}
                     >
                         <UserAvatar
+                            maxInitialsLength={2}
                             name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
                             size={isMdUp ? `medium` : `small`}
                         />

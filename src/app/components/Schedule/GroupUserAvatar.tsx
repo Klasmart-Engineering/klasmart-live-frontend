@@ -1,5 +1,4 @@
 import { THEME_COLOR_BACKGROUND_MORE_AVATAR } from "@/config";
-import { ForeignIdName } from "@kl-engineering/cms-api-client/dist/api/shared";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     createStyles,
@@ -56,30 +55,33 @@ export default function GroupUserAvatar (props: Props) {
             wrap="nowrap"
         >
             {names.slice(0, maxDisplay)
-                .map((item, index, _) => (
+                .map((name) => (
                     <Grid
-                        key={index}
+                        key={name}
                         item
                         className={classes.avatar}
                     >
                         <UserAvatar
-                            name={item}
+                            maxInitialsLength={2}
+                            name={name}
                             size={size}
                         />
                     </Grid>
                 ))}
-            {names.length > maxDisplay && <Grid
-                item
-                className={classes.moreUsers}
-                style={{
-                    width: getSize(),
-                    height: getSize(),
-                }}
-                                          >
-                <Typography variant={`subtitle1`}>
+            {names.length > maxDisplay && (
+                <Grid
+                    item
+                    className={classes.moreUsers}
+                    style={{
+                        width: getSize(),
+                        height: getSize(),
+                    }}
+                >
+                    <Typography variant={`subtitle1`}>
                 +{names.length - maxDisplay}
-                </Typography>
-                                          </Grid>}
+                    </Typography>
+                </Grid>
+            )}
         </Grid>
     );
 }

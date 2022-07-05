@@ -1,5 +1,6 @@
 import { useSessionContext } from "@/providers/session-context";
 import { activeSettingsStateTab } from "@/store/layoutAtoms";
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Grid,
     List,
@@ -11,44 +12,42 @@ import {
     Tooltip,
     Typography,
 } from "@material-ui/core";
-import { UserAvatar } from "@kl-engineering/kidsloop-px";
-import React,
-{ useContext } from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        height : `100%`,
+        height: `100%`,
         background: `#fff`,
         borderRadius: 12,
         marginRight: theme.spacing(1),
         padding: theme.spacing(2),
         minWidth: 240,
     },
-    user:{
+    user: {
         borderBottom: `1px solid lightgrey`,
         paddingBottom: 16,
     },
-    avatar : {
+    avatar: {
         marginRight: theme.spacing(2),
     },
-    list:{},
-    listItem:{
+    list: {},
+    listItem: {
         margin: `8px 0`,
         borderRadius: 10,
-        "&$selected":{
+        "&$selected": {
             background: theme.palette.background.default,
-            "&:hover":{
+            "&:hover": {
                 background: theme.palette.background.default,
             },
         },
     },
-    selected:{},
-    disabled:{
+    selected: {},
+    disabled: {
         opacity: `0.4`,
         background: `#edf4fd`,
     },
-    listItemIcon:{
+    listItemIcon: {
         color: theme.palette.text.primary,
     },
 }));
@@ -69,16 +68,20 @@ function TabSettingsMenu (props: any) {
         <Grid
             container
             direction="column"
-            className={classes.root}>
+            className={classes.root}
+        >
             <Grid item>
                 <Grid
                     container
                     alignItems="center"
-                    className={classes.user}>
+                    className={classes.user}
+                >
                     <Grid
                         item
-                        className={classes.avatar}>
+                        className={classes.avatar}
+                    >
                         <UserAvatar
+                            maxInitialsLength={2}
                             name={name || `u`}
                             size="medium"
                         />
@@ -90,18 +93,21 @@ function TabSettingsMenu (props: any) {
             </Grid>
             <Grid
                 item
-                xs>
+                xs
+            >
                 <List
                     component="nav"
                     aria-label="main mailbox folders"
                     classes={{
                         root: classes.list,
-                    }}>
+                    }}
+                >
                     {menu.map((item: any) => (
                         <Tooltip
                             key={item.id}
                             title={item.tooltip ?? ``}
-                            placement="right">
+                            placement="right"
+                        >
                             <div>
                                 <ListItem
                                     button

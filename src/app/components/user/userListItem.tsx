@@ -9,7 +9,6 @@ import {
 import clsx from "clsx";
 import React,
 { useMemo } from "react";
-import { useIntl } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -58,7 +57,6 @@ interface Props {
 export const UserListItem: React.FC<Props> = ({
     user, isSelected, onClick,
 }) => {
-    const intl = useIntl();
     const classes = useStyles();
 
     const displayName = useMemo(() => {
@@ -73,27 +71,13 @@ export const UserListItem: React.FC<Props> = ({
         }
     }, [ user ]);
 
-    const subTitle = useMemo(() => {
-        if (!displayName) {
-            return intl.formatMessage({
-                id: `selectUser.updateProfile`,
-            });
-        }
-
-        // TODO: Localize date/time formatting
-        return user.date_of_birth ? intl.formatMessage({
-            id: `selectUser.birthday`,
-        }, {
-            date: user.date_of_birth,
-        }) : ``;
-    }, [ user, displayName ]);
-
     return (
         <ButtonBase
             className={classes.root}
             onClick={() => onClick?.(user)}
         >
             <UserAvatar
+                maxInitialsLength={2}
                 className={clsx(classes.userAvatar, {
                     [classes.userAvatarSelected]: isSelected,
                 })}
@@ -102,7 +86,6 @@ export const UserListItem: React.FC<Props> = ({
             />
             <ListItemText
                 primary={displayName ?? ``}
-                secondary={subTitle}
                 primaryTypographyProps={{
                     className: clsx(classes.profileName, {
                         [classes.listItemSelected]: isSelected,

@@ -145,6 +145,7 @@ const Message: FC<MessageProps> = ({
         >
             <Grid item>
                 <UserAvatar
+                    maxInitialsLength={2}
                     name={name}
                     size="medium"
                 />

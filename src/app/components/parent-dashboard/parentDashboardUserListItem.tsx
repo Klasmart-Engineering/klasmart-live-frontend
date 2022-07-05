@@ -20,9 +20,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import React,
 { useMemo } from "react";
-import {
-    FormattedMessage,
-} from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -105,7 +103,10 @@ export const ParentDashboardUserListItem: React.FC<Props> = ({ user, onSelectCla
                 wrap="nowrap"
             >
                 <Grid item>
-                    <UserAvatar name={displayName ?? ``} />
+                    <UserAvatar
+                        maxInitialsLength={2}
+                        name={displayName ?? ``}
+                    />
                 </Grid>
                 <Grid
                     item

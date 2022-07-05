@@ -1,19 +1,24 @@
-import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
-import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
+/* eslint-disable react/no-multi-comp */
+import AttachmentDownloadButton from "./Attachment/DownloadButton";
+import AttachmentNameLink from "./Attachment/NameLink";
+import ScheduleJoinButton from "./ScheduleJoinButton";
+import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg";
 import HomeFunIconDialog from "@/assets/img/schedule-icon/home_fun_type_schedule_dialog.svg";
 import LiveJoinArrow from "@/assets/img/schedule-icon/live_join_arrow.svg";
+import LiveIconDialog from "@/assets/img/schedule-icon/live_type_schedule_dialog.svg";
 import StudyJoinArrow from "@/assets/img/schedule-icon/study_join_arrow.svg";
-import HomeFunJoinArrow from "@/assets/img/schedule-icon/home_fun_join_arrow.svg";
+import StudyIconDialog from "@/assets/img/schedule-icon/study_type_schedule_dialog.svg";
 import Loading from "@/components/loading";
 import StyledIcon from "@/components/styled/icon";
-import { 
-    TEXT_COLOR_SECONDARY_DEFAULT, 
-    TEXT_COLOR_VERSION_APP, 
-    THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG, 
-    THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG, 
-    THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG, 
-    THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG 
+import {
+    TEXT_COLOR_VERSION_APP,
+    THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+    THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
+    THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+    THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
 } from "@/config";
+import { ClassType } from "@/store/actions";
+import { ForeignIdName } from "@kl-engineering/cms-api-client/dist/api/shared";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Chip,
@@ -28,12 +33,10 @@ import {
 } from "@material-ui/core";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
 import React from "react";
-import { FormattedMessage, useIntl } from "react-intl";
-import AttachmentNameLink from "./Attachment/NameLink";
-import AttachmentDownloadButton from "./Attachment/DownloadButton";
-import ScheduleJoinButton from "./ScheduleJoinButton";
-import { ForeignIdName } from "@kl-engineering/cms-api-client/dist/api/shared";
-import { ClassType } from "@/store/actions";
+import {
+    FormattedMessage,
+    useIntl,
+} from "react-intl";
 
 const useStyles = makeStyles((theme) => createStyles({
     dialog: {
@@ -115,6 +118,9 @@ const useStyles = makeStyles((theme) => createStyles({
     dialogChipClassType: {
         filter: `brightness(0) invert(1)`,
     },
+    hideOverflowX: {
+        overflowX: `hidden`,
+    },
 }));
 
 export interface Props {
@@ -139,39 +145,41 @@ interface DialogHeaderProps {
 }
 
 export const DialogHeader: React.FC<DialogHeaderProps> = ({
-    teachers, className, maxDisplay = 2
+    teachers, className, maxDisplay = 2,
 }) => {
     const classes = useStyles();
 
     return (
         <Grid
-            className={className}
             container
+            className={className}
             direction="row"
         >
-            {teachers.slice(0, maxDisplay).map((item) => (
-                <>
-                    <Grid
-                        key={item.id}
-                        item
-                    >
-                        <UserAvatar
-                            name={item.name}
-                            size={`small`}
-                        />
-                    </Grid>
-                    <Grid
-                        item
-                        className={classes.dialogTeacher}
-                    >
-                        <Typography
-                            variant={`subtitle1`}
+            {teachers.slice(0, maxDisplay)
+                .map((teacher) => (
+                    <>
+                        <Grid
+                            key={teacher.id}
+                            item
                         >
-                            {item.name}
-                        </Typography>
-                    </Grid>
-                </>
-            ))}
+                            <UserAvatar
+                                maxInitialsLength={2}
+                                name={teacher.name}
+                                size={`small`}
+                            />
+                        </Grid>
+                        <Grid
+                            item
+                            className={classes.dialogTeacher}
+                        >
+                            <Typography
+                                variant={`subtitle1`}
+                            >
+                                {teacher.name}
+                            </Typography>
+                        </Grid>
+                    </>
+                ))}
             {teachers.length > maxDisplay ? (
                 <Grid item>
                     <Typography
@@ -188,7 +196,7 @@ export const DialogHeader: React.FC<DialogHeaderProps> = ({
                 </Grid>) : null}
         </Grid>
     );
-}
+};
 
 export default function BaseScheduleDialog (props: Props) {
     const {
@@ -210,63 +218,63 @@ export default function BaseScheduleDialog (props: Props) {
 
     const getClassTypeProperty = () => {
         switch (classType) {
-            case ClassType.LIVE:
-                return {
-                    title: intl.formatMessage({
-                        id: `schedule_liveTab`,
-                        defaultMessage: `Live`,
-                    }),
-                    icon: LiveIconDialog,
-                    backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                    actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonEndIcon: LiveJoinArrow,
-                }
-            case ClassType.STUDY:
-                return {
-                    title: intl.formatMessage({
-                        id: `schedule_studyTab`,
-                        defaultMessage: `Study`,
-                    }),
-                    icon: StudyIconDialog,
-                    backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                    actionButtonEndIcon: StudyJoinArrow,
-                }
-            case ClassType.REVIEW:
-                return {
-                    title: intl.formatMessage({
-                        id: `review.title`,
-                        defaultMessage: `Review`,
-                    }),
-                    icon: StudyIconDialog,
-                    backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                    actionButtonEndIcon: StudyJoinArrow,
-                }
-            case ClassType.HOME_FUN_STUDY:
-                return {
-                    title: intl.formatMessage({
-                        id: `schedule.homeFun`,
-                        defaultMessage: `Home Fun`,
-                    }),
-                    icon: HomeFunIconDialog,
-                    backgroundClassType: THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonBackground: THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonEndIcon: HomeFunJoinArrow,
-                }
-            default:
-                return {
-                    title: intl.formatMessage({
-                        id: `schedule_liveTab`,
-                        defaultMessage: `Live`,
-                    }),
-                    icon: LiveIconDialog,
-                    backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
-                    actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
-                    actionButtonEndIcon: LiveJoinArrow,
-                }
+        case ClassType.LIVE:
+            return {
+                title: intl.formatMessage({
+                    id: `schedule_liveTab`,
+                    defaultMessage: `Live`,
+                }),
+                icon: LiveIconDialog,
+                backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+                actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+                actionButtonEndIcon: LiveJoinArrow,
+            };
+        case ClassType.STUDY:
+            return {
+                title: intl.formatMessage({
+                    id: `schedule_studyTab`,
+                    defaultMessage: `Study`,
+                }),
+                icon: StudyIconDialog,
+                backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+                actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+                actionButtonEndIcon: StudyJoinArrow,
+            };
+        case ClassType.REVIEW:
+            return {
+                title: intl.formatMessage({
+                    id: `review.title`,
+                    defaultMessage: `Review`,
+                }),
+                icon: StudyIconDialog,
+                backgroundClassType: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+                actionButtonBackground: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+                actionButtonEndIcon: StudyJoinArrow,
+            };
+        case ClassType.HOME_FUN_STUDY:
+            return {
+                title: intl.formatMessage({
+                    id: `schedule.homeFun`,
+                    defaultMessage: `Home Fun`,
+                }),
+                icon: HomeFunIconDialog,
+                backgroundClassType: THEME_COLOR_YELLOW_BUTTON_SCHEDULE_DIALOG,
+                actionButtonBackground: THEME_COLOR_GREEN_BUTTON_SCHEDULE_DIALOG,
+                actionButtonEndIcon: HomeFunJoinArrow,
+            };
+        default:
+            return {
+                title: intl.formatMessage({
+                    id: `schedule_liveTab`,
+                    defaultMessage: `Live`,
+                }),
+                icon: LiveIconDialog,
+                backgroundClassType: THEME_COLOR_BLUE_CLASS_TYPE_SCHEDULE_DIALOG,
+                actionButtonBackground: THEME_COLOR_PINK_BUTTON_SCHEDULE_DIALOG,
+                actionButtonEndIcon: LiveJoinArrow,
+            };
         }
-    }
+    };
 
     return (
         <Dialog
@@ -275,59 +283,61 @@ export default function BaseScheduleDialog (props: Props) {
             scroll={`paper`}
             open={open}
             PaperProps={{
-                className: classes.dialog
+                className: classes.dialog,
             }}
             onClose={onClose}
         >
-            {!isLoading && <DialogTitle className={classes.dialogTitle}>
-                <Grid
-                    container
-                    justifyContent="space-between"
-                    wrap="nowrap"
-                >
+            {!isLoading && (
+                <DialogTitle className={classes.dialogTitle}>
                     <Grid
                         container
-                        direction="column"
-                        style={{
-                            overflowX: `hidden`,
-                        }}
+                        justifyContent="space-between"
+                        wrap="nowrap"
                     >
-                        <Grid item>
-                            <Chip
-                                className={classes.dialogClassType}
-                                style={{
-                                    backgroundColor: getClassTypeProperty().backgroundClassType,
-                                }}
-                                label={getClassTypeProperty().title}
-                                icon={<img
-                                    className={classes.dialogChipClassType}
-                                    alt={getClassTypeProperty().title}
-                                    src={getClassTypeProperty().icon}
-                                />}
+                        <Grid
+                            container
+                            direction="column"
+                            className={classes.hideOverflowX}
+                        >
+                            <Grid item>
+                                <Chip
+                                    className={classes.dialogClassType}
+                                    style={{
+                                        backgroundColor: getClassTypeProperty().backgroundClassType,
+                                    }}
+                                    label={getClassTypeProperty().title}
+                                    icon={
+                                        <img
+                                            className={classes.dialogChipClassType}
+                                            alt={getClassTypeProperty().title}
+                                            src={getClassTypeProperty().icon}
+                                        />
+                                    }
+                                />
+                            </Grid>
+
+                            <Grid item>
+                                <Typography
+                                    variant="h4"
+                                    className={classes.dialogTitleText}
+                                >
+                                    {title}
+                                </Typography>
+                            </Grid>
+
+                        </Grid>
+                        <Grid
+                            item
+                            onClick={onClose}
+                        >
+                            <StyledIcon
+                                icon={<CloseIcon />}
+                                size={`large`}
                             />
                         </Grid>
-
-                        <Grid item>
-                            <Typography
-                                variant="h4"
-                                className={classes.dialogTitleText}
-                            >
-                                {title}
-                            </Typography>
-                        </Grid>
-
                     </Grid>
-                    <Grid
-                        item
-                        onClick={onClose}
-                    >
-                        <StyledIcon
-                            icon={<CloseIcon />}
-                            size={`large`}
-                        />
-                    </Grid>
-                </Grid>
-            </DialogTitle>}
+                </DialogTitle>
+            )}
             <div className={classes.dialogContent}>
                 <DialogContent>
                     <Grid
@@ -341,22 +351,26 @@ export default function BaseScheduleDialog (props: Props) {
                         >
                             <Divider />
                         </Grid>
-                        {dateTime !== `` && <Grid item>
-                            <Typography 
-                                variant={`subtitle1`}
-                                className={classes.dialogDateTime}
+                        {dateTime !== `` && (
+                            <Grid item>
+                                <Typography
+                                    variant={`subtitle1`}
+                                    className={classes.dialogDateTime}
+                                >
+                                    {dateTime}
+                                </Typography>
+                            </Grid>
+                        )}
+                        {description && (
+                            <Grid
+                                item
+                                className={classes.dialogDescription}
                             >
-                                {dateTime}
-                            </Typography>
-                        </Grid>}
-                        {description && <Grid
-                            item
-                            className={classes.dialogDescription}
-                        >
-                            <Typography variant={`subtitle1`}>
-                                {description}
-                            </Typography>
-                        </Grid>}
+                                <Typography variant={`subtitle1`}>
+                                    {description}
+                                </Typography>
+                            </Grid>
+                        )}
                         {attachment?.name && (
                             <Grid
                                 container
@@ -375,8 +389,8 @@ export default function BaseScheduleDialog (props: Props) {
                             </Grid>
                         )}
                         <Grid
-                            className={classes.dialogButton}
                             container
+                            className={classes.dialogButton}
                             alignItems="center"
                             justifyContent="center"
                         >
@@ -398,9 +412,11 @@ export default function BaseScheduleDialog (props: Props) {
                         </Grid>
                     </Grid>
                 </DialogContent>
-                {isLoading && (<div className={classes.dialogLoadingContent}>
-                    <Loading />
-                </div>)}
+                {isLoading && (
+                    <div className={classes.dialogLoadingContent}>
+                        <Loading />
+                    </div>
+                )}
             </div>
         </Dialog>
     );
