@@ -266,7 +266,6 @@
     "screenShare.stop": "Stop Presenting",
     "viewMode.screenShare": "Share Screen",
     "live.class.shareScreen.error.notAvailable": "'Share Screen' is not available on mobile browsers",
-    "live.class.leave": "Leave Class",
     "canvas.tool.pen": "Pen",
     "canvas.tool.text": "Text",
     "canvas.tool.move": "Move",
@@ -321,5 +320,6 @@
     "content.pdf.notAvailable": "Cannot load PDF",
     "live.tooltip.previousPage": "Previous Page",
     "live.tooltip.nextPage": "Next Page",
-    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)",
+    "study.exit.greatWork": "Great Work!"
 }

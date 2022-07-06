@@ -266,7 +266,6 @@
     "screenShare.stop": "停止演示",
     "viewMode.screenShare": "共享屏幕",
     "live.class.shareScreen.error.notAvailable": "“共享屏幕”在手机浏览器上不可用",
-    "live.class.leave": "退出",
     "canvas.tool.pen": "笔",
     "canvas.tool.text": "文本",
     "canvas.tool.move": "移动",
@@ -275,10 +274,10 @@
     "canvas.tool.myCanvas.off": "关闭我的白板",
     "canvas.tool.allCanvas.on": "全部启用",
     "canvas.tool.allCanvas.off": "全部禁用",
-    "globalMute.notification.micOff": "您的麦克风已对所有人关闭",
-    "globalMute.notification.camOff": "您的相机已对所有人关闭",
-    "globalMute.notification.micOn": "您的麦克风已对所有人开启",
-    "globalMute.notification.camOn": "您的相机已对所有人开启",
+    "globalMute.notification.micOff": "老师已关闭您的麦克风。",
+    "globalMute.notification.camOff": "老师已经关闭了您的摄像头。",
+    "globalMute.notification.micOn": "老师已经开启了您的麦克风。",
+    "globalMute.notification.camOn": "老师已经开启了您的摄像头。",
     "live.class.stickers": "贴纸",
     "canvas.turnOn": "打开白板",
     "canvas.turnOff": "关闭白板",
@@ -321,5 +320,6 @@
     "content.pdf.notAvailable": "无法加载 PDF",
     "live.tooltip.previousPage": "上一页",
     "live.tooltip.nextPage": "下一页",
-    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)"
+    "live.screenshot.popup": "Your result is not stored yet. Please wait until it is completed. (If you want to continue without storing it, click continue.)",
+    "study.exit.greatWork": "Great Work!"
 }

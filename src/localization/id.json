@@ -266,7 +266,6 @@
     "screenShare.stop": "Berhenti Presentasi",
     "viewMode.screenShare": "Bagikan Layar",
     "live.class.shareScreen.error.notAvailable": "'Bagikan Layar' tidak tersedia di browser seluler",
-    "live.class.leave": "Tinggalkan Kelas",
     "canvas.tool.pen": "Pena",
     "canvas.tool.text": "Teks",
     "canvas.tool.move": "Pemindah",
@@ -321,5 +320,6 @@
     "content.pdf.notAvailable": "Tidak dapat memuat PDF",
     "live.tooltip.previousPage": "Sebelumnya",
     "live.tooltip.nextPage": "Selanjutnya",
-    "live.screenshot.popup": "Hasil belum selesai disimpan, silakan tunggu sampai selesai. (Kalau mau melanjutkan tanpa menyimpan, klik lanjut)"
+    "live.screenshot.popup": "Hasil belum selesai disimpan, silakan tunggu sampai selesai. (Kalau mau melanjutkan tanpa menyimpan, klik lanjut)",
+    "study.exit.greatWork": "Great Work!"
 }
