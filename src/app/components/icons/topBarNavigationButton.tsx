@@ -1,20 +1,15 @@
 
-import { heightActionButton } from "@/app/utils/fixedValues";
 import {
     BG_BUTTON_LIVE_COLOR,
     BG_BUTTON_STUDY_COLOR,
     SCHEDULE_CARD_BACKGROUND_CONTAINER,
     SCHEDULE_HOMEFUN_TOP_BAR,
     SCHEDULE_STUDY_TOP_BAR,
-    TEXT_COLOR_LIVE_PRIMARY,
     TEXT_COLOR_SECONDARY_DEFAULT,
-    TEXT_COLOR_STUDY_PRIMARY,
-    THEME_COLOR_SECONDARY_DEFAULT,
 } from "@/config";
 import { ClassType } from "@/store/actions";
 import {
     ButtonBase,
-    Grid,
     Typography,
 } from "@material-ui/core";
 import {
@@ -22,12 +17,12 @@ import {
     makeStyles,
 } from "@material-ui/core/styles";
 import clsx from "clsx";
-import React,
-{ ReactElement } from "react";
+import React from "react";
 import { FormattedMessage } from "react-intl";
 
 const BUTTON_MIN_WIDTH_SMALL = 115;
 const BUTTON_MIN_WIDTH_MEDIUM = 161;
+const BUTTON_RIGHT_WIDTH_SMALL = 70;
 const BUTTON_RIGHT_WIDTH_MEDIUM = 80;
 const useStyles = makeStyles((theme) => createStyles({
     root: {
@@ -73,6 +68,7 @@ const useStyles = makeStyles((theme) => createStyles({
         },
     },
     isRightButtonHFS: {
+        minWidth: BUTTON_RIGHT_WIDTH_SMALL,
         [theme.breakpoints.up(`md`)]: {
             minWidth: BUTTON_RIGHT_WIDTH_MEDIUM,
         },
