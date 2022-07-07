@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         left: 0,
         bottom: 0,
         width: `100%`,
+        [theme.breakpoints.down(`xs`)]: {
+            display: `none`,
+        },
     },
     name: {
         color: `#fff`,
