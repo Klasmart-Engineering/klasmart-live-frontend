@@ -161,7 +161,7 @@
     "account_selectOrg_privacyPolicy": "Privacy Policy",
     "account_selectOrg_signOut": "Sign Out",
     "account_selectOrg_whichOrg": "Select your organization",
-    "account_selectUser_whichUser": "Who’s studying today?",
+    "account_selectUser_whichUser": "Who is studying?",
     "schedule_liveTab": "Live",
     "schedule_studyTab": "Study",
     "schedule_loadingSelectOrg": "Please select an organization first by tapping the top-left corner!",
@@ -392,5 +392,8 @@
     "live.participants.studentCount": "Students ({value})",
     "live.participants.teacherCount": "Teachers ({value})",
     "live.messages.title": "Messages",
-    "live.messages.noResult": "No messages"
+    "live.messages.noResult": "No messages",
+    "error.serverRequestFailed.title": "Something went wrong.",
+    "error.serverRequestFailed.detail": "Server request failed",
+    "popup.dismiss": "Dismiss"
 }

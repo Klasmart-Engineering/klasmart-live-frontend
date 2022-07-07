@@ -392,5 +392,8 @@
     "live.participants.studentCount": "학습자 ({value})",
     "live.participants.teacherCount": "Teachers ({value})",
     "live.messages.title": "메시지",
-    "live.messages.noResult": "메시지 없음"
+    "live.messages.noResult": "메시지 없음",
+    "error.serverRequestFailed.title": "Something went wrong.",
+    "error.serverRequestFailed.detail": "Server request failed",
+    "popup.dismiss": "Dismiss"
 }

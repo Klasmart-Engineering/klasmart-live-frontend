@@ -392,5 +392,8 @@
     "live.participants.studentCount": "นักเรียน",
     "live.participants.teacherCount": "Teachers ({value})",
     "live.messages.title": "ข้อความ",
-    "live.messages.noResult": "ไม่มีข้อความ"
+    "live.messages.noResult": "ไม่มีข้อความ",
+    "error.serverRequestFailed.title": "Something went wrong.",
+    "error.serverRequestFailed.detail": "Server request failed",
+    "popup.dismiss": "Dismiss"
 }
