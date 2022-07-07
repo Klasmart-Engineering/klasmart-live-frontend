@@ -395,5 +395,7 @@
     "live.messages.noResult": "ไม่มีข้อความ",
     "error.serverRequestFailed.title": "Something went wrong.",
     "error.serverRequestFailed.detail": "Server request failed",
-    "popup.dismiss": "Dismiss"
+    "popup.dismiss": "Dismiss",
+    "homeFunStudy.myAssignment": "My Assignment",
+    "homeFunStudy.preview": ""
 }
