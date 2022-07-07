@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.23.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.22.0...v6.23.0) (2022-07-07)
+
+
+### 🔨 Build
+
+* bump cordova-plugin-splashscreen to version 6.1.0 (#271) ([2838a49](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/2838a495b05cebb26a8d4d4b934840c973f6832e)), closes [nat-1018](https://calmisland.atlassian.net/browse/nat-1018)
+* **deps-dev:** bump @testing-library/react from 12.0.0 to 12.1.5 (#260) ([636401c](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/636401cbc136cd6c3f14df2cda948832bb0730e8))
+* **deps-dev:** bump clean-webpack-plugin from 4.0.0-alpha.0 to 4.0.0 (#264) ([7a2b58b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/7a2b58bf49cfa49040b0273cb871dee3ba801d0a))
+* **deps-dev:** bump cordova-plugin-statusbar from 2.4.3 to 3.0.0 (#267) ([0315f2a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/0315f2a8f0f17a361c1307c82e61956709e4d412))
+* **deps-dev:** bump eslint from 8.13.0 to 8.18.0 (#261) ([4692f8e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/4692f8eecf7fd12add13ef0d74a2f0963c6f1b5a))
+* **deps-dev:** bump ts-loader from 9.3.0 to 9.3.1 (#258) ([022cfcc](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/022cfcc15e7787e5d552a421b22d07a81bfc29c6))
+* **deps:** bump callstats-js from 3.73.4 to 3.73.16 (#259) ([69ce738](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/69ce7388c5b21ac11fe0f13d7a1ff08d81809755))
+* **deps:** bump query-string from 6.14.1 to 7.1.1 (#268) ([e34acdf](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/e34acdfb91efbd42d003362e645db48bc1072a9a))
+* **deps:** bump recoil and recoil-persist (#265) ([80d2769](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/80d27692dfb1bc51ab7fa7b4a05c149496561f6b))
+
+
+### ♻️ Chores
+
+* **localization:** update translations  ([8c74725](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/8c74725fb55e830a2cbc284105754ac89ab8a929))
+* **localization:** update translations #269 ([ff86dec](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/ff86dec625d099367e607e42433c1bdb1444d44f))
+* remove empty hello.tsx file (#273) ([bf3fe1e](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/bf3fe1e84b923f3572d674f0ce531c1d1c2e2927))
+* update readme with PR process informations (#255) ([304e794](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/304e794688ce2728cd10107736417f3336bfb979)), closes [KLL-3653](https://calmisland.atlassian.net/browse/KLL-3653)
+
+
+### 🐛 Bug Fixes
+
+* join study or live class still display after user leave class (#251) ([5228abb](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5228abb87f825fdce6685990aabfee4e0ba2cafc)), closes [NAT-982](https://calmisland.atlassian.net/browse/NAT-982)
+* **KLL-3675:** show scrollbar on activity (H5P and PDF) (#247) ([23b9f1a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/23b9f1a00ddbd86f8be7bf7cbfe56fb291ec3e89)), closes [KLL-3675](https://calmisland.atlassian.net/browse/KLL-3675) [KLL-3675](https://calmisland.atlassian.net/browse/KLL-3675)
+* **KLL-3692:** remove teacher name when screen size is small (#281) ([784b496](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/784b496c254ec34df7ed072d143186696a2e5310)), closes [KLL-3692](https://calmisland.atlassian.net/browse/KLL-3692) [KLL-3692](https://calmisland.atlassian.net/browse/KLL-3692)
+* **KLL-3693:** prevent injecting iframe scripts twice (#243) ([5dc0f52](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/5dc0f5206e76e9e16c65717c0185a97e2b6206ae)), closes [KLL-3693](https://calmisland.atlassian.net/browse/KLL-3693) [KLL-3693](https://calmisland.atlassian.net/browse/KLL-3693)
+* **KLL-3714:** fix image oversizing on interactive book (#249) ([c0d250a](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/c0d250a48a6afa3690d780ff20cd8c610d68cb2d)), closes [KLL-3714](https://calmisland.atlassian.net/browse/KLL-3714)
+* not use cdn domain in iframe for Vietnam environment (#248) ([1b680a2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1b680a275377c92de37dbc47fae0bbce00b3dff8))
+* refresh canvas scroll on subsequent content loads (#253) ([775869f](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/775869f7a04fd23d9ad352a6833bd3e590afbeb1))
+* update type & remove empty object and unused for clean code (#272) ([93ebce2](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/93ebce25be45f262ac109e671623c044b7854364))
+
+
+### ✨ Features
+
+* **KLL-3697:** new design for Study and end screen Study (#275) ([3e4b487](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/3e4b487d06a12f2ef7c4916c4f7010e58ccb46f9)), closes [KLL-3697](https://calmisland.atlassian.net/browse/KLL-3697) [KLL-3697](https://calmisland.atlassian.net/browse/KLL-3697)
+* **KLL-3705:** allow line breaks in chat  (#231) ([683134d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/683134d017718a24800c7d07286a84689f973f7d)), closes [KLL-3705](https://calmisland.atlassian.net/browse/KLL-3705) [KLL-3705](https://calmisland.atlassian.net/browse/KLL-3705)
+* **localization:** add new translations (#250) ([b1b88f6](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/b1b88f6346c4cdd04ff872d99f684d5a418ee7df))
+* **localization:** add new translations (#285) ([fe2ed70](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/fe2ed70101ddeaca89fec48e06bb84a35b23ec16))
+
 ## [6.22.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.21.3...v6.22.0) (2022-06-28)
 
 
