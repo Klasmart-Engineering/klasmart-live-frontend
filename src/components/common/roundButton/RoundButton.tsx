@@ -1,85 +1,71 @@
-import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
+import { THEME_COLOR_ORG_MENU_DRAWER } from "@/config";
 import {
-    Box,
-    Fab,
+    Button,
+    darken,
     makeStyles,
-    Theme,
-    Typography,
-    useMediaQuery,
-    useTheme,
 } from "@material-ui/core";
+import clsx from "clsx";
 import React from "react";
 import { FormattedMessage } from "react-intl";
 
-const FAB_SIZE = 104;
-
-const useStyles = makeStyles((theme: Theme) => ({
-    titleStyle:{
-        fontWeight: theme.typography.fontWeightBold as number,
-        color: theme.palette.background.paper,
-        marginBottom: theme.spacing(2),
-        [theme.breakpoints.down(`sm`)]: {
-            marginBottom: theme.spacing(1),
-        },
+const useStyles = makeStyles((theme) => ({
+    button: {
+        borderRadius: theme.spacing(5),
+        padding: theme.spacing(1, 4),
+        margin: theme.spacing(0, 2),
+        fontSize: `1.15em`,
+        color: theme.palette.common.white,
+        backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
+        boxShadow: `none !important`,
+        border: `2px solid ${THEME_COLOR_ORG_MENU_DRAWER}`,
+        minWidth: 190,
     },
-    icon: {
-        width: FAB_SIZE-theme.spacing(7),
-        height:FAB_SIZE-theme.spacing(7),
-        [theme.breakpoints.down(`sm`)]: {
-            width: FAB_SIZE-theme.spacing(7) - 12,
-            height: FAB_SIZE-theme.spacing(7) - 12,
-        },
+    buttonOutlined: {
+        color: THEME_COLOR_ORG_MENU_DRAWER,
+        backgroundColor: `transparent`,
     },
-    fab: {
-        boxShadow: `none`,
-        backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
-        width: FAB_SIZE,
-        height: FAB_SIZE,
-        [theme.breakpoints.down(`sm`)]: {
-            width: FAB_SIZE-theme.spacing(5.5),
-            height:FAB_SIZE-theme.spacing(5.5),
+    buttonContained: {
+        "&:hover": {
+            backgroundColor: `${darken(THEME_COLOR_ORG_MENU_DRAWER, 0.4)}  !important`,
         },
     },
 }));
 
+export enum Variant { TEXT = `text`, OUTLINED = `outlined`, CONTAINED = `contained`}
+
 export interface Props {
   onClick: () => void;
-  alt: string;
-  src: string;
-  id: string;
+  icon: string;
+  title: string;
+  variant?: Variant;
 }
 
 export default function RoundButton (props: Props){
     const classes = useStyles();
     const {
         onClick,
-        alt,
-        src,
-        id,
+        icon,
+        title,
+        variant = Variant.CONTAINED,
     } = props;
-    const theme = useTheme();
-    const isSmDown = useMediaQuery(theme.breakpoints.down(`sm`));
 
     return (
-        <Box
-            display="flex"
-            alignItems="center"
-            flexDirection="column"
-            mx={isSmDown ? 4 : 6}
-        >
-            <Typography
-                variant= {isSmDown ? `subtitle2` : `h6`}
-                className={classes.titleStyle}><FormattedMessage id={id} /></Typography>
-            <Fab
-                className={classes.fab}
-                onClick={onClick}
-            >
+        <Button
+            startIcon={(
                 <img
-                    className={classes.icon}
-                    alt={alt}
-                    src={src}
+                    src={icon}
+                    width={20}
+                    alt="icon"
                 />
-            </Fab>
-        </Box>
+            )}
+            variant={variant}
+            className={clsx(classes.button, {
+                [classes.buttonOutlined]: variant === Variant.OUTLINED,
+                [classes.buttonContained]: variant === Variant.CONTAINED,
+            })}
+            onClick={onClick}
+        >
+            <FormattedMessage id={title} />
+        </Button>
     );
 }

@@ -2,7 +2,6 @@
 import ExitStudy from "./exitStudy/exitStudy";
 import PreviewLessonPlan from "./previewLessonPlan";
 import { TEXT_COLOR_LIVE_PRIMARY } from "@/config";
-import { useRewardTrophyMutation } from "@/data/live/mutations/useRewardTrophyMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
 import {
@@ -28,6 +27,8 @@ import React,
 import { useRecoilState } from "recoil";
 
 const ARROW_SIZE = 120;
+const ARROW_LARGE_SIZE = `50`;
+const ARROW_SMALL_SIZE = `35`;
 
 const useStyles = makeStyles((theme: Theme) => ({
     arrowButton: {
@@ -37,16 +38,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     arrowButtonRight: {
         paddingRight: theme.spacing(5),
     },
-    arrowButtonDisabled:{
+    arrowButtonDisabled: {
         opacity: 0,
         pointerEvents: `none`,
     },
     arrowButtonClass: {
         color: TEXT_COLOR_LIVE_PRIMARY,
     },
-    content:{
+    content: {
         background: theme.palette.background.paper,
-        borderRadius: theme.spacing(2.5),
+        borderRadius: theme.spacing(5),
+        margin: theme.spacing(0, 2),
         height: `100%`,
         display: `flex`,
         alignItems: `center`,
@@ -59,22 +61,21 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: theme.spacing(1.25),
         },
     },
-    fullHeight:{
+    fullHeight: {
         position: `relative`,
         height: `100%`,
         width: `100%`,
     },
-    navigationColumn:{
+    navigationColumn: {
         display: `flex`,
         alignItems: `center`,
         justifyContent: `center`,
     },
-    centeredContent:{
+    centeredContent: {
         height: `100%`,
         alignItems: `center`,
         justifyContent: `center`,
         display: `flex`,
-        animation: `$showEndStudyButtons 5000ms ease-in-out`,
     },
     mobileWebNavigationArrows: {
         flex: `auto`,
@@ -86,17 +87,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     orderThree: {
         order: 3,
-    },
-    "@keyframes showEndStudyButtons": {
-        "0%": {
-            opacity: 0,
-        },
-        "50%": {
-            opacity: 0,
-        },
-        "100%": {
-            opacity: 1,
-        },
     },
     navigationColumnActions: {
         marginLeft: theme.spacing(2.5),
@@ -116,8 +106,6 @@ export function ClassContent () {
     const {
         classType,
         materials,
-        sessionId,
-        roomId,
     } = useSessionContext();
 
     const classes = useStyles();
@@ -127,7 +115,6 @@ export function ClassContent () {
     const [ showEndStudy, setShowEndStudy ] = useRecoilState(showEndStudyState);
     const rootDivRef = useRef<HTMLDivElement>(null);
     const [ , setSquareSize ] = useState<number>(0);
-    const [ rewardTrophyMutation ] = useRewardTrophyMutation();
     const isXsDown = useMediaQuery(theme.breakpoints.down(`xs`));
     const isMobileWeb = !process.env.IS_CORDOVA_BUILD && isXsDown;
 
@@ -152,18 +139,6 @@ export function ClassContent () {
         else { setSquareSize(width); }
     }, [ rootDivRef.current ]);
 
-    useEffect(() => {
-        if(showEndStudy){
-            rewardTrophyMutation({
-                variables: {
-                    roomId,
-                    user: `local-${sessionId}`,
-                    kind: `great_job`,
-                },
-            });
-        }
-    }, [ showEndStudy ]);
-
     return(
         <Grid
             container
@@ -185,23 +160,18 @@ export function ClassContent () {
                 item
                 xs={12}
             >
-                {showEndStudy ? (
-                    <div className={classes.centeredContent}>
-                        <ExitStudy />
-                    </div> ) : (
-                    <div className={clsx(classes.content, {
-                        [classes.contentClass]: classType === ClassType.CLASSES,
-                        [classes.mobileWebContent]: isMobileWeb,
-                    })}
+                <div className={clsx(classes.content, {
+                    [classes.contentClass]: classType === ClassType.CLASSES,
+                    [classes.mobileWebContent]: isMobileWeb,
+                })}
+                >
+                    <div
+                        className={classes.fullHeight}
+                        id="activity-view-container"
                     >
-                        <div
-                            className={classes.fullHeight}
-                            id="activity-view-container"
-                        >
-                            <PreviewLessonPlan />
-                        </div>
+                        {showEndStudy ? <ExitStudy /> : <PreviewLessonPlan />}
                     </div>
-                )}
+                </div>
             </Grid>
             <Grid
                 item
@@ -230,22 +200,23 @@ const MaterialNavigation = (props: MaterialNavigationProps) => {
         direction,
         disabled,
         onClick,
-        isMobileWeb,
     } = props;
     const classes = useStyles();
     const { classType } = useSessionContext();
     const [ showEndStudy ] = useRecoilState(showEndStudyState);
+    const theme = useTheme();
+    const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
+    const arrowIconSize = isMdUp ? ARROW_LARGE_SIZE : ARROW_SMALL_SIZE;
 
     return (
         <div
             className={clsx(classes.arrowButton, {
                 [classes.arrowButtonDisabled]: disabled,
-                [classes.arrowButtonRight]: direction === `next` && classType === ClassType.STUDY && !isMobileWeb,
                 [classes.arrowButtonClass]: classType === ClassType.CLASSES && !showEndStudy,
             })}
             onClick={onClick}
         >
-            {direction === `prev` ? <ArrowBackIcon size="5em" /> : <ArrowForwardIcon size="5em" />}
+            {direction === `prev` ? <ArrowBackIcon size={arrowIconSize} /> : <ArrowForwardIcon size={arrowIconSize} />}
         </div>
     );
 };

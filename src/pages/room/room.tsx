@@ -1,8 +1,8 @@
 import { useDeviceOrientationValue } from "@/app/model/appModel";
-import background_study_blue from "@/assets/img/background/background_study.svg";
 import Main from '@/components/main/main';
 import Sidebar from '@/components/sidebar/sidebar';
 import Toolbar from "@/components/toolbar/toolbar";
+import { THEME_COLOR_STUDY_BACKGROUND } from "@/config";
 import { useSessions } from "@/data/live/state/useSessions";
 import { useHttpEndpoint } from "@/providers/region-select-context";
 import { useSessionContext } from "@/providers/session-context";
@@ -39,13 +39,11 @@ const useStyles = makeStyles(() => ({
         paddingBottom: `env(safe-area-inset-bottom)`,
         display: `flex`,
     },
-    rootSafeArea:{
+    rootSafeArea: {
         paddingLeft: `env(safe-area-inset-left)`, // iPhone Notch
     },
     blueBackground: {
-        backgroundImage: `url('${background_study_blue}')`,
-        backgroundSize: `cover`,
-        backgroundPosition: `left bottom`,
+        backgroundColor: THEME_COLOR_STUDY_BACKGROUND,
     },
 }));
 
@@ -80,7 +78,8 @@ export function Room () {
     }, []);
 
     useEffect(() => {
-        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true).sort((a, b) => a.joinedAt - b.joinedAt);
+        const teachers = [ ...sessions.values() ].filter(session => session.isTeacher === true)
+            .sort((a, b) => a.joinedAt - b.joinedAt);
         const host = teachers.find(session => session.isHost === true);
         if (host){
             host?.id === sessionId ? setHasControls(true) : setHasControls(false);
@@ -120,8 +119,10 @@ export function Room () {
                     hour12: true,
                 };
 
-                const startAt = new Date(classInformationData.start_at * 1000).toLocaleString(`en-GB`, dateOptions);
-                const endAt = new Date(classInformationData.end_at * 1000).toLocaleString(`en-GB`, dateOptions);
+                const startAt = new Date(classInformationData.start_at * 1000)
+                    .toLocaleString(`en-GB`, dateOptions);
+                const endAt = new Date(classInformationData.end_at * 1000)
+                    .toLocaleString(`en-GB`, dateOptions);
 
                 const subject = classInformationData && classInformationData.subjects
                                 && classInformationData.subjects.length > 0 ? classInformationData.subjects[0] : undefined;
@@ -141,7 +142,8 @@ export function Room () {
                     end_at: endAt,
                 });
 
-            }).catch(error => {
+            })
+            .catch(error => {
                 console.error(error);
             });
     }, [

@@ -1,7 +1,10 @@
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import StudyCongrats from "@/assets/img/end_study_congrats.svg";
 import StudyLeaveIcon from "@/assets/img/study_leave_icon.svg";
 import StudyStartAgainIcon from "@/assets/img/study_start_again_icon.svg";
-import RoundButton from "@/components/common/roundButton/RoundButton";
+import RoundButton,
+{ Variant } from "@/components/common/roundButton/RoundButton";
+import { TEXT_GREY_01 } from "@/config";
 import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
@@ -13,14 +16,34 @@ import {
     showEndStudyState,
 } from "@/store/layoutAtoms";
 import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
-import { Box } from "@material-ui/core";
+import {
+    Box,
+    makeStyles,
+    Typography,
+    useMediaQuery,
+    useTheme,
+} from "@material-ui/core";
 import React,
 { useEffect } from "react";
+import { FormattedMessage } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
-export default function ExitStudy (){
+const useStyles = makeStyles((theme) => ({
+    text: {
+        fontWeight: theme.typography.fontWeightBold as number,
+        margin: theme.spacing(2, 0, 4),
+        color: TEXT_GREY_01,
+    },
+    button: {
+        borderRadius: theme.spacing(5),
+    },
+    img: {
+        maxHeight: `30vh`,
+    },
+}));
 
+export default function ExitStudy (){
     const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
     const setClassEnded = useSetRecoilState(classEndedState);
     const setClassLeft = useSetRecoilState(classLeftState);
@@ -32,6 +55,10 @@ export default function ExitStudy (){
     const { isReview, classType } = useSessionContext();
     const closeConference = useWebrtcCloseCallback();
     const [ endClass ] = useEndClassMutation();
+
+    const classes = useStyles();
+    const theme = useTheme();
+    const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
 
     const onCloseButtonClick = async () => {
         if(classType === ClassType.CLASSES){
@@ -55,6 +82,8 @@ export default function ExitStudy (){
     };
 
     useEffect(() => {
+        if (!process.env.IS_CORDOVA_BUILD) return;
+
         const CLASS_CONTENT_BACK_ID = `classContentBackID`;
 
         addOnBack?.({
@@ -66,24 +95,44 @@ export default function ExitStudy (){
     return (
         <Box
             display="flex"
+            flexDirection="column"
             justifyContent="center"
-            alignItems="flex-end"
-            height="60%"
+            alignItems="center"
+            height="100%"
         >
-            {!isReview && classType === ClassType.STUDY && (
-                <RoundButton
-                    id="study.exit.startAgain"
-                    alt="start again Icon"
-                    src={StudyStartAgainIcon}
-                    onClick={onTryAgainClick}
-                />
-            )}
-            <RoundButton
-                id="study.exit.leave"
-                alt="study leave Icon"
-                src={StudyLeaveIcon}
-                onClick={onCloseButtonClick}
+            <img
+                src={StudyCongrats}
+                alt="Congratulations"
+                width={isSmUp ? 300 : 200}
+                className={classes.img}
             />
+            <Typography
+                variant="h2"
+                className={classes.text}
+            >
+                <FormattedMessage
+                    id="study.exit.greatWork"
+                    defaultMessage="Great Work!"
+                />
+            </Typography>
+            <Box
+                display="flex"
+                alignItems="center"
+            >
+                {!isReview && classType === ClassType.STUDY && (
+                    <RoundButton
+                        variant={Variant.OUTLINED}
+                        title="study.exit.startAgain"
+                        icon={StudyStartAgainIcon}
+                        onClick={onTryAgainClick}
+                    />
+                )}
+                <RoundButton
+                    title="study.exit.leave"
+                    icon={StudyLeaveIcon}
+                    onClick={onCloseButtonClick}
+                />
+            </Box>
         </Box>
     );
 }

@@ -1,18 +1,18 @@
 import { WBToolbarContainer } from "../classContent/WBToolbar";
 import { ClassContent } from "./classContent";
 import { usePopupContext } from "@/app/context-provider/popup-context";
-import StyledIcon from "@/components/styled/icon";
-import { THEME_COLOR_BACKGROUND_PAPER } from "@/config";
+import { BACKGROUND_PROCESS_GREY } from "@/config";
 import {
     classEndedState,
     classLeftState,
     hasJoinedClassroomState,
     materialActiveIndexState,
-    showEndStudyState 
+    showEndStudyState,
 } from "@/store/layoutAtoms";
 import {
     Box,
     Grid,
+    IconButton,
     makeStyles,
     Theme,
     useMediaQuery,
@@ -37,6 +37,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: `100%`,
         height: `100%`,
     },
+    iconButton: {
+        position: `fixed`,
+        top: theme.spacing(2),
+        right: theme.spacing(1),
+    },
 }));
 
 function MainStudy () {
@@ -52,6 +57,7 @@ function MainStudy () {
     const theme = useTheme();
     const isApp = process.env.IS_CORDOVA_BUILD;
     const isMobileWeb = useMediaQuery(theme.breakpoints.down(`xs`)) && !isApp;
+    const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
 
     const onCloseButtonClick = () => {
         showPopup({
@@ -111,18 +117,15 @@ function MainStudy () {
                                 <WBToolbarContainer />
                             </Box>
                             {isApp && (
-                                <Box
-                                    position="fixed"
-                                    top={theme.spacing(4)}
-                                    right={theme.spacing(4)}
+                                <IconButton
+                                    className={classes.iconButton}
                                     onClick={onCloseButtonClick}
                                 >
-                                    <StyledIcon
-                                        icon={<CloseIcon />}
-                                        size={`xlarge`}
-                                        color={THEME_COLOR_BACKGROUND_PAPER}
+                                    <CloseIcon
+                                        size={isMdUp ? `34` : `20`}
+                                        color={BACKGROUND_PROCESS_GREY}
                                     />
-                                </Box>
+                                </IconButton>
                             )}
                         </>
                     )}
