@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.shortest,
         }),
-
     },
     styledDrawerPaper: {
         transition: theme.transitions.create(`width`, {
@@ -140,12 +139,12 @@ interface StyledPopperProps {
 	open?: boolean;
     anchorEl?: HTMLElement | null;
     placement?: PopperPlacementType;
-    height?: number | string;
     showScrollbar?: boolean;
     modifiers?: Record<string, unknown>;
     isKeyboardVisible?: boolean;
     dialog?: boolean;
     dialogClose?: () => void;
+    style?: object;
 }
 
 function StyledPopper (props: StyledPopperProps) {
@@ -155,8 +154,8 @@ function StyledPopper (props: StyledPopperProps) {
         open = false,
         anchorEl,
         placement = `top`,
-        height,
         showScrollbar = false,
+        style = {},
         modifiers = {
             preventOverflow: {
                 boundariesElement: document.getElementById(`main-content`),
@@ -178,6 +177,7 @@ function StyledPopper (props: StyledPopperProps) {
         );
     }
 
+   
     return (
         <Popper
             transition
@@ -194,9 +194,7 @@ function StyledPopper (props: StyledPopperProps) {
                         [classes.popperPapperNoScrollbar]: showScrollbar,
                         [classes.popperPapperKeyboard]: isKeyboardVisible,
                     })}
-                    style={{
-                        height,
-                    }}
+                    style={style}
                 >{children}
                 </Paper>
             </Fade>
@@ -363,6 +361,7 @@ export async function classGetInformation (scheduleId: any, orgId: any, endpoint
     catch (err) { console.error(`Fail to classGetInformation in Live: ${err}`); }
     return data[0];
 }
+
 
 export async function getClassAttendeesIds (scheduleId: string, endpoint: string) {
     let data: any = {};

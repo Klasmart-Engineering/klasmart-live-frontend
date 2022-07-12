@@ -1,9 +1,7 @@
-import {
-    CanvasColor,
-    CanvasToolbarItems,
-} from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
+import { CanvasToolbarItems } from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
 import { InteractiveMode } from "@/pages/utils";
 import { AttendeeType } from "@/types/attendee";
+import { CanvasColor } from "@/utils/canvas.utils";
 import { atom } from "recoil";
 
 // THEME

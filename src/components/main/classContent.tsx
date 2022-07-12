@@ -36,6 +36,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         color: theme.palette.common.white,
     },
     arrowButtonRight: {
+        paddingRight: 0,
+    },
+    arrowButtonLeft: {
         paddingRight: theme.spacing(5),
     },
     arrowButtonDisabled: {

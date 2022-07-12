@@ -1,7 +1,7 @@
 import CloseIcon from "@/assets/img/canvas/close_icon.svg";
 import PencilIcon from "@/assets/img/canvas/pencil_icon.svg";
 import StyledIcon from "@/components/styled/icon";
-import CanvasMenu from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenu";
+import CanvasMenuStudy from "@/components/toolbar/toolbarMenus/canvasMenu/canvasMenuStudy";
 import {
     THEME_COLOR_BACKGROUND_PAPER,
     THEME_COLOR_ORG_MENU_DRAWER,
@@ -11,6 +11,7 @@ import { ClassType } from "@/store/actions";
 import { isCanvasOpenState } from "@/store/layoutAtoms";
 import { useSynchronizedState } from "@/whiteboard/context-providers/SynchronizedStateProvider";
 import {
+    darken,
     makeStyles,
     Theme,
 } from "@material-ui/core";
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     closeIcon: {
         width: theme.spacing(2.5),
         height: theme.spacing(2.5),
-        padding: theme.spacing(0.75),
+        padding: theme.spacing(0.75)
     },
     fab: {
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
@@ -49,12 +50,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     activatedFab: {
         backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
         boxShadow: `none`,
+        "&:hover": {
+            background: darken(THEME_COLOR_ORG_MENU_DRAWER,0.2),
+        },
     },
 }));
 
 export function WBToolbarContainer () {
     const classes = useStyles();
-    const canvasRef = React.useRef<any>();
+    const canvasRef = React.useRef<HTMLDivElement>(null);
     const [ isCanvasOpen, setIsCanvasOpen ] = useRecoilState(isCanvasOpenState);
 
     const {
@@ -116,7 +120,7 @@ export function WBToolbarContainer () {
                     />
                 </Fab>
             </div>
-            <CanvasMenu
+            <CanvasMenuStudy
                 showCanvasMenu={isCanvasOpen}
                 anchor={canvasRef.current}
             />

@@ -1,4 +1,4 @@
-import { WBToolbarContainer } from "../classContent/WBToolbar";
+import { WBToolbarContainer } from "../classContent/WBToolbarStudy";
 import { ClassContent } from "./classContent";
 import { usePopupContext } from "@/app/context-provider/popup-context";
 import { BACKGROUND_PROCESS_GREY } from "@/config";
@@ -112,7 +112,7 @@ function MainStudy () {
                             <Box
                                 position="fixed"
                                 bottom={theme.spacing(4)}
-                                right={theme.spacing(3.5)}
+                                left={theme.spacing(3.5)}
                             >
                                 <WBToolbarContainer />
                             </Box>

@@ -1,4 +1,5 @@
 
+import { ACTIVE_TOOLBAR_ICON_BACKGROUND } from "@/config";
 import {
     Grid,
     makeStyles,
@@ -11,26 +12,16 @@ import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
     item: {
-        padding: `0.4em`,
+        padding: `0.4em 0.6em`,
         margin: `0 1px`,
         cursor: `pointer`,
         position: `relative`,
-        borderRadius: 10,
+        display: `flex`,
+        borderRadius: 7,
         transition: `100ms all ease-in-out`,
-        "&:hover": {
-            backgroundColor: theme.palette.grey[200],
-        },
-        "&:active": {
-            color: theme.palette.common.white,
-            backgroundColor: theme.palette.text.primary,
-        },
     },
     active: {
-        color: theme.palette.common.white,
-        backgroundColor: theme.palette.text.primary,
-        "&:hover": {
-            backgroundColor: theme.palette.text.primary,
-        },
+        backgroundColor: ACTIVE_TOOLBAR_ICON_BACKGROUND,
     },
     disabled: {
         pointerEvents: `none`,
@@ -60,7 +51,7 @@ interface Props {
     hasSubmenu?: boolean;
 }
 
-export const CanvasMenuItem = React.forwardRef((props:Props, ref: React.Ref<any>) => {
+export const CanvasMenuItemStudy = React.forwardRef((props: Props, ref: React.Ref<any>) => {
     const classes = useStyles();
     const {
         onClick,
@@ -75,18 +66,21 @@ export const CanvasMenuItem = React.forwardRef((props:Props, ref: React.Ref<any>
     return(
         <Grid
             ref={ref}
-            item>
+            item
+        >
             <Tooltip
                 title={title ?? ``}
-                placement="top">
+                placement="top"
+            >
                 <div
-                    className={clsx(classes.item,  {
-                        [classes.active] : active,
-                        [classes.disabled] : disabled,
-                        [classes.hasSubmenu] : hasSubmenu,
+                    className={clsx(classes.item, {
+                        [classes.active]: active,
+                        [classes.disabled]: disabled,
+                        [classes.hasSubmenu]: hasSubmenu,
                     })}
                     style={active ? activeStyles : {}}
-                    onClick={onClick}>
+                    onClick={onClick}
+                >
                     {icon}
                 </div>
             </Tooltip>

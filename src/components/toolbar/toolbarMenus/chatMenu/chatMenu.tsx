@@ -37,7 +37,7 @@ function ChatMenu (props: ChatMenuProps) {
                 },
             }}
             showScrollbar={isAndroid}
-            height={popperHeight}
+            style={{height:popperHeight}}
             open={isChatOpen}
             anchorEl={anchor}
             isKeyboardVisible={isKeyboardVisible}
