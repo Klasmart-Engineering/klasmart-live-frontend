@@ -52,7 +52,10 @@ function PdfImages (props: Props) {
     }, []);
 
     return (
-        <ScrollContainer hideScrollbars={false}>
+        <ScrollContainer
+            className="pdf-scroll-element"
+            hideScrollbars={false}
+        >
 
             <Box
                 p={1}

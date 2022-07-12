@@ -246,7 +246,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
         return () => clearInterval(interval.current as ReturnType<typeof setInterval>);
     }, [ contentHrefWithToken ]);
 
-    useScrollCanvasWithContent(iframeRef, isPdfContent, iframeLoaded, panCanvas);
+    useScrollCanvasWithContent(iframeRef, isPdfContent, isImageContent, iframeLoaded, panCanvas);
     function onLoad () {
         if (!contentWindow || !contentDoc) { return; }
 

@@ -18,13 +18,13 @@ describe(`useScrollCanvasWithContent`, () => {
         });
         test(`default props`, () => {
             const { result } = renderHook(() =>
-                useScrollCanvasWithContent(reference, false, 1, mockedPan));
+                useScrollCanvasWithContent(reference, false, false, Date.now(), mockedPan));
             expect(result.current.lastScrollVal)
                 .toBe(0.0);
         });
         test(`scroll callback`, () => {
             const { result } = renderHook(() =>
-                useScrollCanvasWithContent(reference, false, 1, mockedPan));
+                useScrollCanvasWithContent(reference, false, false, Date.now(), mockedPan));
             const doc = document.createElement(`div`);
             doc.scrollTop = 120;
             document.body.appendChild(doc);
