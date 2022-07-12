@@ -1,59 +1,79 @@
-import { Header } from "@/app/components/layout/header";
+import DialogParentalLock from "@/app/components/ParentalLock";
+import HomeTopBar from "@/app/components/Schedule/HomeTopBar";
 import CategoryList from "@/app/components/Schedule/List";
-import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
-import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import {
     useSelectedOrganizationValue,
     useSelectedUserValue,
 } from "@/app/data/user/atom";
+import { dialogsState } from "@/app/model/appModel";
+import { THEME_BACKGROUND_SIGN_OUT_BUTTON } from "@/config";
 import {
-    isShowOnBoardingState,
-    shouldClearCookieState,
-    shouldShowNoOrgProfileState,
-    shouldShowNoStudentRoleState,
-} from "@/app/model/appModel";
-import React,
-{
-    useEffect,
-} from "react";
-import {
-    useRecoilValue,
-    useSetRecoilState,
-} from "recoil";
+    Box,
+    createStyles,
+    makeStyles,
+} from "@material-ui/core";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        root: {
+            backgroundColor: THEME_BACKGROUND_SIGN_OUT_BUTTON,
+            height: `100%`,
+            width: `100%`,
+            display: `flex`,
+            flexDirection: `column`,
+            alignItems: `center`,
+            padding: 0,
+        },
+    }));
 
 export default function SchedulePage () {
+    const history = useHistory();
+    const classes = useStyles();
     const user = useSelectedUserValue();
     const organization = useSelectedOrganizationValue();
-    const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
-    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
-    const { addOnBack, removeOnBack } = useCordovaSystemContext();
-    const { actions } = useAuthenticationContext();
-    const setShouldClearCookie = useSetRecoilState(shouldClearCookieState);
-    const setShowOnBoarding = useSetRecoilState(isShowOnBoardingState);
-    const NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID = `noPageFoundBackButtonClickedID`;
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
 
-    
-    const onNoOrgBackButtonClicked = () => {
-        actions?.signOut();
-        setShouldClearCookie(true);
-        setShowOnBoarding(true);
+    const onProfileClick = () => {
+        setDialogs({
+            ...dialogs,
+            isSelectUserOpen: true,
+        });
     };
 
-    useEffect(() => {
-        if (shouldShowNoOrgProfile || shouldShowNoStudentRole) {
-            addOnBack?.({
-                id: NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID,
-                onBack: onNoOrgBackButtonClicked,
-            });
-        } else {
-            removeOnBack?.(NO_PAGE_FOUND_BACK_BUTTON_CLICKED_ID);
-        }
-    }, [ shouldShowNoOrgProfile, shouldShowNoStudentRole ]);
+    const onParentsDashboardClick = () => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: true,
+        });
+    };
+
+    if (dialogs.isParentalLockOpen) {
+        return (
+            <DialogParentalLock
+                onCompleted={() => {
+                    setDialogs({
+                        ...dialogs,
+                        isParentalLockOpen: false,
+                    });
+                    history.push(`/parent-dashboard`);
+                }}
+            />
+        );
+    }
 
     return (
-        <React.Fragment key={`${user?.user_id}-${organization?.organization_id}`}>
-            <Header isHomeRoute />
+        <Box
+            key={`${user?.user_id}-${organization?.organization_id}`}
+            className={classes.root}
+        >
+            <HomeTopBar
+                onProfileClick={onProfileClick}
+                onParentsDashboardClick={onParentsDashboardClick}
+            />
             <CategoryList />
-        </React.Fragment>
+        </Box>
     );
 }

@@ -12,12 +12,11 @@ export enum ScheduleAppBarItem {
     LIVE = `live`,
     STUDY = `study`,
     HOME_FUN_STUDY = `home_fun_study`
-    
 }
 
 export const scheduleAppBarState = atom({
     key: `scheduleTab`,
-    default: ScheduleAppBarItem.LIVE,
+    default: ``,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     effects_UNSTABLE: [ persistAtom ],
 });

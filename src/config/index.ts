@@ -108,3 +108,44 @@ export const GLOBAL_MUTE_OVERLAY_INDEX = 1000;
 export const SCROLLBAR_BACKGROUND = `#FAFAFA`;
 export const SCROLLBAR_SIZE = 12;
 export const TEXT_GREY_01 = `#444444`;
+export const THEME_COLOR_ICON_DISABLED = `#706F6F`;
+export const THEME_COLOR_PARENT_DASHBOARD_REPORT_TEXT = `#4B82E5`;
+export const THEME_COLOR_LIGHT_BLACK_TEXT = `#333333`;
+export const SMALL_HEIGHT_DETECT_VALUE = 680;
+export const MAX_PROFILE_TO_DISPLAY_CENTER = 5;
+export const MAX_PROFILE_TO_BREAK_LIST = 3;
+export const PARENT_ROUTES = [
+    `auth`,
+    `report`,
+    `settings`,
+    `on-boarding`,
+    `select-user-role`,
+    `parent-dashboard`,
+    `home-fun-study`,
+];
+export const LARGE_ICON_WIDTH = 50;
+export const SCHEDULE_BLACK_TEXT = `#444444`;
+export const DEFAULT_CAMERA_WIDTH = 427;
+export const DEFAULT_CAMERA_HEIGHT = 320;
+export const SCHEDULE_CARD_BACKGROUND = `#6BB0FF`;
+export const SCHEDULE_CARD_SEE_DETAILS = `#6E97FF`;
+export const SCHEDULE_CARD_BACKGROUND_THUMBNAIL = `#D9D9D9`;
+export const SCHEDULE_CARD_BACKGROUND_CONTAINER = `#F0F0F0`;
+export const SCHEDULE_NO_LIVE_CLASSES = `#0097FF`;
+export const SCHEDULE_STUDY_TOP_BAR = `#86D438`;
+export const SCHEDULE_HOMEFUN_TOP_BAR = `#FFB117`;
+export const SCHEDULE_BACKGROUND_COLOR = `#6599d1`;
+export const SCHEDULE_STUDY_BACKGROUND_COLOR = `#9BD955`;
+export const SCHEDULE_LIVE_BACKGROUND_COLOR = `#78B7FF`;
+export const LOGO_HEIGHT = 32;
+export const THEME_COLOR_LIGHT_BLUE_BUTTON_SCHEDULE_DIALOG = `#6BB0FF`;
+export const THEME_COLOR_LIGHT_GREEN_BUTTON_SCHEDULE_DIALOG = `#86D438`;
+export const THEME_COLOR_GREY_TITLE = `#AAAAAA`;
+export const THEME_COLOR_GREY_BORDER_BOX = `#E6E6E6`;
+export const THEME_COLOR_LIGHT_BLUE_LINK = `#739DEF`;
+export const THEME_COLOR_LIGHT_BLUE_PREVIEW = `#7FA4ED`;
+export const SCHEDULE_HOME_FUN_BACKGROUND_COLOR = `#FFB117`;
+export const PARENTS_DASHBOARD_WIDTH_MEDIUM = 42;
+export const BACK_BUTTON_WIDTH_MEDIUM = 11.6;
+export const BACK_BUTTON_HEIGHT_MEDIUM = 23;
+export const CENTER_ICON_WIDTH_MEDIUM = 32;

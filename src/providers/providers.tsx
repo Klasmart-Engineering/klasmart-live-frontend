@@ -25,6 +25,7 @@ function Providers ({ children }: Props) {
     const [ languageCode, setLanguageCode ] = useState(getDefaultLanguageCode());
     const [ themeMode, setThemeMode ] = useState(`light`);
     const locale = getLanguage(languageCode);
+    const isApp = !!process.env.IS_CORDOVA_BUILD;
 
     const themeContext = useMemo<IThemeContext>(() => ({
         themeMode,
@@ -42,7 +43,7 @@ function Providers ({ children }: Props) {
         <ThemeContext.Provider value={themeContext}>
             <RawIntlProvider value={locale}>
                 <CompositionRoot>
-                    <ThemeProvider theme={themeProvider(`en`, `light`)}>
+                    <ThemeProvider theme={themeProvider(`en`, `light`, isApp)}>
                         <KidsloopPxProvider>
                             <RouterProvider>
                                 {children}

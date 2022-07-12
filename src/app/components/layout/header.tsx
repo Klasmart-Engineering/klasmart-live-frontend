@@ -1,3 +1,4 @@
+/* eslint-disable react/no-multi-comp */
 import MenuDrawer from './menuDrawer';
 import { useSelectedUserValue } from "@/app/data/user/atom";
 import {
@@ -9,6 +10,8 @@ import {
 import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
 import KidsloopTextLogo from "@/assets/img/kidsloop_logo.svg";
 import StyledIcon from "@/components/styled/icon";
+import { LOGO_HEIGHT } from '@/config';
+import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import AppBar from "@material-ui/core/AppBar";
 import ButtonBase from "@material-ui/core/ButtonBase";
 import Grid from "@material-ui/core/Grid";
@@ -22,9 +25,11 @@ import {
 import Toolbar from "@material-ui/core/Toolbar";
 import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import React from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -41,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) =>
         selectUserButton: {
             borderRadius: `50%`,
         },
-        centeredLogo:{
+        centeredLogo: {
             position: `absolute`,
             textAlign: `center`,
             zIndex: -1,
@@ -50,7 +55,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }));
 
-export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey?: React.Dispatch<React.SetStateAction<string>> }) {
+export function Header ({ isHomeRoute }: { isHomeRoute?: boolean; setKey?: React.Dispatch<React.SetStateAction<string>> }) {
     const {
         root,
         centeredLogo,
@@ -71,7 +76,8 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
             >
                 <Toolbar style={{
                     padding: theme.spacing(0, 1),
-                }}>
+                }}
+                >
                     <Grid
                         container
                         direction="row"
@@ -100,7 +106,8 @@ export function Header ({ isHomeRoute, setKey }: { isHomeRoute?: boolean; setKey
                                 <img
                                     alt="KidsLoop Logo"
                                     src={isHomeRoute ? KidsloopTextLogo : KidsloopLogo}
-                                    height={32} />
+                                    height={LOGO_HEIGHT}
+                                />
                             </Grid>
                             <Grid item>
                                 {isHomeRoute && (
@@ -126,7 +133,8 @@ function OpenMenuButton () {
         >
             <StyledIcon
                 icon={<MenuIcon />}
-                size="xlarge" />
+                size="xlarge"
+            />
         </IconButton>
     );
 }
@@ -156,7 +164,8 @@ function CloseSelectOrgOrUserButton () {
         >
             <StyledIcon
                 icon={<CloseIcon />}
-                size="medium" />
+                size="medium"
+            />
         </IconButton>
     );
 }
@@ -173,14 +182,16 @@ function OpenSelectUserButton () {
             onClick={() => {
                 setSelectOrgAfterSwitchingProfile(true);
                 setDialogs({
-                ...dialogs,
-                isSelectUserOpen: true,
-            });
+                    ...dialogs,
+                    isSelectUserOpen: true,
+                });
             }}
         >
             <UserAvatar
+                maxInitialsLength={2}
                 name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
-                size={`medium`} />
+                size={`medium`}
+            />
         </ButtonBase>
     );
 }

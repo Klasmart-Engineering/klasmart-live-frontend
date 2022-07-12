@@ -50,7 +50,7 @@ export function WebApp () {
 
     const schedule = () => {
         if (process.env.IS_CORDOVA_BUILD) {
-            history.replace(`/schedule`);
+            history.replace(`/`);
         } else {
             const ENDPOINT_HUB = process.env.ENDPOINT_HUB;
             if (ENDPOINT_HUB) {

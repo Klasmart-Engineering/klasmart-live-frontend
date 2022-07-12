@@ -3,7 +3,7 @@ import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
-import { formatStartEndDateTimeMillis } from "@/app/utils/dateTimeUtils";
+import { formatStartEndDateTimeMillisBaseDialog } from "@/app/utils/dateTimeUtils";
 import {
     generateDescriptionHasHyperLink,
     openHyperLink,
@@ -162,7 +162,7 @@ export default function LiveDetailsDialog (props: Props) {
             teachers={scheduleData?.teachers ?? []}
             attachment={scheduleData?.attachment}
             description={scheduleData?.description ? generateDescriptionHasHyperLink(scheduleData.description, (url) => setHyperlink(url)) : undefined}
-            dateTime={formatStartEndDateTimeMillis(fromSecondsToMilliseconds(scheduleData?.start_at ?? 0), fromSecondsToMilliseconds(scheduleData?.end_at ?? 0), intl)}
+            dateTime={formatStartEndDateTimeMillisBaseDialog(fromSecondsToMilliseconds(scheduleData?.start_at ?? 0), fromSecondsToMilliseconds(scheduleData?.end_at ?? 0), intl)}
             actionButtonTitle={intl.formatMessage({
                 id: `schedule.status.joinNow`,
                 defaultMessage: `Join Now`,

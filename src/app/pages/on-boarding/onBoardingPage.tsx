@@ -1,6 +1,10 @@
 import { CarouselSlide } from "./carouselSlide";
 import DialogParentalLock from "@/app/components/ParentalLock";
-import { isShowOnBoardingState, dialogsState } from "@/app/model/appModel";
+import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
+import {
+    dialogsState,
+    isShowOnBoardingState,
+} from "@/app/model/appModel";
 import HomeFunImg from "@/assets/img/onboarding/home_fun.svg";
 import LiveImg from "@/assets/img/onboarding/live.svg";
 import StudyImg from "@/assets/img/onboarding/study.svg";
@@ -8,7 +12,6 @@ import {
     BG_COLOR_CAROUSEL_DOT_INACTIVE,
     BG_COLOR_SIGN_IN_BUTTON,
     THEME_COLOR_BACKGROUND_ON_BOARDING,
-    THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
 import {
     Button,
@@ -20,14 +23,20 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import Carousel from 'nuka-carousel';
 import React,
-{ useState, useEffect } from 'react';
+{
+    useEffect,
+    useState,
+} from 'react';
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState, useRecoilState, useRecoilValue } from "recoil";
-import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
+import {
+    useRecoilState,
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
 enum BoardingSliderType {
     STUDY,
@@ -37,7 +46,7 @@ enum BoardingSliderType {
 
 interface CarouselDotControlsProps {
     currentSlide: number;
-    goToSlide: (slide:number) => void;
+    goToSlide: (slide: number) => void;
     slideCount: number;
 }
 
@@ -54,11 +63,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     carousel: {
         height: `70% !important`,
         outline: `none !important`,
-        "& .slide-current" : {
-            outline:   `none`,
+        "& .slide-current": {
+            outline: `none`,
             height: `100% !important`,
         },
-        "& .slider-list" : {
+        "& .slider-list": {
             cursor: `none !important`,
             height: `93% !important`,
         },
@@ -106,9 +115,7 @@ export function OnBoardingPage (): JSX.Element {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ autoplay, setAutoplay ] = useState(true);
     const isShowOnBoarding = useRecoilValue(isShowOnBoardingState);
-    const {
-        authenticated,
-    } = useAuthenticationContext();
+    const { authenticated } = useAuthenticationContext();
     const slideArray = [
         {
             id: BoardingSliderType.STUDY,
@@ -142,26 +149,12 @@ export function OnBoardingPage (): JSX.Element {
                     >
                         <div style={{
                             background: currentSlide === i ? BG_COLOR_SIGN_IN_BUTTON : BG_COLOR_CAROUSEL_DOT_INACTIVE,
-                        }} />
+                        }}
+                        />
                     </li>
                 ))}
             </ul>
         );
-    };
-
-    const setParentalLock = (open: boolean) => {
-        updateStatusBarStyle(!open); 
-        setDialogs({
-            ...dialogs,
-            isParentalLockOpen: open,
-        });
-    };
-
-    const updateStatusBarStyle = (isOverlayWebView: boolean) => {
-        const statusBar = (window as any).StatusBar;
-        statusBar.backgroundColorByHexString(isOverlayWebView ? THEME_COLOR_BACKGROUND_ON_BOARDING : THEME_COLOR_BACKGROUND_PAPER);
-        statusBar.overlaysWebView(isOverlayWebView);
-        statusBar.styleDefault();
     };
 
     useEffect(() => {
@@ -172,20 +165,23 @@ export function OnBoardingPage (): JSX.Element {
         if (!isShowOnBoarding && authenticated) {
             history.push(`/`);
         }
-    }, [
-        isShowOnBoarding, 
-        authenticated,
-    ]);
+    }, [ isShowOnBoarding, authenticated ]);
 
-    if (dialogs.isParentalLockOpen) {
+    const setParentalLock = (open: boolean) => {
+        setDialogs({
+            ...dialogs,
+            isParentalLockOpen: open,
+        });
+    };
+
+    if (dialogs.isParentalLockOpen && isShowOnBoarding) {
         return (
             <DialogParentalLock
                 onClose={() => setParentalLock(false)}
                 onCompleted={() => {
                     setShowOnBoarding(false);
                     setParentalLock(false);
-                    updateStatusBarStyle(false);
-                    history.push(`/`);
+                    history.push(`/auth`);
                 }}
             />
         );
@@ -197,7 +193,8 @@ export function OnBoardingPage (): JSX.Element {
             direction="column"
             alignItems="center"
             justifyContent="flex-start"
-            className={classes.container}>
+            className={classes.container}
+        >
             <Carousel
                 wrapAround
                 autoplay={autoplay}
@@ -208,7 +205,8 @@ export function OnBoardingPage (): JSX.Element {
                 renderCenterRightControls={null}
                 renderBottomCenterControls={(props) => renderCarouselDotControls(props)}
                 slidesToScroll={1}
-                onDragStart={() => setAutoplay(false)}>
+                onDragStart={() => setAutoplay(false)}
+            >
                 {slideArray.map(item => (
                     <CarouselSlide
                         key={item.id}
@@ -229,22 +227,25 @@ export function OnBoardingPage (): JSX.Element {
                 direction="column"
                 justifyContent="center"
                 alignItems="center"
-                className={classes.fullWidth}>
+                className={classes.fullWidth}
+            >
                 <Button
                     disableElevation
                     className={classes.btnSignIn}
                     variant="contained"
                     size="large"
                     onClick={() => {
-                        updateStatusBarStyle(false);
                         setParentalLock(true);
-                    }}>
+                    }}
+                >
                     <Typography
                         variant="h5"
-                        className={classes.fontWeightBold}>
+                        className={classes.fontWeightBold}
+                    >
                         <FormattedMessage
                             id={`landingPage.signIn`}
-                            defaultMessage={`Sign In`} />
+                            defaultMessage={`Sign In`}
+                        />
                     </Typography>
                 </Button>
             </Grid>

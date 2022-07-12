@@ -3,10 +3,7 @@ import HomeFunStudyIcon from "@/assets/img/schedule-icon/home_fun_study.svg";
 import ReviewIcon from "@/assets/img/schedule-icon/review_icon.svg";
 import StudyIcon from "@/assets/img/schedule-icon/study_icon.svg";
 import StyledIcon from "@/components/styled/icon";
-import {
-    GetScheduleByIdResponse,
-    SchedulesTimeViewListItem,
-} from "@kl-engineering/cms-api-client/dist/api/schedule";
+import { SchedulesTimeViewListItem } from "@kl-engineering/cms-api-client/dist/api/schedule";
 import { Typography } from "@material-ui/core";
 import { Envelope as AssessmentCompleteIcon } from "@styled-icons/fa-regular/Envelope";
 import React from "react";
@@ -22,7 +19,8 @@ export interface ScheduleListSection {
 
 export function filterTodaySchedules (schedule: SchedulesTimeViewListItem) {
     const now = new Date();
-    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        .getTime() / 1000;
     const endOfToday = new Date(startOfTodayTimeSeconds * 1000);
     endOfToday.setHours(23, 59, 59);
     const endOfTodayTimeSeconds = endOfToday.getTime() / 1000;
@@ -32,7 +30,8 @@ export function filterTodaySchedules (schedule: SchedulesTimeViewListItem) {
 
 export function filterTomorrowSchedules (schedule: SchedulesTimeViewListItem) {
     const now = new Date();
-    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        .getTime() / 1000;
     const startOfTomorrow = new Date(startOfTodayTimeSeconds * 1000);
     startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
     const startOfTomorrowTimeSeconds = startOfTomorrow.getTime() / 1000;
@@ -47,7 +46,8 @@ export function filterTomorrowSchedules (schedule: SchedulesTimeViewListItem) {
 
 export function filterUpcomingSchedules (schedule: SchedulesTimeViewListItem) {
     const now = new Date();
-    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime() / 1000;
+    const startOfTodayTimeSeconds = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+        .getTime() / 1000;
     const startOfTomorrow = new Date(startOfTodayTimeSeconds * 1000);
     startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
     const startOfTomorrowTimeSeconds = startOfTomorrow.getTime() / 1000;
@@ -87,7 +87,7 @@ export const getIdStudyType = (schedule?: SchedulesTimeViewListItem) => {
 
     if (schedule?.is_home_fun && schedule?.assessment_status === AssessmentStatusType.COMPLETE) return `scheduleDetails.viewFeedback`;
 
-    return `study.enter.startStudying`;
+    return `start`;
 };
 
 export const StudyAssessmentStatus = (schedule: SchedulesTimeViewListItem) => {

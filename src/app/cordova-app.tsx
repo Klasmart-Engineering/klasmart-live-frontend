@@ -1,5 +1,14 @@
+import {
+    ScheduleAppBarItem,
+    useScheduleTabValue,
+} from "./model/scheduleModel";
 import { OnBoardingPage } from "./pages/on-boarding/onBoardingPage";
+import { ParentDashboardPage } from "./pages/parent-dashboard/parentDashboardPage";
 import ReportPage from "./pages/report";
+import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
+import LiveStudyListPage from "./pages/schedule/category-live";
+import StudyListPage from "./pages/schedule/category-study";
+import { SelectTypePage } from "./pages/select-type/selectTypePage";
 import { ReportType } from "@/app/components/report/share";
 import { useAuthenticationContext } from "@/app/context-provider/authentication-context";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
@@ -17,12 +26,9 @@ import { useSignOut } from "@/app/dialogs/account/useSignOut";
 import { ExternalNavigationDialog } from "@/app/dialogs/externalNavigationDialog";
 import {
     dialogsState,
-    shouldShowNoOrgProfileState,
-    shouldShowNoStudentRoleState,
     showedUpgradeDevicePopupState,
 } from "@/app/model/appModel";
 import { Auth } from "@/app/pages/account/auth";
-import { NoPageFoundDialog } from "@/app/pages/no-pages/noPageFoundDialog";
 import SchedulePage from "@/app/pages/schedule";
 import AnytimeStudyPage from "@/app/pages/schedule/anytime-study";
 import HomeFunStudyPage from "@/app/pages/schedule/home-fun-study/[scheduleId]";
@@ -30,11 +36,12 @@ import SettingsPage from "@/app/pages/settings";
 import PrivacyPage from "@/app/pages/settings/privacy";
 import SelectLanguagePage from "@/app/pages/settings/select-language";
 import { UserRoute } from "@/app/route/userRoute";
-import NoOrgFoundLogo from "@/assets/img/no_org_found_icon.svg";
-import NoStudentRoleLogo from "@/assets/img/no_student_role_icon.svg";
+import { PARENT_ROUTES } from "@/config";
 import { WebApp } from "@/pages/webApp";
+import { ClassType } from "@/store/actions";
 import { useQueryClient } from "@kl-engineering/cms-api-client";
 import Grid from "@material-ui/core/Grid";
+import { History } from 'history';
 import React,
 { useEffect } from "react";
 import { useIntl } from "react-intl";
@@ -43,28 +50,17 @@ import {
     Router,
     Switch,
 } from "react-router-dom";
-import {
-    useRecoilState,
-    useRecoilValue,
-} from "recoil";
-import { ReportDetailPage } from "./pages/reportDetail/reportDetailPage";
-import LiveStudyListPage from "./pages/schedule/category-live";
-import StudyListPage from "./pages/schedule/category-study";
+import { useRecoilState } from "recoil";
 
 export function CordovaApp ({ history }: {
-    history: any;
+    history: History<unknown>;
 }): JSX.Element {
-    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const {
         authenticated,
         loading,
     } = useAuthenticationContext();
-    const { shouldSelectUser } = useShouldSelectUser();
-    const { shouldSelectOrganization } = useShouldSelectOrganization();
     const { signOut } = useSignOut();
     const cmsQueryClient = useQueryClient();
-    const shouldShowNoOrgProfile = useRecoilValue(shouldShowNoOrgProfileState);
-    const shouldShowNoStudentRole = useRecoilValue(shouldShowNoStudentRoleState);
     const user = useSelectedUserValue();
     const {
         isIOS,
@@ -74,29 +70,48 @@ export function CordovaApp ({ history }: {
     const [ showedUpgradeDevicePopup, setShowedUpgradeDevicePopup ] = useRecoilState(showedUpgradeDevicePopupState);
     const { showPopup } = usePopupContext();
     const intl = useIntl();
+    const { shouldSelectUser } = useShouldSelectUser();
+    const { shouldSelectOrganization } = useShouldSelectOrganization();
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const scheduleTabValue = useScheduleTabValue();
+
+    useEffect(() => {
+        if(!scheduleTabValue) return;
+        switch(scheduleTabValue){
+        case ScheduleAppBarItem.LIVE:
+            history.push(`/schedule/category-live`);
+            break;
+        case ScheduleAppBarItem.STUDY:
+            history.push(`/schedule/category-study/${ClassType.STUDY}`);
+            break;
+        case ScheduleAppBarItem.HOME_FUN_STUDY:
+            history.push(`/schedule/category-study/${ClassType.HOME_FUN_STUDY}`);
+            break;
+        }
+    }, []);
 
     useEffect(() => {
         if (loading) return;
         if (!authenticated) {
-            cmsQueryClient.getQueryCache().clear();
-            cmsQueryClient.getMutationCache().clear();
+            cmsQueryClient.getQueryCache()
+                .clear();
+            cmsQueryClient.getMutationCache()
+                .clear();
             signOut();
             return;
         }
+        if (PARENT_ROUTES.some((route) => history.location.pathname.includes(route))) return;
         setDialogs({
             ...dialogs,
             isSelectUserOpen: shouldSelectUser,
             isSelectOrganizationOpen: !shouldSelectUser && shouldSelectOrganization,
-            isShowNoOrgProfile: shouldShowNoOrgProfile,
-            isShowNoStudentRole: shouldShowNoStudentRole,
         });
     }, [
-        authenticated,
         loading,
+        authenticated,
         shouldSelectUser,
         shouldSelectOrganization,
-        shouldShowNoOrgProfile,
-        shouldShowNoStudentRole,
+        history.location.pathname,
     ]);
 
     useEffect(() => {
@@ -173,6 +188,10 @@ export function CordovaApp ({ history }: {
                         component={SettingsPage}
                     />
                     <UserRoute
+                        path="/parent-dashboard"
+                        component={ParentDashboardPage}
+                    />
+                    <UserRoute
                         path="/report/parent-dashboard"
                         component={() => <ReportPage type={ReportType.PARENT_DASHBOARD} />}
                     />
@@ -197,10 +216,6 @@ export function CordovaApp ({ history }: {
                         component={AnytimeStudyPage}
                     />
                     <UserRoute
-                        path="/schedule"
-                        component={SchedulePage}
-                    />
-                    <UserRoute
                         path="/room"
                         component={WebApp}
                     />
@@ -213,6 +228,10 @@ export function CordovaApp ({ history }: {
                         component={OnBoardingPage}
                     />
                     <UserRoute
+                        path="/select-user-role"
+                        component={SelectTypePage}
+                    />
+                    <UserRoute
                         path="/"
                         component={SchedulePage}
                     />
@@ -220,28 +239,8 @@ export function CordovaApp ({ history }: {
             </Router>
             {authenticated && (
                 <>
-                    <SelectOrgDialog />
-                    <SelectUserDialog />
-                    <NoPageFoundDialog
-                        open={dialogs.isShowNoOrgProfile}
-                        title="signIn.noOrganization.title"
-                        body="signIn.noOrganization.body"
-                        imgSrc={NoOrgFoundLogo}
-                        onClose={() => setDialogs({
-                            ...dialogs,
-                            isShowNoOrgProfile: false,
-                        })}
-                    />
-                    <NoPageFoundDialog
-                        open={dialogs.isShowNoStudentRole}
-                        title="signIn.noStudentProfile.title"
-                        body="signIn.noStudentProfile.body"
-                        imgSrc={NoStudentRoleLogo}
-                        onClose={() => setDialogs({
-                            ...dialogs,
-                            isShowNoStudentRole: false,
-                        })}
-                    />
+                    <SelectOrgDialog history={history} />
+                    <SelectUserDialog history={history} />
                     <ExternalNavigationDialog />
                 </>
             )}

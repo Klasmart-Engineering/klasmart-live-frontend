@@ -1,0 +1,84 @@
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: normal;
+  font-weight: 400;
+  src:url(../fonts/RooneySans-Black.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 400;
+  src:url(../fonts/RooneySans-BlackItalic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: bold;
+  font-weight: 700;
+  src:url(../fonts/RooneySans-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 700;
+  src:url(../fonts/RooneySans-BoldItalic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: normal;
+  font-weight: 800;
+  src:url(../fonts/RooneySans-Heavy.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 800;
+  src:url(../fonts/RooneySans-HeavyItalic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: normal;
+  font-weight: 300;
+  src:url(../fonts/RooneySans-Light.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 300;
+  src:url(../fonts/RooneySans-LightItalic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: normal;
+  font-weight: 500;
+  src:url(../fonts/RooneySans-Medium.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 500;
+  src:url(../fonts/RooneySans-MediumItalic.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: normal;
+  font-weight: 400;
+  src:url(../fonts/RooneySans-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'RooneySans';
+  font-style: italic;
+  font-weight: 400;
+  src:url(../fonts/RooneySans-RegularItalic.ttf) format('truetype');
+}

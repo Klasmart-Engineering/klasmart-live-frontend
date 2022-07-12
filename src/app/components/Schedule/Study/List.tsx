@@ -1,9 +1,8 @@
+import ScheduleItem from "../ScheduleItem";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
-import ScheduleListItem from "@/app/components/Schedule/ListItem";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
-import NoSchedule,
-{ NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
+import NoSchedule from "@/app/components/Schedule/NoSchedule";
 import { getIdStudyType } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
@@ -16,35 +15,31 @@ import {
 } from "@/app/utils/windowEvents";
 import {
     BG_AVT_ANYTIME_STUDY_DEFAULT,
+    SCHEDULE_CARD_BACKGROUND_CONTAINER,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
-    SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
     SCHEDULE_PAGE_START,
     SCHEDULE_PAGINATION_DELAY,
     schedulePageWindowItemHeightToPageSize,
-    THEME_COLOR_BACKGROUND_LIST,
-    COLOR_ORG_ICON_DEFAULT,
 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     SchedulesTimeViewListItem,
     useCmsApiClient,
     usePostSchedulesTimeViewList,
 } from "@kl-engineering/cms-api-client";
+import { ScheduleStudyType } from "@kl-engineering/cms-api-client/dist/api/schedule";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
-    Avatar,
     Box,
     CircularProgress,
     createStyles,
-    Grid,
     List,
     makeStyles,
-    Typography,
 } from "@material-ui/core";
-import { ChevronRight } from "@styled-icons/material";
 import {
     clamp,
     groupBy,
@@ -57,36 +52,39 @@ import React,
     useState,
 } from "react";
 import { useBottomScrollListener } from "react-bottom-scroll-listener";
-import { FormattedMessage, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
-import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
-import ScheduleItemTile from "../ScheduleItemTile";
-import { ClassType } from "@/store/actions";
-import { ScheduleStudyType } from "@kl-engineering/cms-api-client/dist/api/schedule";
-
 
 export const getStudyTypes = (classType: ClassType) => {
-    return classType == ClassType.HOME_FUN_STUDY ? [ScheduleStudyType.HOME_FUN] : [ScheduleStudyType.NORMAL, ScheduleStudyType.REVIEW]
-        
-}
+    return classType === ClassType.HOME_FUN_STUDY ? [ ScheduleStudyType.HOME_FUN ] : [ ScheduleStudyType.NORMAL, ScheduleStudyType.REVIEW ];
+
+};
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
-        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
-        overflowY: `scroll`,
+        backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
+        overflowX: `scroll`,
         flex: 1,
+        display: `flex`,
+        paddingLeft: theme.spacing(5),
+        [theme.breakpoints.up(`md`)]: {
+            paddingLeft: theme.spacing(7),
+        },
+        '&::-webkit-scrollbar': {
+            display: `none`,
+        },
     },
     listSection: {
         backgroundColor: `inherit`,
-        padding: theme.spacing(0, 2),
+        [theme.breakpoints.up(`md`)]: {
+            paddingTop: theme.spacing(12),
+        },
     },
     ul: {
         backgroundColor: `inherit`,
         padding: 0,
-        "& > li:last-child > :first-child": {
-            marginBottom: theme.spacing(1),
-        },
+        display: `flex`,
     },
     submittedText: {
         color: `#5DBD3B`,
@@ -105,22 +103,26 @@ const useStyles = makeStyles((theme) => createStyles({
 }));
 
 interface Props {
-    classType: ClassType
+    classType: ClassType;
 }
 
-export default function StudyScheduleList(props: Props) {
-    
+export default function StudyScheduleList (props: Props) {
+
     const { classType } = props;
 
     const classes = useStyles();
     const intl = useIntl();
-    const history = useHistory();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const [ selectedStudySchedule, setSelectedStudySchedule ] = useState<SchedulesTimeViewListItem>();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
-    const { setToken, setTeachers, setDueDate, setTitle } = useSessionContext();
+    const {
+        setToken,
+        setTeachers,
+        setDueDate,
+        setTitle,
+    } = useSessionContext();
     const organization = useSelectedOrganizationValue();
     const { push } = useHistory();
     const { actions } = useCmsApiClient();
@@ -149,7 +151,7 @@ export default function StudyScheduleList(props: Props) {
         time_at: 0, // any time is ok together with view_type=`full_view`,
         with_assessment_status: true,
         time_zone_offset: timeZoneOffset,
-        class_types: [`Homework`],
+        class_types: [ `Homework` ],
         study_types: getStudyTypes(classType),
         anytime: true,
     }, {
@@ -173,7 +175,7 @@ export default function StudyScheduleList(props: Props) {
         start_at_ge: nowInSeconds,
         end_at_le: twoMonthsFromNowInSeconds,
         time_zone_offset: timeZoneOffset,
-        class_types: [`Homework`],
+        class_types: [ `Homework` ],
         study_types: getStudyTypes(classType),
         anytime: false,
     }, {
@@ -209,12 +211,13 @@ export default function StudyScheduleList(props: Props) {
             setItems(newItems);
             return;
         }
-        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
-    }, [
-        scheduleError,
-        schedulesData,
-        page,
-    ]);
+        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id)
+            .sort((a, b) => a.start_at - b.start_at));
+    }, [ scheduleError, schedulesData ]);
+
+    useEffect(() => {
+        setPage(SCHEDULE_PAGE_START);
+    }, [ organization ]);
 
     const onFocusChange = useCallback(() => {
         if (isFocused()) return;
@@ -224,16 +227,6 @@ export default function StudyScheduleList(props: Props) {
     }, [ page ]);
 
     useWindowOnFocusChange(onFocusChange);
-
-    const displayHomeFunStudyCount = () => {
-        const count = (anytimeSchedulesData?.total ?? 0);
-        if (count > SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX) return `${SCHEDULE_HOME_FUN_STUDY_DISPLAY_COUNT_MAX}+`;
-        return count;
-    };
-
-    const handleAnytimeStudyClick = () => {
-        history.push(`/schedule/anytime-study/${classType}`);
-    };
 
     const setStudyDetailOpen = (studySchedule?: SchedulesTimeViewListItem) => {
         setDialogs({
@@ -256,10 +249,14 @@ export default function StudyScheduleList(props: Props) {
                 schedule_id: studySchedule.id,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
-            const { title, teachers, due_at } = await actions.getScheduleById({
+            const {
+                title,
+                teachers,
+                due_at,
+            } = await actions.getScheduleById({
                 org_id: organizationId,
                 schedule_id: studySchedule.id,
-            })
+            });
             setTeachers(teachers);
             setTitle(title);
             setDueDate(due_at);
@@ -291,9 +288,9 @@ export default function StudyScheduleList(props: Props) {
         return <ScheduleErrorRetryButton onClick={() => refetchSchedules()} />;
     }
 
-    if (!items.length && !anytimeSchedulesData?.total) {
+    if (!items.length) {
         if (isSchedulesFetching || isAnytimeSchedulesFetching) return <ScheduleLoading />;
-        return <NoSchedule variant={NoScheduleVariant.STUDY} />;
+        return <NoSchedule variant={ClassType.STUDY} />;
     }
 
     return (
@@ -303,51 +300,15 @@ export default function StudyScheduleList(props: Props) {
                 subheader={<li />}
                 className={classes.listRoot}
             >
-                <ScheduleListItem
-                    isAnytimeStudy
-                    title={
-                        <Grid
-                            container
-                            direction="row"
-                            alignItems="center"
-                        >
-                            <Typography 
-                                variant="body1" 
-                                className={classes.anytimeStudyText}
-                            >
-                                <FormattedMessage id={`schedule_studyAnytimeStudy`} />
-                            </Typography>
-                            <Avatar
-                                className={classes.anytimeStudyAvatar}
-                            >
-                                {isAnytimeSchedulesFetching
-                                    ? (
-                                        <CircularProgress
-                                            size={24}
-                                            color="inherit"
-                                        />
-                                    )
-                                    : displayHomeFunStudyCount()
-                                }
-                            </Avatar>
-                        </Grid>
-                    }
-                    trailing={<ArrowRight 
-                                    color={COLOR_ORG_ICON_DEFAULT}
-                                    size={24} 
-                                />
-                            }
-                    onClick={handleAnytimeStudyClick}
-                />
                 {studyScheduleSections.map((studySchedulesSection, sectionId) => (
                     <li
                         key={`section-${sectionId}`}
                         className={classes.listSection}
                     >
+                        <ScheduleListSectionHeader title={studySchedulesSection.title} />
                         <ul className={classes.ul}>
-                            <ScheduleListSectionHeader title={studySchedulesSection.title} />
                             {studySchedulesSection.schedules.map((studySchedule) => (
-                                <ScheduleItemTile
+                                <ScheduleItem
                                     key={studySchedule.id}
                                     scheduleId={studySchedule.id}
                                     classType={studySchedule.is_home_fun ? ClassType.HOME_FUN_STUDY : studySchedule.is_review ? ClassType.REVIEW : ClassType.STUDY}

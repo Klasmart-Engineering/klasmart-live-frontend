@@ -1,11 +1,16 @@
 import { getIdStudyType } from "../../shared";
+import DialogParentalLock from "@/app/components/ParentalLock";
 import BaseScheduleDialog from "@/app/components/Schedule/BaseDialog";
 import { useSelectedOrganizationValue } from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDateTimeMillis } from "@/app/utils/dateTimeUtils";
-import { generateDescriptionHasHyperLink, openHyperLink } from "@/app/utils/link";
+import {
+    generateDescriptionHasHyperLink,
+    openHyperLink,
+} from "@/app/utils/link";
 import { useSessionContext } from "@/providers/session-context";
+import { ClassType } from "@/store/actions";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import {
     SchedulesTimeViewListItem,
@@ -25,8 +30,6 @@ import React,
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
 import { useRecoilState } from "recoil";
-import { ClassType } from "@/store/actions";
-import DialogParentalLock from "@/app/components/ParentalLock";
 
 const useStyles = makeStyles(() => createStyles({
     rowContentText: {

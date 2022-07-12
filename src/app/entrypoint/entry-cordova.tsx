@@ -20,7 +20,10 @@ import { ReactQueryDevtools } from "@kl-engineering/cms-api-client";
 import { SnackbarProvider } from "@kl-engineering/kidsloop-px";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { ThemeProvider } from "@material-ui/core/styles";
-import { createHashHistory } from 'history';
+import {
+    createHashHistory,
+    History,
+} from 'history';
 import React,
 { useEffect } from "react";
 import {
@@ -60,6 +63,7 @@ function Entry () {
     const [ locale ] = useRecoilState(localeState);
     const [ , setError ] = useRecoilState(errorState);
     const [ , setHistory ] = useRecoilState(historyState);
+    const isApp = !!process.env.IS_CORDOVA_BUILD;
 
     const language = getIntl(locale.languageCode);
 
@@ -89,7 +93,7 @@ function Entry () {
         }));
     }, []);
 
-    const history = createHashHistory();
+    const history: History<unknown> = createHashHistory();
 
     return (
         <RawIntlProvider value={language}>
@@ -97,7 +101,7 @@ function Entry () {
                 <CompositionRoot sessionId={sessionId}>
                     <CmsApiClientProvider>
                         <UserServiceApolloClient>
-                            <ThemeProvider theme={themeProvider(locale.languageCode, themeMode)}>
+                            <ThemeProvider theme={themeProvider(locale.languageCode, themeMode, isApp)}>
                                 <SnackbarProvider >
                                     <CssBaseline />
                                     <PopupProvider>

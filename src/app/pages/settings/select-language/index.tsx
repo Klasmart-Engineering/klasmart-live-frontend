@@ -1,18 +1,17 @@
-import AppBar from "@/app/components/layout/AppBar";
-import BackButton from "@/app/components/layout/BackButton";
+import AppBar,
+{ AppBarStyle } from "@/app/components/layout/AppBar";
+import SettingsList,
+{ SettingsItemData } from "@/app/components/settings/SettingsList";
 import { localeState } from "@/app/model/appModel";
-import { LANGUAGES_LABEL } from "@/localization/localeCodes";
+import BackButton from "@/assets/img/parent-dashboard/back_icon_parents.svg";
+import CheckIcon from "@/assets/img/settings/check_icon.svg";
 import {
-    Divider,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-} from "@material-ui/core";
-import Grid from '@material-ui/core/Grid';
+    SCHEDULE_BLACK_TEXT,
+    THEME_BACKGROUND_SELECT_DIALOG,
+} from "@/config";
+import { LANGUAGES_LABEL } from "@/localization/localeCodes";
+import { Box } from "@material-ui/core";
 import { makeStyles } from '@material-ui/core/styles';
-import { Check as CheckIcon } from "@styled-icons/bootstrap/Check";
-import clsx from "clsx";
 import React from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router";
@@ -20,22 +19,33 @@ import { useRecoilState } from "recoil";
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        paddingTop: theme.spacing(2),
-        paddingBottom: theme.spacing(2),
+        height: `100%`,
+        display: `flex`,
+        backgroundColor: THEME_BACKGROUND_SELECT_DIALOG,
+        flexDirection: `column`,
     },
-    listItemSelected: {
-        fontWeight: theme.typography.fontWeightBold as number,
+    contentContainer: {
+        margin: theme.spacing(2),
     },
     divider: {
-        margin: theme.spacing(0, 2),
+        marginBottom: 1,
     },
-    listContainer: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(2),
+    listItem: {
+        backgroundColor: theme.palette.background.paper,
+        height: theme.spacing(7),
+        "&:hover": {
+            backgroundColor: theme.palette.background.paper,
+        },
     },
-    checkIcon: {
-        color: theme.palette.success.main,
-        margin: `0 auto`,
+    listItemText: {
+        color: SCHEDULE_BLACK_TEXT,
+        fontWeight: theme.typography.fontWeightMedium as number,
+        fontSize: `1rem`,
+    },
+    listItemTextSelected: {
+        color: SCHEDULE_BLACK_TEXT,
+        fontWeight: theme.typography.fontWeightBold as number,
+        fontSize: `1rem`,
     },
 }));
 
@@ -43,62 +53,44 @@ export default function SelectLanguagePage () {
     const history = useHistory();
     const intl = useIntl();
     const classes = useStyles();
-
     const [ locale, setLocale ] = useRecoilState(localeState);
-
     const handleBackClick = () => {
         history.goBack();
     };
 
+    const settingsArray: SettingsItemData[] = LANGUAGES_LABEL.map((item, index) => (
+        {
+            title: item.text,
+            rightIconString: locale.languageCode === item.code ? CheckIcon : undefined,
+            hasDivider: index < LANGUAGES_LABEL.length - 1,
+            onClick: () => setLocale({
+                ...locale,
+                languageCode: item.code,
+            }),
+            isHighlight: locale.languageCode === item.code,
+        }
+    ));
+
     return (
-        <>
+        <Box className={classes.root}>
             <AppBar
                 title={intl.formatMessage({
                     id: `settings.language.title`,
+                    defaultMessage: `Select Language`,
                 })}
-                leading={<BackButton onClick={handleBackClick} />}
+                style={AppBarStyle.ROUNDED}
+                leading={(
+                    <img
+                        src={BackButton}
+                        alt="back button"
+                        onClick={handleBackClick}
+                    />
+                )}
             />
-            <Grid
-                item
-                xs={12}
-            >
-                <List className={classes.listContainer}>
-                    {LANGUAGES_LABEL.map((language) => {
-                        const isSelected = locale.languageCode === language.code;
-
-                        return(
-                            <>
-                                <ListItem
-                                    key={language.code}
-                                    button
-                                    className={classes.root}
-                                    onClick={() => setLocale({
-                                        ...locale,
-                                        languageCode: language.code,
-                                    })}
-                                >
-                                    <ListItemText
-                                        primary={language.text}
-                                        primaryTypographyProps={{
-                                            className: clsx({
-                                                [classes.listItemSelected] : isSelected,
-                                            }),
-                                        }}
-                                    />
-                                    {isSelected &&
-                                        <ListItemIcon>
-                                            <CheckIcon
-                                                className={classes.checkIcon}
-                                                size={36} />
-                                        </ListItemIcon>
-                                    }
-                                </ListItem>
-                                <Divider className={classes.divider} />
-                            </>
-                        );
-                    })}
-                </List>
-            </Grid>
-        </>
+            <SettingsList
+                settingArray={settingsArray}
+                containerStyle={classes.contentContainer}
+            />
+        </Box>
     );
 }

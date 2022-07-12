@@ -1,60 +1,61 @@
-import AppBar from "@/app/components/layout/AppBar";
+import AnytimeStudyScheduleList from "@/app/components/Schedule/Study/AnytimeStudy/List";
 import StudyScheduleList from "@/app/components/Schedule/Study/List";
-import BackIcon from "@/assets/img/join_study_back_icon.svg";
-import { THEME_COLOR_BACKGROUND_BACK_BUTTON } from "@/config";
+import ScheduleTopBar from "@/app/components/Schedule/TopBar";
+import {
+    HomeFunAppBarItem,
+    useHomeFunTopBarValue,
+} from "@/app/model/HomeFunModel";
+import {
+    ScheduleAppBarItem,
+    useSetScheduleTab,
+} from "@/app/model/scheduleModel";
+import {
+    StudyTopBarItem,
+    useStudyTopBarValue,
+} from "@/app/model/StudyModel";
 import { ClassType } from "@/store/actions";
-import { Box, createStyles, makeStyles } from "@material-ui/core";
-import React from "react";
-import { useIntl } from "react-intl";
-import { useHistory, useParams } from "react-router-dom";
-
-const useStyles = makeStyles((theme) => createStyles({
-    backButton: {
-        borderRadius: `50%`,
-        width: `2rem`,
-        height: `2rem`,
-        background: THEME_COLOR_BACKGROUND_BACK_BUTTON,
-        color: theme.palette.common.white,
-        padding: theme.spacing(0.75),
-        marginLeft: theme.spacing(1.25),
-    }
-}));
+import { Box } from "@material-ui/core";
+import React,
+{
+    useCallback,
+    useEffect,
+} from "react";
+import { useParams } from "react-router-dom";
 
 interface Params {
     classType: ClassType;
 }
-export default function StudyListPage() {
+export default function StudyListPage () {
     const { classType } = useParams<Params>();
-    const intl = useIntl();
-    const history = useHistory();
-    const classes = useStyles();
+    const studyTopBar = useStudyTopBarValue();
+    const hfsTopBar = useHomeFunTopBarValue();
+    const setScheduleTab = useSetScheduleTab();
 
-    const handleBackClick = () => {
-        history.goBack();
-    };
+    useEffect(() => {
+        setScheduleTab(ClassType.STUDY ? ScheduleAppBarItem.STUDY: ScheduleAppBarItem.HOME_FUN_STUDY);
+        return () => {
+            setScheduleTab(``);
+        };
+    }, []);
 
-    const getTitle = () => {
-        return classType == ClassType.STUDY ?
-            intl.formatMessage({
-                id: `schedule_studyTab`,
-                defaultMessage: `Study`,
-            }) :
-            intl.formatMessage({
-                id: `schedule_studyHomeFunStudy`,
-                defaultMessage: `Home Fun Study`,
-            });
-    }
+    const SelectedStudyTab = useCallback((studyTopBar: StudyTopBarItem) => {
+        switch (studyTopBar) {
+        case StudyTopBarItem.STUDY: return (<StudyScheduleList classType={ClassType.STUDY} />);
+        case StudyTopBarItem.ANYTIME: return (<AnytimeStudyScheduleList classType={ClassType.STUDY} />);
+        }
+    }, [ studyTopBar ]);
+
+    const SelectedHomeFunStudyTab = useCallback((hfsTopBar: HomeFunAppBarItem) => {
+        switch (hfsTopBar) {
+        case HomeFunAppBarItem.HOME_ACTIVITY: return (<StudyScheduleList classType={ClassType.HOME_FUN_STUDY} />);
+        case HomeFunAppBarItem.ANYTIME: return (<AnytimeStudyScheduleList classType={ClassType.HOME_FUN_STUDY} />);
+        }
+    }, [ hfsTopBar ]);
+
     return (
         <>
-            <AppBar
-                title={getTitle()}
-                leading={<img 
-                    src={BackIcon}
-                    className={classes.backButton}
-                    onClick={handleBackClick}
-                />}
-            />
-            <StudyScheduleList classType={classType}/>
+            <ScheduleTopBar classType={classType} />
+            {classType === ClassType.STUDY ? SelectedStudyTab(studyTopBar) : SelectedHomeFunStudyTab(hfsTopBar)}
             <Box flex="0" />
         </>
     );

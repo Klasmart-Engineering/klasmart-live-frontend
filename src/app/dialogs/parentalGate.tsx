@@ -7,6 +7,7 @@ import { ParentalGateCaptchaLogic } from "@/components/parentalGateCaptchaLogic"
 import {
     BUTTON_CLOSE_PARENTAL_LOCK_BACKGROUND_COLOR,
     PARENTAL_LOCK_HEADER_TEXT_COLOR,
+    SMALL_HEIGHT_DETECT_VALUE,
     TEXT_COLOR_SECONDARY_DEFAULT,
     THEME_COLOR_BACKGROUND_PAPER,
 } from "@/config";
@@ -202,14 +203,13 @@ export function ParentalGate ({
 
     const ICON_LOCK_WIDTH = 50;
     const SHAKE_ANIMATION_TIME = 500;
-    const SMALL_HEIGHT_DETECT_VALUE = 680;
 
     const [ header, setHeader ] = useState<string>(`parentalGate.title`);
     const [ isShowError, setShowError ] = useState<boolean>(false);
     const [ isShowCloseButton, setShowCloseButton ] = useState<boolean>(true);
     const [ showParentCaptcha, setShowParentCaptcha ] = useState<boolean>(true);
     const [ isCaptchaShake, setCaptchaShake ] = useState<boolean>(false);
-    const [ isLayoutModeStudy, setLayoutModeStudy ] = useState<boolean>(layoutMode === LayoutMode.DEFAULT);
+    const [ isLayoutModeParent, setLayoutModeParent ] = useState<boolean>(layoutMode === LayoutMode.PARENT);
     const [ isSmallHeight ] = useState<boolean>(height <= SMALL_HEIGHT_DETECT_VALUE);
 
     useEffect(() => {
@@ -232,11 +232,7 @@ export function ParentalGate ({
     }, [ onCompleted, showParentCaptcha ]);
 
     useEffect(() => {
-        if (layoutMode === LayoutMode.CLASSROOM) {
-            setLayoutModeStudy(false);
-        } else {
-            setLayoutModeStudy(true);
-        }
+        setLayoutModeParent(layoutMode === LayoutMode.PARENT);
     }, [ layoutMode ]);
 
     useEffect(() => {
@@ -274,18 +270,20 @@ export function ParentalGate ({
                     alignItems="center"
                     className={clsx(classes.content, {
                         [classes.contentWelcomeScreen]: isWelcomeScreen,
-                        [classes.contentStudyMode]: isLayoutModeStudy,
-                        [classes.classroomLayout]: !isLayoutModeStudy,
+                        [classes.contentStudyMode]: isLayoutModeParent,
+                        [classes.classroomLayout]: !isLayoutModeParent,
                         [classes.paddingTopSmallHeight]: isSmallHeight,
                     })}
                 >
-                    <Grid item>
-                        <img
-                            alt="lock icon"
-                            width={ICON_LOCK_WIDTH}
-                            src={IconLocked}
-                        />
-                    </Grid>
+                    {isLayoutModeParent && (
+                        <Grid item>
+                            <img
+                                alt="lock icon"
+                                width={ICON_LOCK_WIDTH}
+                                src={IconLocked}
+                            />
+                        </Grid>
+                    )}
                     <Grid item>
                         <Typography
                             gutterBottom
@@ -306,7 +304,7 @@ export function ParentalGate ({
                     <Grid
                         item
                         className={clsx(classes.contentWidth, {
-                            [classes.contentWidthStudyMode]: isLayoutModeStudy,
+                            [classes.contentWidthStudyMode]: isLayoutModeParent,
                         })}
                     >
                         <Typography
@@ -315,7 +313,7 @@ export function ParentalGate ({
                             variant="subtitle1"
                             align="center"
                             className={clsx({
-                                [classes.noLineBreak]: !isLayoutModeStudy,
+                                [classes.noLineBreak]: !isLayoutModeParent,
                             })}
                         >
                             <FormattedMessage id="forParents.body" />
@@ -325,7 +323,7 @@ export function ParentalGate ({
                         item
                         className={clsx(classes.captchaWidth, {
                             [classes.captchaWidthWelcomeScreen]: isWelcomeScreen,
-                            [classes.paddingSmallHeight]: !isSmallHeight && isLayoutModeStudy,
+                            [classes.paddingSmallHeight]: !isSmallHeight && isLayoutModeParent,
                             [classes.captchaShake]: isCaptchaShake,
                         })}
                     >

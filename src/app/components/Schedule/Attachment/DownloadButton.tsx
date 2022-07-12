@@ -4,18 +4,26 @@ import {
 } from "@/app/context-provider/cordova-system-context";
 import { usePopupContext } from "@/app/context-provider/popup-context";
 import {
+    convertFileNameToUnderscores,
+    getCacheDirectory,
+    saveDataBlobToFile,
+} from "@/app/utils/fileUtils";
+import {
     checkNetworkToConfirmDownload,
     handleDownloadForAndroid,
     handleDownloadForIOS,
 } from "@/app/utils/networkUtils";
+import { THEME_COLOR_LIGHT_BLUE_PREVIEW } from "@/config";
 import { useCmsApiClient } from "@kl-engineering/cms-api-client";
 import { useSnackbar } from "@kl-engineering/kidsloop-px";
 import {
+    Button,
     CircularProgress,
     createStyles,
     Grid,
     IconButton,
     makeStyles,
+    Typography,
 } from "@material-ui/core";
 import { blue } from "@material-ui/core/colors";
 import { GetApp as GetAppIcon } from "@styled-icons/material";
@@ -34,6 +42,11 @@ const useStyles = makeStyles((theme) => createStyles({
         left: `50%`,
         marginTop: -12,
         marginLeft: -12,
+    },
+    previewButton: {
+        color: THEME_COLOR_LIGHT_BLUE_PREVIEW,
+        borderRadius: theme.spacing(0.75),
+        borderColor: THEME_COLOR_LIGHT_BLUE_PREVIEW,
     },
 }));
 
@@ -100,6 +113,20 @@ export default function AttachmentDownloadButton (props: Props) {
                 });
                 if (isIOS) await handleDownloadForIOS(resourceBlob, attachmentName, shareFile);
                 else await handleDownloadForAndroid(resourceBlob, attachmentName);
+                const filePath = await saveDataBlobToFile(resourceBlob, getCacheDirectory(isIOS), convertFileNameToUnderscores(attachmentName));
+                const previewAnyFile = (window as any).PreviewAnyFile;
+                previewAnyFile.previewPath((result: string) => {}, (error: any) => {
+                    enqueueSnackbar(intl.formatMessage({
+                        id: `scheduleDetails.error.downloadFail`,
+                        defaultMessage: error.message,
+                    }), {
+                        variant: `error`,
+                        anchorOrigin: {
+                            vertical: `bottom`,
+                            horizontal: `center`,
+                        },
+                    });
+                }, filePath);
             } catch (error: any) {
                 enqueueSnackbar(intl.formatMessage({
                     id: `scheduleDetails.error.downloadFail`,
@@ -151,28 +178,21 @@ export default function AttachmentDownloadButton (props: Props) {
             item
             alignContent={`flex-end`}
         >
-            <IconButton
-                disabled={downloadingAttachment}
-                color="primary"
-                aria-label="Download attachment"
-                component="span"
-                style={{
-                    padding: 0,
-                }}
-                onClick={() => {
-                    confirmDownloadAttachment();
-                }}
+            <Button
+                className={classes.previewButton}
+                variant="outlined"
+                onClick={() => confirmDownloadAttachment()}
             >
-                <div className={classes.wrapper}>
-                    <GetAppIcon size={24} />
-                    {downloadingAttachment && (
-                        <CircularProgress
-                            size={24}
-                            className={classes.progress}
-                        />
-                    )}
-                </div>
-            </IconButton>
+                <Typography>
+                    Preview
+                </Typography>
+            </Button>
+            {downloadingAttachment && (
+                <CircularProgress
+                    size={24}
+                    className={classes.progress}
+                />
+            )}
         </Grid>
     );
 }

@@ -1,30 +1,38 @@
+/* eslint-disable react/no-multi-comp */
 import { CameraPreview } from "./cameraPreview";
 import { MicrophonePreview } from './microphonePreview';
-import { microphoneErrorState, cameraErrorState } from "@/app/model/appModel";
-import { classEndedState, classLeftState, hasJoinedClassroomState } from "@/store/layoutAtoms";
+import {
+    PermissionType,
+    useCordovaSystemContext,
+} from "@/app/context-provider/cordova-system-context";
+import {
+    cameraErrorState,
+    microphoneErrorState,
+} from "@/app/model/appModel";
 import { formatDateMonthYearMillis } from "@/app/utils/dateTimeUtils";
-import Loading from "@/components/loading";
 import JoinRoomImg from "@/assets/img/join_room_study.png";
 import BackIcon from "@/assets/img/join_study_back_icon.svg";
 import CamOff from "@/assets/img/join-live-app/cam_off.svg";
+import CamOffDisabled from "@/assets/img/join-live-app/cam_off_disabled.svg";
 import CamOn from "@/assets/img/join-live-app/cam_on.svg";
 import MicOff from "@/assets/img/join-live-app/mic_off.svg";
-import MicOn from "@/assets/img/join-live-app/mic_on.svg";
 import MicOffDisabled from "@/assets/img/join-live-app/mic_off_disabled.svg";
-import CamOffDisabled from "@/assets/img/join-live-app/cam_off_disabled.svg";
+import MicOn from "@/assets/img/join-live-app/mic_on.svg";
+import Loading from "@/components/loading";
 import { MediaDeviceSelect } from "@/components/mediaDeviceSelect";
 import {
-    PermissionType,
-    useCordovaSystemContext
-} from "@/app/context-provider/cordova-system-context";
-import {
+    PARENTAL_LOCK_HEADER_TEXT_COLOR,
     TEXT_COLOR_DUE_DATE,
     THEME_BACKGROUND_JOIN_APP,
     THEME_COLOR_BACKGROUND_BACK_BUTTON,
-    PARENTAL_LOCK_HEADER_TEXT_COLOR,
 } from "@/config";
 import { useSessionContext } from "@/providers/session-context";
 import { ClassType } from "@/store/actions";
+import {
+    classEndedState,
+    classLeftState,
+    hasJoinedClassroomState,
+} from "@/store/layoutAtoms";
 import { fromSecondsToMilliseconds } from "@/utils/utils";
 import { useWindowSize } from "@/utils/viewport";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
@@ -39,7 +47,6 @@ import {
     IconButton,
     Typography,
 } from "@material-ui/core";
-import Cookies from "js-cookie";
 import {
     createStyles,
     makeStyles,
@@ -48,20 +55,24 @@ import {
 } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import clsx from "clsx";
+import Cookies from "js-cookie";
 import React,
 {
+    useCallback,
     useEffect,
     useState,
-    useCallback,
 } from "react";
 import {
     FormattedMessage,
     useIntl,
 } from "react-intl";
 import { useHistory } from "react-router-dom";
-import { useSetRecoilState, useRecoilValue } from "recoil";
+import {
+    useRecoilValue,
+    useSetRecoilState,
+} from "recoil";
 
-enum MEDIA_DEVICES {
+enum MediaDevices {
     MICROPHONE,
     CAMERA,
 }
@@ -78,7 +89,7 @@ interface MediaDeviceGroupProps {
 }
 
 interface TeacherListProps{
-    max: number
+    max: number;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -174,17 +185,17 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         thumbnail: {
             borderRadius: theme.spacing(4),
-            height: '100%',
+            height: `100%`,
             backgroundImage: `url('${JoinRoomImg}')`,
             backgroundSize: `cover`,
             backgroundPosition: `center center`,
             [theme.breakpoints.up(`md`)]: {
                 backgroundPosition: `55% center`,
             },
-        }
+        },
     }));
 
-export default function Join(): JSX.Element {
+export default function Join (): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const intl = useIntl();
@@ -198,10 +209,10 @@ export default function Join(): JSX.Element {
     const setHasJoinedClassroom = useSetRecoilState(hasJoinedClassroomState);
     const setClassLeft = useSetRecoilState(classLeftState);
     const setClassEnded = useSetRecoilState(classEndedState);
-    const [cameraPaused, setCameraPaused] = useState(false);
-    const [microphonePaused, setMicrophonePaused] = useState(false);
-    const [isSmallWidth, setIsSmallWidth] = useState<boolean>(width <= DETECT_SMALL_WIDTH_VALUE);
-    const [tardyDuration, setTardyDuration] = useState<number>(0);
+    const [ cameraPaused, setCameraPaused ] = useState(false);
+    const [ microphonePaused, setMicrophonePaused ] = useState(false);
+    const [ isSmallWidth, setIsSmallWidth ] = useState<boolean>(width <= DETECT_SMALL_WIDTH_VALUE);
+    const [ tardyDuration, setTardyDuration ] = useState<number>(0);
     const [ requestedNativePermission, setRequestedNativePermission ] = useState(false);
 
     const {
@@ -219,10 +230,9 @@ export default function Join(): JSX.Element {
         isIOS,
     } = useCordovaSystemContext();
 
-
     useEffect(() => {
         setIsSmallWidth(width <= DETECT_SMALL_WIDTH_VALUE);
-    }, [width]);
+    }, [ width ]);
 
     useEffect(() => {
         updateTardyDuration();
@@ -262,7 +272,6 @@ export default function Join(): JSX.Element {
         history.goBack();
     };
 
-
     if (!isIOS && !requestedNativePermission) {
         return <Loading messageId="loading" />;
     }
@@ -282,11 +291,12 @@ export default function Join(): JSX.Element {
                     className={classes.backIcon}
                 />
             </Box>
-            <Box 
-                height="100%" 
-                display="flex" 
-                alignItems="center" 
-                justifyContent="center">
+            <Box
+                height="100%"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+            >
                 <Grid
                     container
                     wrap="nowrap"
@@ -298,7 +308,10 @@ export default function Join(): JSX.Element {
                         [classes.contentStudy]: !isLiveClass,
                     })}
                 >
-                    <Grid item xs={7}>
+                    <Grid
+                        item
+                        xs={7}
+                    >
                         {isLiveClass ? (
                             <Box position="relative">
                                 <CameraPreview paused={cameraPaused} />
@@ -319,10 +332,13 @@ export default function Join(): JSX.Element {
                                 />
                             </Box>
                         ) : (
-                            <div className={classes.thumbnail}></div>
+                            <div className={classes.thumbnail} />
                         )}
                     </Grid>
-                    <Grid item xs>
+                    <Grid
+                        item
+                        xs
+                    >
                         <Grid
                             container
                             direction="column"
@@ -350,7 +366,10 @@ export default function Join(): JSX.Element {
                                     <TeacherList max={6} />
                                 </Grid>
                             </Grid>
-                            <Grid item className={classes.fullWidth}>
+                            <Grid
+                                item
+                                className={classes.fullWidth}
+                            >
                                 <Grid
                                     container
                                     spacing={1}
@@ -414,62 +433,74 @@ export default function Join(): JSX.Element {
     );
 }
 
-function MicAndCamControls(props: MicAndCamControlsProps): JSX.Element {
+function MicAndCamControls (props: MicAndCamControlsProps): JSX.Element {
     const classes = useStyles();
     const micError = useRecoilValue(microphoneErrorState);
     const camError = useRecoilValue(cameraErrorState);
-    const { microphonePaused, cameraPaused, setCameraPaused, setMicrophonePaused } = props;
-    const attachImgForMicAndCam = useCallback((type: MEDIA_DEVICES) => {
+    const {
+        microphonePaused,
+        cameraPaused,
+        setCameraPaused,
+        setMicrophonePaused,
+    } = props;
+    const attachImgForMicAndCam = useCallback((type: MediaDevices) => {
         switch (type) {
-            case MEDIA_DEVICES.MICROPHONE:
-                if (micError) return MicOffDisabled;
-                return microphonePaused ? MicOff : MicOn;
-            case MEDIA_DEVICES.CAMERA:
-                if (camError) return CamOffDisabled;
-                return cameraPaused ? CamOff : CamOn;
-            default:
-                break;
+        case MediaDevices.MICROPHONE:
+            if (micError) return MicOffDisabled;
+            return microphonePaused ? MicOff : MicOn;
+        case MediaDevices.CAMERA:
+            if (camError) return CamOffDisabled;
+            return cameraPaused ? CamOff : CamOn;
+        default:
+            break;
         }
-    }, [micError, camError, microphonePaused, cameraPaused]);
+    }, [
+        micError,
+        camError,
+        microphonePaused,
+        cameraPaused,
+    ]);
 
-    return (<Box
-        left={0}
-        right={0}
-        bottom={0}
-        zIndex={1}
-        position="absolute"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-    >
-        <IconButton
-            disableRipple
-            disableFocusRipple
-            disabled={micError}
-            onClick={() => setMicrophonePaused(!microphonePaused)}
+    return (
+        <Box
+            left={0}
+            right={0}
+            bottom={0}
+            zIndex={1}
+            position="absolute"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
         >
-            <img
-                alt="microphone"
-                className={classes.iconImg}
-                src={attachImgForMicAndCam(MEDIA_DEVICES.MICROPHONE)}
-            />
-        </IconButton>
-        <IconButton
-            disableRipple
-            disableFocusRipple
-            disabled={camError}
-            onClick={() => setCameraPaused(!cameraPaused)}
-        >
-            <img
-                alt="camera"
-                className={classes.iconImg}
-                src={attachImgForMicAndCam(MEDIA_DEVICES.CAMERA)}
-            />
-        </IconButton>
-    </Box>)
+            <IconButton
+                disableRipple
+                disableFocusRipple
+                disabled={micError}
+                onClick={() => setMicrophonePaused(!microphonePaused)}
+            >
+                <img
+                    alt="microphone"
+                    className={classes.iconImg}
+                    src={attachImgForMicAndCam(MediaDevices.MICROPHONE)}
+                />
+            </IconButton>
+            <IconButton
+                disableRipple
+                disableFocusRipple
+                disabled={camError}
+                onClick={() => setCameraPaused(!cameraPaused)}
+            >
+                <img
+                    alt="camera"
+                    className={classes.iconImg}
+                    src={attachImgForMicAndCam(MediaDevices.CAMERA)}
+                />
+            </IconButton>
+        </Box>
+    );
 }
 
-function TeacherList({ max }: TeacherListProps): JSX.Element {
+function TeacherList ({ max }: TeacherListProps): JSX.Element {
     const classes = useStyles();
     const theme = useTheme();
     const { teachers } = useSessionContext();
@@ -487,17 +518,19 @@ function TeacherList({ max }: TeacherListProps): JSX.Element {
                     [classes.widthDisplayForOneTeacher]: teachers?.length === 1,
                 })}
             >
-                {teachers?.slice(0, max).map(teacher => (
-                    <Grid
-                        key={teacher.id}
-                        item
-                    >
-                        <UserAvatar
-                            name={teacher.name}
-                            size={`medium`}
-                        />
-                    </Grid>
-                ))}
+                {teachers?.slice(0, max)
+                    .map(teacher => (
+                        <Grid
+                            key={teacher.id}
+                            item
+                        >
+                            <UserAvatar
+                                maxInitialsLength={2}
+                                name={teacher.name}
+                                size={`medium`}
+                            />
+                        </Grid>
+                    ))}
                 {teachers?.length === 1 && (
                     <Grid item>
                         <Typography
@@ -523,10 +556,10 @@ function TeacherList({ max }: TeacherListProps): JSX.Element {
                     </Typography>
                 </Grid>
             )}
-        </>)
+        </>);
 }
 
-function MediaDeviceGroup({ isLiveClass }: MediaDeviceGroupProps): JSX.Element {
+function MediaDeviceGroup ({ isLiveClass }: MediaDeviceGroupProps): JSX.Element {
     const classes = useStyles();
     return (
         <Grid

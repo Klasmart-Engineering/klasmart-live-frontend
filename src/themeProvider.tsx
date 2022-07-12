@@ -1,4 +1,6 @@
 import "inter-ui";
+import "@/assets/css/rooneysans.css";
+
 import {
     TEXT_COLOR_CONSTRAST_DEFAULT,
     TEXT_COLOR_PRIMARY_DEFAULT,
@@ -20,11 +22,11 @@ import {
 import { PaletteOptions } from "@material-ui/core/styles/createPalette";
 import { TypographyOptions } from "@material-ui/core/styles/createTypography";
 
-export function themeProvider (languageCode: string, themeMode: string) {
+export function themeProvider (languageCode: string, themeMode: string, isApp: boolean) {
     const defaultTheme = useTheme();
 
-    function setTypography (languageCode: string) {
-        let localeFontFamily = `Inter`;
+    function setTypography (languageCode: string, isApp: boolean) {
+        let localeFontFamily = isApp ? `RooneySans` : `Inter`;
         const localeWeightLight = 300;
         const localeWeightRegular = 400;
         const localeWeightMedium = 500;
@@ -46,7 +48,7 @@ export function themeProvider (languageCode: string, themeMode: string) {
         };
     }
 
-    const localeTypography = setTypography(languageCode);
+    const localeTypography = setTypography(languageCode, isApp);
     const typography: TypographyOptions = {
         button: {
             textTransform: `none`,

@@ -1,9 +1,10 @@
+import ScheduleItem from "../ScheduleItem";
+import ScheduleItemTile from "../ScheduleItemTile";
 import ScheduleErrorRetryButton from "@/app/components/Schedule/ErrorRetryButton";
 import ScheduleListSectionHeader from "@/app/components/Schedule/ListSectionHeader";
 import LiveClassDetailsDialog from "@/app/components/Schedule/Live/Dialog/Details";
 import ScheduleLoading from "@/app/components/Schedule/Loading";
-import NoSchedule,
-{ NoScheduleVariant } from "@/app/components/Schedule/NoSchedule";
+import NoSchedule from "@/app/components/Schedule/NoSchedule";
 import {
     filterTodaySchedules,
     filterTomorrowSchedules,
@@ -18,6 +19,7 @@ import {
     useWindowOnFocusChange,
 } from "@/app/utils/windowEvents";
 import {
+    SCHEDULE_CARD_BACKGROUND_CONTAINER,
     SCHEDULE_FETCH_INTERVAL_MINUTES,
     SCHEDULE_FETCH_MONTH_DIFF,
     SCHEDULE_PAGE_ITEM_HEIGHT_MIN,
@@ -54,22 +56,32 @@ import React,
 import { useBottomScrollListener } from 'react-bottom-scroll-listener';
 import { useIntl } from "react-intl";
 import { useRecoilState } from "recoil";
-import ScheduleItemTile from "../ScheduleItemTile";
 
 const useStyles = makeStyles((theme) => createStyles({
     listRoot: {
         width: `100%`,
-        backgroundColor: THEME_COLOR_BACKGROUND_LIST,
-        overflowY: `scroll`,
+        backgroundColor: SCHEDULE_CARD_BACKGROUND_CONTAINER,
+        overflowX: `scroll`,
         flex: 1,
+        display: `flex`,
+        paddingLeft: theme.spacing(5),
+        [theme.breakpoints.up(`md`)]: {
+            paddingLeft: theme.spacing(7),
+        },
+        '&::-webkit-scrollbar': {
+            display: `none`,
+        },
     },
     listSection: {
         backgroundColor: `inherit`,
-        padding: theme.spacing(0, 2),
+        [theme.breakpoints.up(`md`)]: {
+            paddingTop: theme.spacing(12),
+        },
     },
     ul: {
         backgroundColor: `inherit`,
         padding: 0,
+        display: `flex`,
     },
 }));
 
@@ -81,7 +93,12 @@ export default function LiveScheduleList () {
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
-    const { setToken, setTeachers, setTitle, setStartTime } = useSessionContext();
+    const {
+        setToken,
+        setTeachers,
+        setTitle,
+        setStartTime,
+    } = useSessionContext();
     const { actions } = useCmsApiClient();
     const organization = useSelectedOrganizationValue();
 
@@ -139,10 +156,14 @@ export default function LiveScheduleList () {
                 schedule_id: liveSchedule.id,
                 live_token_type: ScheduleLiveTokenType.LIVE,
             });
-            const { title, start_at, teachers } = await actions.getScheduleById({
+            const {
+                title,
+                start_at,
+                teachers,
+            } = await actions.getScheduleById({
                 org_id: organizationId,
                 schedule_id: liveSchedule.id,
-            })
+            });
             setTeachers(teachers);
             setTitle(title);
             setStartTime(start_at);
@@ -167,12 +188,17 @@ export default function LiveScheduleList () {
             setItems(newItems);
             return;
         }
-        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id).sort((a, b) => a.start_at - b.start_at));
+        setItems((oldItems) => uniqBy([ ...newItems, ...oldItems ], (item) => item.id)
+            .sort((a, b) => a.start_at - b.start_at));
     }, [
         scheduleError,
         schedulesData,
         page,
     ]);
+
+    useEffect(() => {
+        setPage(SCHEDULE_PAGE_START);
+    }, [ organization ]);
 
     const onFocusChange = useCallback(() => {
         if (isFocused()) return;
@@ -235,7 +261,7 @@ export default function LiveScheduleList () {
 
     if (!items.length) {
         if (isSchedulesFetching) return <ScheduleLoading />;
-        return <NoSchedule variant={NoScheduleVariant.LIVE} />;
+        return <NoSchedule variant={ClassType.LIVE} />;
     }
 
     return (
@@ -250,10 +276,11 @@ export default function LiveScheduleList () {
                         key={`section-${sectionId}`}
                         className={classes.listSection}
                     >
+                        <ScheduleListSectionHeader title={liveSchedulesSection.title} />
                         <ul className={classes.ul}>
-                            <ScheduleListSectionHeader title={liveSchedulesSection.title} />
+
                             {liveSchedulesSection.schedules.map((liveSchedule) => (
-                                <ScheduleItemTile
+                                <ScheduleItem
                                     key={liveSchedule.id}
                                     scheduleId={liveSchedule.id}
                                     classType={ClassType.LIVE}

@@ -26,10 +26,7 @@ import {
     THEME_COLOR_STUDY_SCHEDULE_ICON_BACKGROUND,
 } from "@/config";
 import { ClassType } from "@/store/actions";
-import {
-    fromMillisecondsToSeconds,
-    fromSecondsToMilliseconds,
-} from "@/utils/utils";
+import { fromSecondsToMilliseconds } from "@/utils/utils";
 import { useGetScheduleById } from "@kl-engineering/cms-api-client";
 import {
     Box,
@@ -212,8 +209,8 @@ export default function ScheduleItemTile (props: Props) {
 
     useEffect(() => {
         if (!start_at) return;
-        const nowInSeconds = fromMillisecondsToSeconds(new Date()
-            .getTime());
+        const nowInSeconds = new Date()
+            .getTime() / 1000;
         const timeBeforeClassSeconds = start_at - nowInSeconds;
         const timeRemainingBeforeCanEnterClass = timeBeforeClassSeconds - SECONDS_BEFORE_CLASS_CAN_START;
 
@@ -472,16 +469,16 @@ export default function ScheduleItemTile (props: Props) {
                                 <Grid item>
                                     <ScheduleJoinButton
                                         title={actionTitle}
-                                        disabled={isDisable}
                                         backgroundColor={getClassTypeProperty().actionButtonBackground}
-                                        endIcon={
+                                        disabled={isDisable}
+                                        endIcon={(
                                             <img
                                                 alt={getClassTypeProperty().actionButtonEndIcon}
                                                 src={getClassTypeProperty().actionButtonEndIcon}
                                                 height={32}
                                                 className={classes.actionEndIcon}
                                             />
-                                        }
+                                        )}
                                         width={classType === ClassType.LIVE ? 150 : 170}
                                     />
                                 </Grid>
