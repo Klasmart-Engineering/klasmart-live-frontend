@@ -143,9 +143,9 @@
     "feedback_okay": "Oke",
     "feedback_good": "Baik",
     "feedback_awesome": "Bagus",
-    "class_ended_title": "Kelas sudah selesai.",
+    "class_ended_title": "Kelas sudah selesai",
     "class_ended_thanks_for_attending": "Terima kasih sudah mengikuti kelas!",
-    "class_ended_you_have_left": "Kamu sudah meninggalkan kelas.",
+    "class_ended_you_have_left": "Kamu sudah meninggalkan kelas",
     "class_ended_return_to_hub": "Kembali ke halaman utama.",
     "parents_captcha_title": "Hanya orang tua",
     "parents_captcha_description": "Untuk melanjutkan, pilih angka sesuai dengan urutan.",
@@ -321,5 +321,5 @@
     "live.tooltip.previousPage": "Sebelumnya",
     "live.tooltip.nextPage": "Selanjutnya",
     "live.screenshot.popup": "Hasil belum selesai disimpan, silakan tunggu sampai selesai. (Kalau mau melanjutkan tanpa menyimpan, klik lanjut)",
-    "study.exit.greatWork": "Great Work!"
+    "study.exit.greatWork": "Kerja Bagus!"
 }
