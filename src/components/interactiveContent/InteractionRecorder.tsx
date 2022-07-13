@@ -101,7 +101,7 @@ export default function InteractionRecorder (props: Props): JSX.Element {
     const classActiveUserId = useRecoilValue(classActiveUserIdState);
 
     const imageExtensionPattern = /\.(jpe?g|png|gif|bmp)$/gi;
-    const isImageContent = contentHref?.match(imageExtensionPattern);
+    const isImageContent = !!contentHref?.match(imageExtensionPattern);
     const isPdfContent = contentHref.endsWith(`.pdf`);
 
     const [ sendStreamId ] = useSetStreamIdMutation();

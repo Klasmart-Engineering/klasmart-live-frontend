@@ -1,5 +1,6 @@
 import "inter-ui";
 import { CanvasColorSelectorStudy } from "./canvasColorSelectorStudy";
+import { selectNewColor } from "./canvasMenu";
 import { CanvasMenuItemStudy as CanvasMenuItem } from "./canvasMenuItemStudy";
 import PenDefault from "@/assets/img/canvas/crayons/default-pen.svg";
 import LeftIcon from "@/assets/img/canvas/left.svg";
@@ -112,7 +113,7 @@ export enum CanvasToolbarItems {
 }
 
 interface GlobaActionsMenuProps {
-    anchor: HTMLElement;
+    anchor: HTMLElement | null;
     showCanvasMenu?: boolean;
 }
 
@@ -295,110 +296,123 @@ function CanvasMenuStudy (props: GlobaActionsMenuProps) {
                     }}
                 >
 
-                    {isToolbarActive && <Grid
-                        item
-                        className={classes.toolbarRoot}
-                    >
-                        {isCanvasColorsOpen && isToolbarActive &&
+                    {isToolbarActive && (
+                        <Grid
+                            item
+                            className={classes.toolbarRoot}
+                        >
+                            {isCanvasColorsOpen && isToolbarActive &&
 
                         <CanvasColorSelectorStudy
                             showBottomChevron
                             activeColor={canvasDrawColor}
                             palette={Object.values(CanvasColor)}
                             selectedItem={canvasSelectedItem}
-                            onSelectColor={setCanvasDrawColor}
+                            onSelectColor={(value) => setCanvasDrawColor(selectNewColor(value))}
                         />
-                        }
-                        <Grid
-                            container
-                            alignItems="stretch"
-                            className={clsx(classes.root, {
-                                [classes.hideCanvasMenu]: !showCanvasMenu,
-                            })}
-                        >
-                            <CanvasMenuItem
-                                ref={pencilRef}
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.pen`,
-                                })}
-
-                                activeStyles={activeCustomStyles}
-                                active={canvasSelectedItem === CanvasToolbarItems.PENCIL}
-                                icon={<img
-                                    alt={`Pen Icon`}
-                                    src={penIcon}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.PENCIL))}
-                            />
-                            <CanvasMenuItem
-                                ref={textRef}
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.text`,
-                                })}
-                                activeStyles={activeCustomStyles}
-
-                                active={canvasSelectedItem === CanvasToolbarItems.TEXT}
-                                icon={<img
-                                    alt={`Text Icon`}
-                                    src={canvasSelectedItem === CanvasToolbarItems.TEXT ? NewTextActiveIcon : NewTextIcon}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.TEXT))}
-                            />
-                            <CanvasMenuItem
-                                active={canvasSelectedItem === CanvasToolbarItems.MOVE}
-                                icon={<img
-                                    src={NewMoveIcon}
-                                    alt={`Move Icon`}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.move`,
-                                })}
-                                onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)}
-                            />
-                            <CanvasMenuItem
-                                active={canvasSelectedItem === CanvasToolbarItems.CURSOR}
-                                icon={<img
-                                    src={NewCursorIcon}
-                                    alt={`Cursor Icon`}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.select`,
-                                })}
-                                onClick={() => setCanvasSelectedItem(CanvasToolbarItems.CURSOR)}
-                            />
+                            }
                             <Grid
-                                item
-                                className={classes.divider}
-                            />
-                            <CanvasMenuItem
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.eraser`,
+                                container
+                                alignItems="stretch"
+                                className={clsx(classes.root, {
+                                    [classes.hideCanvasMenu]: !showCanvasMenu,
                                 })}
-                                active={canvasSelectedItem === CanvasToolbarItems.ERASER}
-                                icon={<img
-                                    src={NewEraserIcon}
-                                    alt={`Eraser Icon`}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                onClick={() => setCanvasSelectedItem(CanvasToolbarItems.ERASER)}
-                            />
-                            <CanvasMenuItem
-                                title={intl.formatMessage({
-                                    id: `canvas.tool.eraseAll`,
-                                })}
-                                icon={<img
-                                    src={NewBinIcon}
-                                    alt={`Bin Icon`}
-                                    className={classes.toolbarItemIcon}
-                                />}
-                                onClick={() => clear([ sessionId ])}
-                            />
+                            >
+                                <CanvasMenuItem
+                                    ref={pencilRef}
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.pen`,
+                                    })}
 
-                            {(hasControls && classType === ClassType.LIVE) &&
+                                    activeStyles={activeCustomStyles}
+                                    active={canvasSelectedItem === CanvasToolbarItems.PENCIL}
+                                    icon={
+                                        <img
+                                            alt={`Pen Icon`}
+                                            src={penIcon}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.PENCIL))}
+                                />
+                                <CanvasMenuItem
+                                    ref={textRef}
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.text`,
+                                    })}
+                                    activeStyles={activeCustomStyles}
+
+                                    active={canvasSelectedItem === CanvasToolbarItems.TEXT}
+                                    icon={
+                                        <img
+                                            alt={`Text Icon`}
+                                            src={canvasSelectedItem === CanvasToolbarItems.TEXT ? NewTextActiveIcon : NewTextIcon}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    onClick={() => setCanvasSelectedItem(selectItemWithColor(CanvasToolbarItems.TEXT))}
+                                />
+                                <CanvasMenuItem
+                                    active={canvasSelectedItem === CanvasToolbarItems.MOVE}
+                                    icon={
+                                        <img
+                                            src={NewMoveIcon}
+                                            alt={`Move Icon`}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.move`,
+                                    })}
+                                    onClick={() => setCanvasSelectedItem(CanvasToolbarItems.MOVE)}
+                                />
+                                <CanvasMenuItem
+                                    active={canvasSelectedItem === CanvasToolbarItems.CURSOR}
+                                    icon={
+                                        <img
+                                            src={NewCursorIcon}
+                                            alt={`Cursor Icon`}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.select`,
+                                    })}
+                                    onClick={() => setCanvasSelectedItem(CanvasToolbarItems.CURSOR)}
+                                />
+                                <Grid
+                                    item
+                                    className={classes.divider}
+                                />
+                                <CanvasMenuItem
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.eraser`,
+                                    })}
+                                    active={canvasSelectedItem === CanvasToolbarItems.ERASER}
+                                    icon={
+                                        <img
+                                            src={NewEraserIcon}
+                                            alt={`Eraser Icon`}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    onClick={() => setCanvasSelectedItem(CanvasToolbarItems.ERASER)}
+                                />
+                                <CanvasMenuItem
+                                    title={intl.formatMessage({
+                                        id: `canvas.tool.eraseAll`,
+                                    })}
+                                    icon={
+                                        <img
+                                            src={NewBinIcon}
+                                            alt={`Bin Icon`}
+                                            className={classes.toolbarItemIcon}
+                                        />
+                                    }
+                                    onClick={() => clear([ sessionId ])}
+                                />
+
+                                {(hasControls && classType === ClassType.LIVE) &&
                         <>
                             <Grid
                                 item
@@ -430,10 +444,10 @@ function CanvasMenuStudy (props: GlobaActionsMenuProps) {
                                 </Tooltip>
                             </Grid>
                         </>
-                            }
+                                }
+                            </Grid>
                         </Grid>
-                    </Grid>}
-
+                    )}
                     <Grid item>
                         <Fab
                             style={{

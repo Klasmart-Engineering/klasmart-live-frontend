@@ -34,7 +34,7 @@ interface Props {
     onSelectColor: (color: CanvasColor) => void;
 }
 
-export const CanvasColorSelector = (props:Props) => {
+export const CanvasColorSelector = (props: Props) => {
     const classes = useStyles();
     const {
         palette,

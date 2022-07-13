@@ -81,6 +81,10 @@ interface GlobaActionsMenuProps {
     showCanvasMenu?: boolean;
 }
 
+export const selectNewColor = (newColor: CanvasColor) => () => {
+    return newColor;
+};
+
 function CanvasMenu (props: GlobaActionsMenuProps) {
     const { anchor, showCanvasMenu } = props;
     const classes = useStyles();
@@ -238,7 +242,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     container
                     alignItems="stretch"
                     className={clsx(classes.root, {
-                        [classes.hideCanvasMenu] : !showCanvasMenu,
+                        [classes.hideCanvasMenu]: !showCanvasMenu,
                     })}
                 >
                     <CanvasMenuItem
@@ -352,7 +356,7 @@ function CanvasMenu (props: GlobaActionsMenuProps) {
                     <CanvasColorSelector
                         activeColor={canvasDrawColor}
                         palette={Object.values(CanvasColor)}
-                        onSelectColor={setCanvasDrawColor}
+                        onSelectColor={(value) => setCanvasDrawColor(value)}
                     />
                 </StyledPopper>
             }
