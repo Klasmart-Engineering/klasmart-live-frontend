@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.24.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.23.0...v6.24.0) (2022-07-13)
+
+
+### ♻️ Chores
+
+* **localization:** update translations ([9c9e17d](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9c9e17dc7c6832e13fc314f8cde66e2624e9c774))
+
+
+### 🐛 Bug Fixes
+
+* canvas stopped scrolling on pdf content (#294) ([f4fb4a3](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/f4fb4a3803583c3009606b843c1b3b4950d9dbd1)), closes [KLL-3594](https://calmisland.atlassian.net/browse/KLL-3594)
+
+
+### ✨ Features
+
+* app design and UX improvements (sprint 11) (#293) ([78a554b](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/78a554bf0d83e35b456e31380e9886a5affc42ea)), closes [NAT-898](https://calmisland.atlassian.net/browse/NAT-898) [NAT-899](https://calmisland.atlassian.net/browse/NAT-899) [NAT-900](https://calmisland.atlassian.net/browse/NAT-900) [NAT-903](https://calmisland.atlassian.net/browse/NAT-903) [NAT-903](https://calmisland.atlassian.net/browse/NAT-903) [NAT-1018](https://calmisland.atlassian.net/browse/NAT-1018) [NAT-943](https://calmisland.atlassian.net/browse/NAT-943) [NAT-940](https://calmisland.atlassian.net/browse/NAT-940) [NAT-946](https://calmisland.atlassian.net/browse/NAT-946) [NAT-943](https://calmisland.atlassian.net/browse/NAT-943) [NAT-940](https://calmisland.atlassian.net/browse/NAT-940) [NAT-946](https://calmisland.atlassian.net/browse/NAT-946) [NAT-938](https://calmisland.atlassian.net/browse/NAT-938) [NAT-938](https://calmisland.atlassian.net/browse/NAT-938) [NAT-1034](https://calmisland.atlassian.net/browse/NAT-1034) [NAT-941](https://calmisland.atlassian.net/browse/NAT-941) [NAT-949](https://calmisland.atlassian.net/browse/NAT-949) [NAT-952](https://calmisland.atlassian.net/browse/NAT-952) [NAT-949](https://calmisland.atlassian.net/browse/NAT-949) [NAT-952](https://calmisland.atlassian.net/browse/NAT-952) [NAT-935](https://calmisland.atlassian.net/browse/NAT-935) [NAT-939](https://calmisland.atlassian.net/browse/NAT-939) [NAT-942](https://calmisland.atlassian.net/browse/NAT-942) [NAT-945](https://calmisland.atlassian.net/browse/NAT-945) [NAT-948](https://calmisland.atlassian.net/browse/NAT-948) [NAT-951](https://calmisland.atlassian.net/browse/NAT-951) [NAT-1115](https://calmisland.atlassian.net/browse/NAT-1115) [NAT-938](https://calmisland.atlassian.net/browse/NAT-938) [NAT-1115](https://calmisland.atlassian.net/browse/NAT-1115) [NAT-1156](https://calmisland.atlassian.net/browse/NAT-1156) [NAT-1011](https://calmisland.atlassian.net/browse/NAT-1011) [NAT-1006](https://calmisland.atlassian.net/browse/NAT-1006) [NAT-1006](https://calmisland.atlassian.net/browse/NAT-1006)
+* **KLL-3700:** update Canvas UI for Study (#242) ([932e619](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/932e61981f967d7dff8aaaf25c750b9dc6c3b383)), closes [KLL-3700](https://calmisland.atlassian.net/browse/KLL-3700) [KLL-3700](https://calmisland.atlassian.net/browse/KLL-3700)
+* **localization:** add new translations (#286) ([9b38eac](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/9b38eac90031324a665ff5b637bc85b35a798c9e))
+
 ## [6.23.0](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.22.0...v6.23.0) (2022-07-07)
 
 
