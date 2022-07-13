@@ -13,6 +13,7 @@ import GlobalActionsMenu from "./toolbarMenus/globalActionsMenu/globalActionsMen
 import LessonPlanMenu from "./toolbarMenus/lessonPlanMenu/lessonPlanMenu";
 import ViewModesMenu from "./toolbarMenus/viewModesMenu/viewModesMenu";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { dialogsState } from "@/app/model/appModel";
 import LeaveClassIcon from "@/assets/img/icon_leave_class.svg";
 import StyledIcon from "@/components/styled/icon";
 import { THEME_COLOR_PRIMARY_DEFAULT } from "@/config";
@@ -178,7 +179,7 @@ function Toolbar () {
 
     const [ openEndClassDialog, setOpenEndClassDialog ] = useState(false);
     const [ openLeaveClassDialog, setOpenLeaveClassDialog ] = useState(false);
-
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const resetDrawers = () => {
         setIsGlobalActionsOpen(false);
         setIsLessonPlanOpen(false);
@@ -188,7 +189,14 @@ function Toolbar () {
     };
 
     function endCall () {
-        hasControls ? setOpenEndClassDialog(true) : setOpenLeaveClassDialog(true);
+        if(hasControls)
+        {
+            setOpenEndClassDialog(true);
+        }
+        else
+        {
+            setOpenLeaveClassDialog(true);
+        }
     }
 
     useEffect(()=> {

@@ -1,43 +1,44 @@
-import { CloseIconButton } from "@/app/components/icons/closeIconButton";
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
 import { Feedback } from '@/components/feedback/feedback';
 import {
+    COLOR_RANGE_CALENDAR,
+    LEAVE_CLASS_BACKGROUND,
     TEXT_COLOR_CONSTRAST_DEFAULT,
-    TEXT_COLOR_PRIMARY_DEFAULT,
 } from "@/config";
 import {
-    classLeftState,
     classEndedState,
-    hasJoinedClassroomState
+    classLeftState,
+    hasJoinedClassroomState,
 } from "@/store/layoutAtoms";
 import { useWebrtcClose } from "@kl-engineering/live-state/ui";
 import {
-    Fade,
+    Button,
     Grid,
     makeStyles,
     Theme,
     Typography,
 } from '@material-ui/core';
-import { CalendarCheck as ClassEndedIcon } from "@styled-icons/boxicons-regular/CalendarCheck";
 import React,
 { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import {
     useRecoilState,
-    useSetRecoilState
+    useSetRecoilState,
 } from "recoil";
 
 const useStyles = makeStyles((theme: Theme) => ({
-    container:{
+    container: {
         height: `100%`,
-        backgroundColor: theme.palette.grey[200],
+        backgroundColor: LEAVE_CLASS_BACKGROUND,
         overflowY: `auto`,
+        justifyContent: `center`,
+        alignItems: `center`,
     },
     root: {
         textAlign: `center`,
     },
-    icon:{
+    icon: {
         color: theme.palette.text.primary,
         marginBottom: 10,
         "& svg": {
@@ -49,14 +50,14 @@ const useStyles = makeStyles((theme: Theme) => ({
             padding: `1rem`,
         },
     },
-    returnToHub:{
+    returnToHub: {
         fontWeight: theme.typography.fontWeightBold as number,
         marginTop: theme.spacing(4),
         "& a": {
             color: theme.palette.text.primary,
         },
     },
-    appHeader:{
+    appHeader: {
         position: `fixed`,
         top: 0,
         left: 0,
@@ -64,17 +65,31 @@ const useStyles = makeStyles((theme: Theme) => ({
         padding: `20`,
         boxSizing: `border-box`,
     },
-    appHeaderRight:{
+    appHeaderRight: {
         textAlign: `right`,
         marginTop: theme.spacing(3),
         marginRight: theme.spacing(4),
     },
+    button: {
+        backgroundColor: COLOR_RANGE_CALENDAR,
+        color: TEXT_COLOR_CONSTRAST_DEFAULT,
+        fontWeight: theme.typography.fontWeightBold as number,
+        padding: theme.spacing(1, 2.5),
+        borderRadius: theme.spacing(3),
+        marginTop: theme.spacing(3),
+        fontSize: `1rem`,
+        [theme.breakpoints.up(`md`)]: {
+            padding: theme.spacing(1, 3.75),
+        },
+    },
+    title: {
+        color: TEXT_COLOR_CONSTRAST_DEFAULT,
+    },
 }));
 
-function EndClass () {
+export default function EndClass () {
     const END_CLASS_ON_BACK_ID = `endClassOnBackID`;
     const classes = useStyles();
-    const HUB_ENDPOINT = process.env.ENDPOINT_HUB;
     const history = useHistory();
     useWebrtcClose();
 
@@ -97,57 +112,30 @@ function EndClass () {
         });
     }, []);
 
-    const isApp = process.env.IS_CORDOVA_BUILD;
-
     return (
-        <Fade in>
-            <>
-                {isApp && (
-                    <div className={classes.appHeader}>
-                        <div className={classes.appHeaderRight}>
-                            <CloseIconButton
-                                iconSize="xlarge"
-                                buttonSize="small"
-                                color={TEXT_COLOR_CONSTRAST_DEFAULT}
-                                backgroundColor={TEXT_COLOR_PRIMARY_DEFAULT}
-                                onClick={onCloseButtonClick}
-                            />
-                        </div>
-                    </div>
-                )}
-                <Grid
-                    container
-                    alignItems="center"
-                    justifyContent="center"
-                    className={classes.container}
+        <Grid
+            container
+            className={classes.container}
+        >
+            <Grid
+                item
+                className={classes.root}
+            >
+                <Typography
+                    className={classes.title}
+                    variant="h3"
+                ><FormattedMessage id={classLeft ? `class_ended_you_have_left` : `class_ended_title`} />
+                </Typography>
+                <Button
+                    className={classes.button}
+                    onClick={onCloseButtonClick}
                 >
-                    <Grid
-                        item
-                        className={classes.root}
-                    >
-                        {!isApp && (
-                            <div className={classes.icon}>
-                                <ClassEndedIcon />
-                            </div>
-                        )}
-                        <Typography variant="h3"><FormattedMessage id={classLeft ? `class_ended_you_have_left` : `class_ended_title`} /></Typography>
-                        <Typography variant="body1"><FormattedMessage id="class_ended_thanks_for_attending" /></Typography>
-
-                        <Typography variant="body1"><FormattedMessage id="class_ended_how_was_the_class" /></Typography>
-                        <Feedback type="END_CLASS" />
-
-                        {HUB_ENDPOINT && !isApp && (
-                            <Typography className={classes.returnToHub}>
-                                <a href={HUB_ENDPOINT}>
-                                    <FormattedMessage id="class_ended_return_to_hub" />
-                                </a>
-                            </Typography>
-                        )}
-                    </Grid>
-                </Grid>
-            </>
-        </Fade>
+                    <FormattedMessage
+                        id="none"
+                        defaultMessage="Back to schedule"
+                    />
+                </Button>
+            </Grid>
+        </Grid>
     );
 }
-
-export default EndClass;

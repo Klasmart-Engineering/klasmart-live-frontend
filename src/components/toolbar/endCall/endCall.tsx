@@ -1,9 +1,14 @@
+/* eslint-disable react/no-multi-comp */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { ParentalGateHorizontal } from "@/app/dialogs/parentalGateHorizontal";
+import { dialogsState } from "@/app/model/appModel";
 import { ParentCaptcha } from "@/components/parentCaptcha";
 import { useEndClassMutation } from "@/data/live/mutations/useEndClassMutation";
 import { useLeaveClassMutation } from "@/data/live/mutations/useLeaveClassMutation";
 import { useSessionContext } from "@/providers/session-context";
-import {  classLeftState } from "@/store/layoutAtoms";
+import { classLeftState } from "@/store/layoutAtoms";
+import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import {
     Button,
     Dialog,
@@ -17,38 +22,45 @@ import {
 import red from "@material-ui/core/colors/red";
 import { Warning as WarningIcon } from "@styled-icons/entypo/Warning";
 import clsx from "clsx";
-import { useWebrtcCloseCallback } from "@kl-engineering/live-state/ui";
 import React,
 {
     useEffect,
     useState,
 } from "react";
 import { FormattedMessage } from "react-intl";
-import { useSetRecoilState } from "recoil";
+import {
+    useRecoilState,
+    useSetRecoilState,
+} from "recoil";
+
+const MIN_HEIGHT_DIALOG_SMALL = 317;
+const MIN_WIDTH_DIALOG_SMALL = 396;
+const MIN_WIDTH_DIALOG_MEDIUM = 508;
+const MIN_HEIGHT_DIALOG_MEDIUM = 344;
 
 const useStyles = makeStyles((theme: Theme) => ({
-    dialogTitle:{
+    dialogTitle: {
         textAlign: `center`,
     },
-    dialogContent:{
+    dialogContent: {
         textAlign: `center`,
     },
-    dialogIcon:{
+    dialogIcon: {
         display: `inline-block`,
         background: theme.palette.grey[200],
         borderRadius: 40,
         padding: 20,
         marginBottom: 20,
     },
-    warningIcon:{
+    warningIcon: {
         color: `#ffca00`,
         background: `#f9f7e8`,
     },
-    parentChecker:{
+    parentChecker: {
         marginTop: 20,
         marginBottom: 20,
     },
-    parentCheckerItem:{
+    parentCheckerItem: {
         color: `#fff`,
         width: 50,
         height: 50,
@@ -61,19 +73,28 @@ const useStyles = makeStyles((theme: Theme) => ({
         cursor: `pointer`,
         margin: `0 10px`,
     },
-    parentCheckerItemActive:{
+    parentCheckerItemActive: {
         opacity: 0.4,
     },
     error: {
         color: red[500],
     },
+    container: {
+        borderRadius: theme.spacing(2.5),
+        minHeight: MIN_HEIGHT_DIALOG_SMALL,
+        minWidth: MIN_WIDTH_DIALOG_SMALL,
+        [theme.breakpoints.up(`md`)]: {
+            minWidth: MIN_WIDTH_DIALOG_MEDIUM,
+            minHeight: MIN_HEIGHT_DIALOG_MEDIUM,
+        },
+    },
 }));
 
-function DialogLeaveClass (props:any){
+function DialogLeaveClass (props: any){
     const DIALOG_LEAVE_CLASS_ID = `dialogLeaveCLassID`;
     const classes = useStyles();
     const { open, onClose } = props;
-
+    const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const { addOnBack, removeOnBack } = useCordovaSystemContext();
     const { isTeacher } = useSessionContext();
     const setClassLeft = useSetRecoilState(classLeftState);
@@ -107,46 +128,23 @@ function DialogLeaveClass (props:any){
         <Dialog
             open={open}
             aria-labelledby="leave-class-dialog"
-            maxWidth="xs"
-            onClose={onClose}>
-            <DialogTitle
-                id="leave-class-dialog"
-                className={classes.dialogTitle}>
-                <FormattedMessage id="leave_class" />
-            </DialogTitle>
-            <DialogContent className={classes.dialogContent}>
-                {showParentCaptcha ?
-                    <ParentCaptcha setShowParentCaptcha={setShowParentCaptcha} /> : (
-                        <>
-                            <div className={clsx(classes.dialogIcon, classes.warningIcon)}>
-                                <WarningIcon size="2rem" />
-                            </div>
-                            <Typography>
-                                <FormattedMessage id="leave_class_description" />
-                            </Typography>
-                        </>
-                    )}
-            </DialogContent>
-
-            <DialogActions>
-                <Button
-                    color="primary"
-                    onClick={onClose}>
-                    <FormattedMessage id="common_cancel" />
-                </Button>
-                {!showParentCaptcha && <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={onClick}>
-                    <FormattedMessage id="leave_class" />
-                </Button>}
-            </DialogActions>
+            PaperProps={{
+                className: classes.container,
+            }}
+            onClose={onClose}
+        >
+            <ParentalGateHorizontal
+                setClosedDialog={onClose}
+                onCompleted={() => {
+                    onClose();
+                }}
+            />
         </Dialog>
     );
 }
 export { DialogLeaveClass };
 
-function DialogEndClass (props:any){
+function DialogEndClass (props: any){
     const DIALOG_END_CLASS_ID = `dialogEndClassID`;
     const classes = useStyles();
     const { open, onClose } = props;
@@ -173,10 +171,12 @@ function DialogEndClass (props:any){
             open={open}
             aria-labelledby="end-class-dialog"
             maxWidth="xs"
-            onClose={onClose}>
+            onClose={onClose}
+        >
             <DialogTitle
                 id="end-class-dialog"
-                className={classes.dialogTitle}>
+                className={classes.dialogTitle}
+            >
                 <FormattedMessage id="end_class" />
             </DialogTitle>
             <DialogContent className={classes.dialogContent}>
@@ -190,13 +190,15 @@ function DialogEndClass (props:any){
             <DialogActions>
                 <Button
                     color="primary"
-                    onClick={onClose}>
+                    onClick={onClose}
+                >
                     <FormattedMessage id="common_cancel" />
                 </Button>
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={onClick}>
+                    onClick={onClick}
+                >
                     <FormattedMessage id="end_class" />
                 </Button>
             </DialogActions>

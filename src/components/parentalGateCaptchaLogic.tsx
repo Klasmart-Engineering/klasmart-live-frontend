@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     parentChecker: {
         marginTop: theme.spacing(1),
         marginBottom: theme.spacing(1),
+        justifyContent: `space-around`,
     },
     parentCheckerItem: {
         justifyContent: `center`,
@@ -78,11 +79,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
 }));
 
-function ParentalGateCaptchaLogic({
+function ParentalGateCaptchaLogic ({
     setError, setShowCloseButton, setShowParentCaptcha, isUsedForEndClass,
 }: Props) {
     const classes = useStyles();
-    const [checkNumbers, setCheckNumbers] = useState<CheckNumber[]>([]);
+    const [ checkNumbers, setCheckNumbers ] = useState<CheckNumber[]>([]);
 
     const generateRandomNumbers = () => {
         const randomNumbers: number[] = [];
@@ -114,7 +115,7 @@ function ParentalGateCaptchaLogic({
     };
 
     const handleSelectNumber = (value: number, index: number) => {
-        const updatedNumbers = [...checkNumbers];
+        const updatedNumbers = [ ...checkNumbers ];
 
         updatedNumbers[index].checked = true;
 
@@ -153,7 +154,7 @@ function ParentalGateCaptchaLogic({
             const findUnchecked = checkNumbers.find(number => number.checked === false);
 
             if (findUnchecked === undefined) {
-                const unSortedNumbers = [...checkNumbers];
+                const unSortedNumbers = [ ...checkNumbers ];
                 const sortedNumbers = unSortedNumbers
                     .sort((a, b) => a.selected - b.selected)
                     .map(number => number.value);
@@ -176,17 +177,19 @@ function ParentalGateCaptchaLogic({
             }
         }
 
-    }, [checkNumbers]);
+    }, [ checkNumbers ]);
 
     return (
         <Grid
             container
-            justifyContent={isUsedForEndClass ? `center` : `space-around`}
-            className={classes.parentChecker}>
+            className={classes.parentChecker}
+        >
             {checkNumbers.map((number, index) => (
+
                 <Grid
                     key={`number-${index}`}
-                    item>
+                    item
+                >
                     <Typography
                         variant="h4"
                         className={clsx(classes.parentCheckerItem, number.color, {
