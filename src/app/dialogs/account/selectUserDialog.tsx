@@ -323,16 +323,15 @@ export function SelectUserDialog ({ history }: Props) {
         setFilteredMyUsersData(studentProfiles);
     }, [ myUsersData ]);
 
-    const selectUser = useCallback((user: ReadUserDto) => {
-        console.log(`selecting user: ${user.user_id}`);
-        if(selectedUser?.user_id === user.user_id){
+    const selectUser = (user: ReadUserDto) => {
+        if (selectedUser?.user_id === user.user_id) {
             handleBackClick();
         }else{
             setSelectLoading(true);
             setSelectedUser(user);
             setSelectOrgAfterSwitchingProfile(true);
         }
-    }, [ setSelectedUser, selectedUser ]);
+    };
 
     const handleBackClick = () => {
         setDialogs({
