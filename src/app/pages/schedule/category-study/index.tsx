@@ -32,7 +32,7 @@ export default function StudyListPage () {
     const setScheduleTab = useSetScheduleTab();
 
     useEffect(() => {
-        setScheduleTab(ClassType.STUDY ? ScheduleAppBarItem.STUDY: ScheduleAppBarItem.HOME_FUN_STUDY);
+        setScheduleTab(classType === ClassType.STUDY ? ScheduleAppBarItem.STUDY: ScheduleAppBarItem.HOME_FUN_STUDY);
         return () => {
             setScheduleTab(``);
         };
