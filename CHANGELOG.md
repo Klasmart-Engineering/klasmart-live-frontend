@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.24.2](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.24.1...v6.24.2) (2022-07-15)
+
+
+### 🐛 Bug Fixes
+
+* **KLL-3692:** remove participant's name on stage view only (#296) ([1d16453](https://github.com/KL-Engineering/kidsloop-live-frontend/commit/1d1645374d0725d37e819679919a6301484adb2d)), closes [KLL-3692](https://calmisland.atlassian.net/browse/KLL-3692) [KLL-3692](https://calmisland.atlassian.net/browse/KLL-3692)
+
 ### [6.24.1](https://github.com/KL-Engineering/kidsloop-live-frontend/compare/v6.24.0...v6.24.1) (2022-07-13)
 
 
