@@ -38,6 +38,9 @@ const useStyles = makeStyles((theme: Theme) => ({
         "& $nameContainer": {
             position: `static`,
             textAlign: `center`,
+            [theme.breakpoints.down(`xs`)]: {
+                display: `none`,
+            },
         },
         "& $name": {
             position: `relative`,
@@ -69,9 +72,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         left: 0,
         bottom: 0,
         width: `100%`,
-        [theme.breakpoints.down(`xs`)]: {
-            display: `none`,
-        },
     },
     name: {
         color: `#fff`,
