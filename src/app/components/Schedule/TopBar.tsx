@@ -38,10 +38,11 @@ import {
     useTheme,
 } from "@material-ui/core";
 import clsx from "clsx";
-import React from "react";
+import React, { useMemo } from "react";
 import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import { userDisplayName } from "@/utils/utils";
 
 const useStyles = makeStyles((theme) => createStyles({
     root: {
@@ -153,6 +154,11 @@ export default function ScheduleTopBar (props: Props) {
     const [ studySelectedItem, setStudySelectedItem ] = useStudyTopBar();
     const [ hfsSelectedItem, setHfsSelectedItem ] = useHomeFunTopBar();
 
+    const displayName = useMemo(() => {
+        if (!selectedUser) return ''
+        return userDisplayName(selectedUser) ?? '';
+    }, [ selectedUser ]);
+    
     const tabBarNavigation = () => {
         if(classType === ClassType.STUDY)
         {
@@ -287,7 +293,7 @@ export default function ScheduleTopBar (props: Props) {
                     >
                         <UserAvatar
                             maxInitialsLength={2}
-                            name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
+                            name={displayName}
                             size={isMdUp ? `medium` : `small`}
                         />
                         <Typography className={classes.selectedUserName}>{selectedUser?.given_name}</Typography>

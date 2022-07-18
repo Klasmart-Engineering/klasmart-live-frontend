@@ -5,6 +5,7 @@ import {
     THEME_BACKGROUND_SIGN_OUT_BUTTON,
     THEME_COLOR_LIGHT_BLACK_TEXT,
 } from "@/config";
+import { userDisplayName } from "@/utils/utils";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
@@ -15,7 +16,7 @@ import {
     useMediaQuery,
     useTheme,
 } from "@material-ui/core";
-import React from "react";
+import React, { useMemo } from "react";
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -78,6 +79,11 @@ export default function HomeTopBar (props: Props) {
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up(`md`));
 
+    const displayName = useMemo(() => {
+        if (!selectedUser) return ''
+        return userDisplayName(selectedUser) ?? '';
+    }, [ selectedUser ]);
+
     return (
         <Box className={classes.header}>
             <Box className={classes.headerLeft}>
@@ -88,7 +94,7 @@ export default function HomeTopBar (props: Props) {
                     <Box className={classes.selectUserButton}>
                         <UserAvatar
                             maxInitialsLength={2}
-                            name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
+                            name={displayName}
                             size={isMdUp ? `medium` : `small`}
                         />
                     </Box>

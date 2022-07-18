@@ -25,11 +25,12 @@ import {
 import Toolbar from "@material-ui/core/Toolbar";
 import { Menu as MenuIcon } from "@styled-icons/boxicons-regular/Menu";
 import { Close as CloseIcon } from "@styled-icons/material/Close";
-import React from "react";
+import React, { useMemo } from "react";
 import {
     useRecoilState,
     useSetRecoilState,
 } from "recoil";
+import { userDisplayName } from '@/utils/utils';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -176,6 +177,11 @@ function OpenSelectUserButton () {
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
     const setSelectOrgAfterSwitchingProfile = useSetRecoilState(selectOrgAfterSwitchingProfile);
 
+    const displayName = useMemo(() => {
+        if (!selectedUser) return ''
+        return userDisplayName(selectedUser) ?? '';
+    }, [ selectedUser ]);
+
     return (
         <ButtonBase
             className={selectUserButton}
@@ -189,7 +195,7 @@ function OpenSelectUserButton () {
         >
             <UserAvatar
                 maxInitialsLength={2}
-                name={`${selectedUser?.given_name} ${selectedUser?.family_name}`}
+                name={displayName}
                 size={`medium`}
             />
         </ButtonBase>

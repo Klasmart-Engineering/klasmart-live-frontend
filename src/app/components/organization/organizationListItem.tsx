@@ -26,6 +26,7 @@ import {
 import { KeyboardArrowRight as ArrowRight } from "@styled-icons/material-rounded/KeyboardArrowRight";
 import clsx from "clsx";
 import React from "react";
+import { maxLengthName } from "@/utils/utils";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -111,13 +112,6 @@ export const OrganizationListItem: React.FC<Props> = ({
     const classes = useStyles();
     const theme = useTheme();
     const isSmUp = useMediaQuery(theme.breakpoints.up(`sm`));
-
-    const maxLengthName = (name: string) => {
-        if (name.length > 20) {
-            return `${name.slice(0, 20)}...`;
-        }
-        return name;
-    };
 
     if(orientation === ListOrientation.HORIZONTAL){
         return (

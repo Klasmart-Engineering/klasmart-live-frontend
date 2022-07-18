@@ -1,4 +1,5 @@
 /* eslint-disable react/no-multi-comp */
+import { ReadUserDto } from "@/app/data/user/dto/readUserDto";
 import { CLASS_POPPER_ZINDEX } from "@/config";
 import {
     ContentType,
@@ -483,4 +484,22 @@ export const usePrevious = <T,>(value: T): T | undefined => {
 export const changeStatusBarColor = (color: string) => {
     const StatusBar = (window as any).StatusBar;
     StatusBar.backgroundColorByHexString(color);
-}
+};
+
+export const maxLengthName = (name: string) => {
+    if (name.length > 20) {
+        return `${name.slice(0, 20)}...`;
+    }
+    return name;
+};
+
+export const userDisplayName = (user: ReadUserDto) => {    
+    if (user.given_name && user.family_name) {
+        // TODO: Localize full name ordering
+        // e.g.
+        // - EU: <givenName> <familyName>
+        // - KR: <familyName> <givenName>
+        return `${user.given_name} ${user.family_name}`;
+    }
+    return user.username;
+};

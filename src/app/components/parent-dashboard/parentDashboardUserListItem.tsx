@@ -11,6 +11,7 @@ import {
     THEME_COLOR_PARENT_DASHBOARD_REPORT_TEXT,
 } from "@/config";
 import { ClassType } from "@/store/actions";
+import { userDisplayName } from "@/utils/utils";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     Box,
@@ -67,14 +68,7 @@ export const ParentDashboardUserListItem: React.FC<Props> = ({ user, onSelectCla
     const classes = useStyles();
 
     const displayName = useMemo(() => {
-        if (user.given_name && user.family_name) {
-            // TODO: Localize full name ordering
-            // e.g.
-            // - EU: <givenName> <familyName>
-            // - KR: <familyName> <givenName>
-            return `${user.given_name} ${user.family_name}`;
-        }
-        return user.username;
+        return userDisplayName(user) ?? '';
     }, [ user ]);
 
     const classTypes = [
@@ -105,7 +99,7 @@ export const ParentDashboardUserListItem: React.FC<Props> = ({ user, onSelectCla
                 <Grid item>
                     <UserAvatar
                         maxInitialsLength={2}
-                        name={displayName ?? ``}
+                        name={displayName}
                     />
                 </Grid>
                 <Grid

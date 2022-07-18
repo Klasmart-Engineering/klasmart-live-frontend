@@ -3,6 +3,7 @@ import {
     SCHEDULE_BLACK_TEXT,
     THEME_COLOR_PRIMARY_SELECT_DIALOG,
 } from "@/config";
+import { maxLengthName, userDisplayName } from "@/utils/utils";
 import { UserAvatar } from "@kl-engineering/kidsloop-px";
 import {
     ButtonBase,
@@ -67,23 +68,9 @@ export const UserListItem: React.FC<Props> = ({
 }) => {
     const classes = useStyles();
 
-    const maxLengthName = (name: string) => {
-        if (name.length > 20) {
-            return `${name.slice(0, 20)}...`;
-        }
-        return name;
-    };
-
     const displayName = useMemo(() => {
-        if (user.given_name && user.family_name) {
-            // TODO: Localize full name ordering
-            // e.g.
-            // - EU: <givenName> <familyName>
-            // - KR: <familyName> <givenName>
-            return maxLengthName(`${user.given_name} ${user.family_name}`);
-        } else {
-            return user.username;
-        }
+        if (!user) return ''
+        return userDisplayName(user) ?? '';
     }, [ user ]);
 
     return (
@@ -96,11 +83,11 @@ export const UserListItem: React.FC<Props> = ({
                 className={clsx(classes.userAvatar, {
                     [classes.userAvatarSelected]: isSelected,
                 })}
-                name={displayName ?? ``}
+                name={displayName}
                 size="large"
             />
             <ListItemText
-                primary={displayName ?? ``}
+                primary={displayName}
                 primaryTypographyProps={{
                     className: clsx(classes.profileName, {
                         [classes.listItemSelected]: isSelected,
