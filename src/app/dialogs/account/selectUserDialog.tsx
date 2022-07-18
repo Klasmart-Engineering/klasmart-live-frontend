@@ -332,7 +332,11 @@ export function SelectUserDialog ({ history }: Props) {
             setSelectedUser(user);
             setSelectOrgAfterSwitchingProfile(true);
         }
-    }, [ setSelectedUser, selectedUser ]);
+    }, [
+        setSelectedUser,
+        selectedUser,
+        selectedOrganization,
+    ]);
 
     const handleBackClick = () => {
         setDialogs({
