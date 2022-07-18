@@ -235,7 +235,7 @@
     "signIn.noStudentProfile.body": "您需要有学生档案才能继续使用该应用",
     "forParents.title": "家长使用",
     "forParents.body": "若要继续，请按升序选择数字",
-    "forParents.incorrect": "不正确，请重试",
+    "forParents.incorrect": "Try again",
     "settings.version": "版本{version}",
     "scheduleDetails.error.downloadFail": "下载失败。请检查您的网络连接并重试。",
     "live.speechRecognition.error.accessDisabled": "访问语音识别功能被禁用",
@@ -269,7 +269,7 @@
     "schedule_review_class_name": "适应性复习: {value}教学素材",
     "live.enter.tardyDuration": "{value} {value, plural, =0 { minute } one { minute } other { minutes }}之前开始",
     "live.enter.joinLive": "进入直播课",
-    "live.enter.teacherCount": "+ {value} 更多 {value, plural, one { person } other { people }}",
+    "live.enter.teacherCount": "{name} and <span>+ {value} more {value, plural, one {teacher} other {teachers}}</span>",
     "homeFunStudy.submission.error.rejected.title": "作业完成",
     "homeFunStudy.discardChange.title": "放弃更改？",
     "homeFunStudy.discardChange": "关闭窗口将无法保留你的学习进度",
@@ -397,5 +397,8 @@
     "error.serverRequestFailed.detail": "Server request failed",
     "popup.dismiss": "Dismiss",
     "homeFunStudy.myAssignment": "My Assignment",
-    "homeFunStudy.preview": ""
+    "homeFunStudy.preview": "Preview",
+    "study.enter.noDue": "No due date",
+    "class_ended_title": "课程已结束",
+    "class_ended_you_have_left": "你已离开课程"
 }

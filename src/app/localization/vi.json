@@ -235,7 +235,7 @@
     "signIn.noStudentProfile.body": "Bạn cần có hồ sơ học sinh để tiếp tục sử dụng ứng dụng",
     "forParents.title": "Dành cho phụ huynh",
     "forParents.body": "Để tiếp tục, vui lòng nhấn vào các số theo thứ tự tăng dần",
-    "forParents.incorrect": "Không chính xác, vui lòng thử lại",
+    "forParents.incorrect": "Try again",
     "settings.version": "Phiên bản ứng dụng {version}",
     "scheduleDetails.error.downloadFail": "Tải xuống không thành công. Kiểm tra kết nối internet của bạn và thử lại.",
     "live.speechRecognition.error.accessDisabled": "Quyền truy cập nhận dạng giọng nói không khả dụng",
@@ -269,7 +269,7 @@
     "schedule_review_class_name": "Ôn tập Tự động: {value} Học liệu",
     "live.enter.tardyDuration": "Đã bắt đầu {value} {value, plural, =0 { phút } one { phút } other { phút }} trước",
     "live.enter.joinLive": "Tham gia lớp học trực tuyến",
-    "live.enter.teacherCount": "+ {value} hơn {value, plural, one { người } other { người }}",
+    "live.enter.teacherCount": "{name} and <span>+ {value} more {value, plural, one {teacher} other {teachers}}</span>",
     "homeFunStudy.submission.error.rejected.title": "Hoàn thành bài tập",
     "homeFunStudy.discardChange.title": "Hủy bỏ những thay đổi?",
     "homeFunStudy.discardChange": "Đóng cửa sổ sẽ hủy bỏ bất kỳ thay đổi nào bạn đã thực hiện.",
@@ -397,5 +397,8 @@
     "error.serverRequestFailed.detail": "Server request failed",
     "popup.dismiss": "Dismiss",
     "homeFunStudy.myAssignment": "My Assignment",
-    "homeFunStudy.preview": ""
+    "homeFunStudy.preview": "Preview",
+    "study.enter.noDue": "No due date",
+    "class_ended_title": "Lớp học đã kết thúc",
+    "class_ended_you_have_left": "Bạn đã rời khỏi lớp học"
 }

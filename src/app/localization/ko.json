@@ -235,7 +235,7 @@
     "signIn.noStudentProfile.body": "앱을 계속 사용하려면 학생 프로필이 있어야 합니다.",
     "forParents.title": "학부모 전용",
     "forParents.body": "계속하시려면, 작은 숫자부터 큰 숫자까지 순서대로 골라 주세요.",
-    "forParents.incorrect": "잘못되었습니다. 다시 시도해 주세요.",
+    "forParents.incorrect": "다시 시도해주세요",
     "settings.version": "버전 {version}",
     "scheduleDetails.error.downloadFail": "다운로드가 실패했습니다. 인터넷 연결을 확인하고 다시 시도하십시오.",
     "live.speechRecognition.error.accessDisabled": "음성 인식에 대한 액세스가 비활성화되었습니다.",
@@ -269,7 +269,7 @@
     "schedule_review_class_name": "검토: {value} 수업 자료",
     "live.enter.tardyDuration": "{value} {value, plural, =0 { 분 } one { 분 } other { 분 }} 전에 시작됨",
     "live.enter.joinLive": "라이브 수업에 참여하기",
-    "live.enter.teacherCount": "+ {value}  {value, plural, one { 명 } other { 명 }}",
+    "live.enter.teacherCount": "{name} and <span>+ {value} more {value, plural, one {teacher} other {teachers}}</span>",
     "homeFunStudy.submission.error.rejected.title": "과제 완료",
     "homeFunStudy.discardChange.title": "변경 사항을 삭제할까요?",
     "homeFunStudy.discardChange": "창을 닫으면 변경한 내용이 모두 삭제됩니다.",
@@ -397,5 +397,8 @@
     "error.serverRequestFailed.detail": "Server request failed",
     "popup.dismiss": "Dismiss",
     "homeFunStudy.myAssignment": "My Assignment",
-    "homeFunStudy.preview": ""
+    "homeFunStudy.preview": "Preview",
+    "study.enter.noDue": "No due date",
+    "class_ended_title": "수업이 종료되었습니다",
+    "class_ended_you_have_left": "수업에서 나왔습니다"
 }

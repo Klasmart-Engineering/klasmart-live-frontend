@@ -235,7 +235,7 @@
     "signIn.noStudentProfile.body": "You need to have a Student profile to continue using the app",
     "forParents.title": "For Parents",
     "forParents.body": "To continue, please tap the numbers in ascending order",
-    "forParents.incorrect": "Incorrect, please try again",
+    "forParents.incorrect": "Try again",
     "settings.version": "App Version {version}",
     "scheduleDetails.error.downloadFail": "Download failed. Check your internet connection and try again.",
     "live.speechRecognition.error.accessDisabled": "Access to speech recognition is disabled",
@@ -269,7 +269,7 @@
     "schedule_review_class_name": "Auto Review: {value} Materials",
     "live.enter.tardyDuration": "Started {value} {value, plural, =0 {minute} one {minute} other {minutes}} ago",
     "live.enter.joinLive": "Join Live Class",
-    "live.enter.teacherCount": "+ {value} more {value, plural, one {person} other {people}}",
+    "live.enter.teacherCount": "{name} and <span>+ {value} more {value, plural, one {teacher} other {teachers}}</span>",
     "homeFunStudy.submission.error.rejected.title": "Assignment Complete",
     "homeFunStudy.discardChange.title": "Discard Changes?",
     "homeFunStudy.discardChange": "Closing the window will discard any changes you have made.",
@@ -397,5 +397,8 @@
     "error.serverRequestFailed.detail": "Server request failed",
     "popup.dismiss": "Dismiss",
     "homeFunStudy.myAssignment": "My Assignment",
-    "homeFunStudy.preview": ""
+    "homeFunStudy.preview": "Preview",
+    "study.enter.noDue": "No due date",
+    "class_ended_title": "Your class has ended",
+    "class_ended_you_have_left": "You have left the class"
 }
