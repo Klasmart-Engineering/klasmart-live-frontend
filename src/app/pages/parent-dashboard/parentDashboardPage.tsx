@@ -2,6 +2,7 @@ import AppBar,
 { AppBarStyle } from "@/app/components/layout/AppBar";
 import { ParentDashboardUserListItem } from "@/app/components/parent-dashboard/parentDashboardUserListItem";
 import { CordovaSystemContext } from "@/app/context-provider/cordova-system-context";
+import { useReportContext } from "@/app/context-provider/report-context";
 import {
     useSelectedOrganization,
     useSelectedUser,
@@ -16,9 +17,11 @@ import { useMyUsersQuery } from "@/app/data/user/queries/myUsersQuery";
 import { useShouldSelectUser } from "@/app/dialogs/account/selectUserDialog";
 import { SelectOrgForParentDialog } from "@/app/dialogs/parent-dashboard/selectOrgForParentDialog";
 import {
+    endWeekCalendar,
     isSelectOrgParentDialogOpenState,
     selectOrgAfterSwitchingProfile,
     selectOrgFromParentDashboardState,
+    startWeekCalendar,
 } from "@/app/model/appModel";
 import BackButton from "@/assets/img/parent-dashboard/back_icon_parents.svg";
 import SettingButton from "@/assets/img/parent-dashboard/setting_icon_parents.svg";
@@ -47,6 +50,7 @@ import { useIntl } from "react-intl";
 import { useHistory } from "react-router-dom";
 import {
     useRecoilState,
+    useResetRecoilState,
     useSetRecoilState,
 } from "recoil";
 
@@ -109,6 +113,14 @@ export function ParentDashboardPage () {
 
     const activeOrganizationMemberships = useMemo(() => meData?.me?.organizationsWithPermission.filter((membership) => membership.status === EntityStatus.ACTIVE) ?? [], [ meData ]);
     const activeOrganizations = useMemo(() => activeOrganizationMemberships.map((membership) => membership.organization), [ activeOrganizationMemberships ]);
+
+    const resetStartWeekCalendar = useResetRecoilState(startWeekCalendar);
+    const resetEndWeekCalendar = useResetRecoilState(endWeekCalendar);
+    
+    const resetWeek = () => {
+        resetStartWeekCalendar();
+        resetEndWeekCalendar();
+    }
 
     const selectUser = useCallback((user: ReadUserDto, classType: ClassType) => {
         setIsLoading(true);
@@ -178,6 +190,7 @@ export function ParentDashboardPage () {
             history.push(`/schedule/category-live`);
             break;
         case ClassType.REPORT:
+            resetWeek();
             history.push(`/report/parent-dashboard`);
             break;
         default:
