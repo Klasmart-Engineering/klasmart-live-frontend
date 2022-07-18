@@ -11,7 +11,10 @@ import {
     filterUpcomingSchedules,
     ScheduleListSection,
 } from "@/app/components/Schedule/shared";
-import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import {
@@ -90,6 +93,7 @@ export default function LiveScheduleList () {
     const intl = useIntl();
     const [ selectedScheduleId, setSelectedScheduleId ] = useState<string>();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const selectedUser = useSelectedUserValue();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
     const { enqueueSnackbar } = useSnackbar();
@@ -198,7 +202,8 @@ export default function LiveScheduleList () {
 
     useEffect(() => {
         setPage(SCHEDULE_PAGE_START);
-    }, [ organization ]);
+        scrollRef.current?.scrollTo(0, 0);
+    }, [ organization, selectedUser ]);
 
     const onFocusChange = useCallback(() => {
         if (isFocused()) return;

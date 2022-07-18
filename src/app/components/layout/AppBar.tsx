@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => createStyles({
             height: theme.spacing(12),
         },
         "& $titleInAppBar": {
-            fontSize: `1.25rem`,
+            fontSize: `1.375rem`,
         },
         "& $toolbar": {
             padding: theme.spacing(0, 1),

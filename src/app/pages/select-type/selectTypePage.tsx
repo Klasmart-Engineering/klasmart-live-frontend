@@ -83,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
         fontWeight: theme.typography.fontWeightMedium as number,
         fontSize: `1.15rem`,
         [theme.breakpoints.up(`sm`)]: {
-            fontSize: `2rem`,
+            fontSize: `1.875rem`,
         },
     },
     selectionButtons: {

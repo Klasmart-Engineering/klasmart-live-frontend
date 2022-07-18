@@ -5,7 +5,10 @@ import ScheduleLoading from "@/app/components/Schedule/Loading";
 import NoSchedule from "@/app/components/Schedule/NoSchedule";
 import { getIdStudyType } from "@/app/components/Schedule/shared";
 import StudyDetailsDialog from "@/app/components/Schedule/Study/Dialog/Details";
-import { useSelectedOrganizationValue } from "@/app/data/user/atom";
+import {
+    useSelectedOrganizationValue,
+    useSelectedUserValue,
+} from "@/app/data/user/atom";
 import { dialogsState } from "@/app/model/appModel";
 import { ScheduleLiveTokenType } from "@/app/services/cms/ISchedulerService";
 import { formatDueDateMillis } from "@/app/utils/dateTimeUtils";
@@ -113,6 +116,7 @@ export default function StudyScheduleList (props: Props) {
     const classes = useStyles();
     const intl = useIntl();
     const [ dialogs, setDialogs ] = useRecoilState(dialogsState);
+    const selectedUser = useSelectedUserValue();
     const [ selectedStudySchedule, setSelectedStudySchedule ] = useState<SchedulesTimeViewListItem>();
     const [ page, setPage ] = useState(SCHEDULE_PAGE_START);
     const [ items, setItems ] = useState<SchedulesTimeViewListItem[]>([]);
@@ -217,7 +221,8 @@ export default function StudyScheduleList (props: Props) {
 
     useEffect(() => {
         setPage(SCHEDULE_PAGE_START);
-    }, [ organization ]);
+        scrollRef.current?.scrollTo(0, 0);
+    }, [ organization, selectedUser ]);
 
     const onFocusChange = useCallback(() => {
         if (isFocused()) return;
