@@ -32,13 +32,14 @@ const useStyles = makeStyles((theme: Theme) => ({
         right: theme.spacing(0.5),
     },
     pencilIcon: {
-        width: theme.spacing(4),
-        height: theme.spacing(4),
+        width: theme.spacing(3.25),
+        height: theme.spacing(3.25),
+        margin: `auto`,
     },
     closeIcon: {
         width: theme.spacing(2.5),
         height: theme.spacing(2.5),
-        padding: theme.spacing(0.75)
+        padding: theme.spacing(0.75),
     },
     fab: {
         backgroundColor: THEME_COLOR_BACKGROUND_PAPER,
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: THEME_COLOR_ORG_MENU_DRAWER,
         boxShadow: `none`,
         "&:hover": {
-            background: darken(THEME_COLOR_ORG_MENU_DRAWER,0.2),
+            background: darken(THEME_COLOR_ORG_MENU_DRAWER, 0.2),
         },
     },
 }));
@@ -101,7 +102,7 @@ export function WBToolbarContainer () {
                         [classes.fab]: !isCanvasOpen,
                         [classes.activatedFab]: isCanvasOpen,
                     })}
-                    size="large"
+                    size="medium"
                     onClick={handleToggleWBToolbar}
                 >
                     <StyledIcon
@@ -110,7 +111,7 @@ export function WBToolbarContainer () {
                             alt={`Close Icon`}
                             src={CloseIcon}
                             className={classes.closeIcon}
-                        /> :
+                                             /> :
                             <img
                                 alt={`Pencil Icon`}
                                 src={PencilIcon}

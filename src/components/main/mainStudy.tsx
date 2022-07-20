@@ -112,7 +112,7 @@ function MainStudy () {
                             <Box
                                 position="fixed"
                                 bottom={theme.spacing(4)}
-                                left={theme.spacing(3.5)}
+                                left={isMdUp ? theme.spacing(1.25) : theme.spacing(0.5)}
                             >
                                 <WBToolbarContainer />
                             </Box>
