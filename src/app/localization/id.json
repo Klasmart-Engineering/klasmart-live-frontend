@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Pratinjau",
     "study.enter.noDue": "Tidak ada tanggal pengumpulan",
     "class_ended_title": "Kelas sudah selesai",
-    "class_ended_you_have_left": "Kamu sudah meninggalkan kelas"
+    "class_ended_you_have_left": "Kamu sudah meninggalkan kelas",
+    "live.ended.backToSchedule": "Back to schedule"
 }

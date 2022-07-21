@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Preview",
     "study.enter.noDue": "No due date",
     "class_ended_title": "Finalizó la clase",
-    "class_ended_you_have_left": "Saliste de la clase"
+    "class_ended_you_have_left": "Saliste de la clase",
+    "live.ended.backToSchedule": "Back to schedule"
 }

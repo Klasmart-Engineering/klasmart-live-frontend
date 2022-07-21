@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Preview",
     "study.enter.noDue": "No due date",
     "class_ended_title": "课程已结束",
-    "class_ended_you_have_left": "你已离开课程"
+    "class_ended_you_have_left": "你已离开课程",
+    "live.ended.backToSchedule": "Back to schedule"
 }

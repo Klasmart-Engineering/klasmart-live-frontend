@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Preview",
     "study.enter.noDue": "No due date",
     "class_ended_title": "ชั้นเรียนสิ้นสุดลงแล้ว",
-    "class_ended_you_have_left": "คุณออกจากชั้นเรียนแล้ว"
+    "class_ended_you_have_left": "คุณออกจากชั้นเรียนแล้ว",
+    "live.ended.backToSchedule": "Back to schedule"
 }

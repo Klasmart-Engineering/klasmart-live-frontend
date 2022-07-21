@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Preview",
     "study.enter.noDue": "No due date",
     "class_ended_title": "수업이 종료되었습니다",
-    "class_ended_you_have_left": "수업에서 나왔습니다"
+    "class_ended_you_have_left": "수업에서 나왔습니다",
+    "live.ended.backToSchedule": "Back to schedule"
 }

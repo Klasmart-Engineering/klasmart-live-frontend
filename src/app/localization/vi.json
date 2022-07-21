@@ -400,5 +400,6 @@
     "homeFunStudy.preview": "Preview",
     "study.enter.noDue": "No due date",
     "class_ended_title": "Lớp học đã kết thúc",
-    "class_ended_you_have_left": "Bạn đã rời khỏi lớp học"
+    "class_ended_you_have_left": "Bạn đã rời khỏi lớp học",
+    "live.ended.backToSchedule": "Back to schedule"
 }
