@@ -58,7 +58,7 @@
     "@types/voice-activity-detection": "^0.0.0",
     "@types/webpack-dev-server": "3.11.5",
     "clean-webpack-plugin": "4.0.0",
-    "copy-webpack-plugin": "9.0.1",
+    "copy-webpack-plugin": "11.0.0",
     "cordova-android": "^9.1.0",
     "cordova-ios": "^6.2.0",
     "cordova-plugin-add-swift-support": "^2.0.2",
