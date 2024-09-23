@@ -6,7 +6,7 @@ import {
     selectOrgAfterSwitchingProfile,
     useSetMenuOpen,
 } from "@/app/model/appModel";
-import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
+import KidsloopLogo from "@/assets/img/klasmart/klasmart-logo.svg";
 import KidsloopTextLogo from "@/assets/img/kidsloop_logo.svg";
 import StyledIcon from "@/components/styled/icon";
 import AppBar from "@material-ui/core/AppBar";

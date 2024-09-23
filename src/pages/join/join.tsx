@@ -2,7 +2,7 @@
 import { CameraPreview } from "./cameraPreview";
 import ClassTypeLogo from "./classTypeLogo";
 import { MicrophonePreview } from "./microphonePreview";
-import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
+import KidsLoopLogoSvg from "@/assets/img/klasmart/klasmart-logo.svg";
 import Loading from "@/components/loading";
 import {
     MediaDeviceSelect,

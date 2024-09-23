@@ -1,4 +1,4 @@
-import KidsloopLogo from "@/assets/img/kidsloop_icon.svg";
+import KidsloopLogo from "@/assets/img/klasmart/klasmart-icon.svg";
 import {
     AppBar as MUIAppBar,
     createStyles,

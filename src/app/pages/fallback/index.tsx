@@ -2,7 +2,7 @@ import Error1 from "../../../assets/img/error/1.png";
 import Error2 from "../../../assets/img/error/2.png";
 import Error3 from "../../../assets/img/error/3.png";
 import Error4 from "../../../assets/img/error/4.png";
-import KidsloopIcon from "../../../assets/img/kidsloop_icon.svg";
+import KidsloopIcon from "../../../assets/img/klasmart/klasmart-logo.svg";
 import StyledButton from "../../../components/styled/button";
 import { useAuthenticationContext } from "../../context-provider/authentication-context";
 import { useServices } from "@/app/context-provider/services-provider";

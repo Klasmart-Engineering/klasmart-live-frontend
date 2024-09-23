@@ -5,7 +5,7 @@ import KidsLoopLiveTeachers from "@/assets/img/classtype/kidsloop_live_teachers.
 import KidsLoopPreviewTeachers from "@/assets/img/classtype/kidsloop_preview_teachers.svg";
 import KidsLoopReviewStudents from "@/assets/img/classtype/kidsloop_review_students.svg";
 import KidsLoopStudyStudents from "@/assets/img/classtype/kidsloop_study_students.svg";
-import KidsLoopLogoSvg from "@/assets/img/kidsloop.svg";
+import KidsLoopLogoSvg from "@/assets/img/klasmart/klasmart-logo.svg";
 import { ClassType } from "@/store/actions";
 import {
     createStyles,
